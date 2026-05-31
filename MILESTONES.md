@@ -53,3 +53,4 @@
 - All four generated C++ reasoner runs completed 200/200 playouts and reproduced the same structural scores, so the packaged environment is usable at `core_claim`.
 
 ## Stop Justification
+- Completed at milestone `core_claim`.
