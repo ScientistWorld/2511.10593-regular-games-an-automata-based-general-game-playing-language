@@ -31,6 +31,7 @@ No required work remains for `core_claim_plus`. A broader CPU run is queued to e
 - Job `a0586e53-f4a` ran `scripts/reproduce.sh` end to end with the default 200 playouts. The job completed in about four minutes and `validate.py --compare` passed all scoring and separation checks.
 - Continuation audit restored confidence in `core_claim`: `method/run_experiments.py` uses the official HRG/RG optimizer, `rg2cpp` compiler, generated C++ reasoner compilation, and fixed playout checker; `eval/evaluate_results.py` reads only method-produced artifacts and `validate.py --compare` passes.
 - Job `2e7a31ea-181` completed the six-game expansion in about 12 minutes on CPU and `validate.py --compare` passed.
+- Job `279135c0-94d` was cancelled after 20 minutes because no method progress had appeared in stdout. The cause was the experiment wrapper buffering subprocess output until each command completed, making normal rebuild/compile work indistinguishable from a hang during scheduler progress checks. `method/run_experiments.py` now streams subprocess output and emits per-game/per-variant progress lines.
 
 ## Deviations from Paper
 

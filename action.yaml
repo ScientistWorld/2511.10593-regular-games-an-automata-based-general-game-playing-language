@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Six-game expansion reached core_claim_plus; run broader 14-game HRG subset on CPU to strengthen coverage."
+notes: "Retry broader 14-game HRG subset with streamed rebuild/compile/playout progress after cancelling buffered-output run."

@@ -29,19 +29,26 @@ def run(cmd: list[str], cwd: Path, *, env: dict[str, str] | None = None) -> subp
     merged_env.setdefault("CARGO_NET_OFFLINE", "true")
     if env:
         merged_env.update(env)
-    result = subprocess.run(
+    rendered = " ".join(cmd)
+    print(f"[run] {cwd.relative_to(ROOT) if cwd.is_relative_to(ROOT) else cwd}: {rendered}", flush=True)
+    process = subprocess.Popen(
         cmd,
         cwd=cwd,
         env=merged_env,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        check=False,
     )
-    if result.returncode != 0:
-        rendered = " ".join(cmd)
-        raise RuntimeError(f"Command failed with exit code {result.returncode}: {rendered}\n{result.stdout}")
-    return result
+    output_parts: list[str] = []
+    assert process.stdout is not None
+    for line in process.stdout:
+        output_parts.append(line)
+        print(line, end="", flush=True)
+    returncode = process.wait()
+    output = "".join(output_parts)
+    if returncode != 0:
+        raise RuntimeError(f"Command failed with exit code {returncode}: {rendered}\n{output}")
+    return subprocess.CompletedProcess(cmd, returncode, output, "")
 
 
 def game_path(game: str) -> Path:
@@ -152,6 +159,7 @@ def clean_build_test() -> None:
 def run_variant(game: str, variant: str, transform_flags: str, sims: int) -> dict[str, Any]:
     clean_build_test()
     game_file = game_path(game)
+    print(f"[variant] game={game_file.name} method={variant} sims={sims}", flush=True)
     command = ["python3", "scripts/sims.py", game_file.name, str(sims), "--test", f"-t={transform_flags}"]
     proc = run(command, cwd=COMPILER_ROOT)
     ast_file = COMPILER_ROOT / "build-test" / f"{game_file.name}.json"
