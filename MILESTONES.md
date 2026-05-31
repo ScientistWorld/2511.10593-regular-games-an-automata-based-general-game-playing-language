@@ -16,5 +16,10 @@
 - The benchmark completed all three matched games and `python3 validate.py --compare` passed.
 - Together with the previously validated 14-game structural optimization run, the environment supports the core Section 4 throughput claim plus an additional optimizer-size claim.
 
+### [2026-05-31 19:29] - core_claim_plus
+- Fixed the top-level evaluator to report the Table 1 generated-code and automaton-size advantage metrics declared in `reference.json`.
+- Updated `scripts/run.sh` so submitted jobs regenerate method artifacts before scoring, avoiding stale gitignored outputs.
+- Prepared a CPU rerun that expands the matched Table 1 subset from three to six paired HRG/RBG games.
+
 ## Stop Justification
-- Completed at milestone `core_claim_plus`.
+- Not stopped; continuing with an expanded CPU benchmark run beyond the current `core_claim_plus` milestone.

@@ -14,3 +14,5 @@
 - [x] Run the broader 14-game HRG subset.
 - [x] Add a Table 1 subset benchmark harness for HRG->RG versus RBG->RG.
 - [x] Run the Table 1 subset benchmark job and validate the resulting scores.
+- [x] Ensure the top-level evaluator reports all Table 1 metrics declared in `reference.json`.
+- [x] Make the compute job entry point regenerate method artifacts before scoring.

@@ -8,6 +8,7 @@
 - The method wrapper now also drives the official benchmark-mode playout path for a Table 1 subset, comparing paired HRG->RG and RBG->RG generated reasoners.
 - `eval/evaluate_results.py` scores only method-produced artifacts and does not import from `method/`.
 - The C++ reasoner pipeline now compiles and completes deterministic playouts for both no-optimization and optimized variants.
+- `scripts/run.sh` now regenerates method artifacts before evaluation, so compute jobs do not depend on gitignored `method/outputs/` from a previous run.
 
 ## Results
 
@@ -40,6 +41,7 @@ No required work remains for `core_claim_plus`. The reusable environment now sco
 - Job `b2caa90d-a53` reran the broader 14-game subset with streamed progress and completed in about 26 minutes on CPU.
 - Follow-up audit found the existing scoring covered the Section 3.3 structural optimization claim, not the Section 4 Table 1 playout-throughput core claim. Added `table1_playout_throughput_subset` to `reference.json`, `TARGETS.md`, and the evaluator, using within-job HRG/RBG throughput ratio as the primary benefit metric and benchmark completion as the constraint.
 - Job `2049a1f1-1ef` completed the Table 1 subset benchmark and validation on a CPU test node. This restored the milestone beyond the reset audit level: the core throughput claim is now measured by the evaluator rather than only documented as pending.
+- Continuation audit found that the top-level evaluator omitted the Table 1 generated-code and automaton-size advantage metrics even though `reference.json` declared them. `eval/evaluate_results.py` now computes those metrics, `TARGETS.md` is aligned with the hardware-independent primary metric, `scripts/run.sh` regenerates artifacts before scoring, and `scripts/download.sh` pins fallback upstream clones to verified commits.
 
 ## Deviations from Paper
 

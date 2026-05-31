@@ -42,19 +42,45 @@ def aggregate_table1_subset(rows: list[dict[str, Any]]) -> dict[str, dict[str, f
             "states_per_second": avg([row for game_rows in by_game.values() for row in game_rows], "states_per_second"),
             "benchmark_completion_rate": avg([row for game_rows in by_game.values() for row in game_rows], "playout_completion_rate"),
             "games_completed": float(sum(1 for value in game_rates if value > 0)),
+            "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
+            "automaton_edge_advantage_vs_rbg_pct": 0.0,
         }
 
     hrg_rates = mean_sims_by_method_game.get("hrg_rg_table1_subset", {})
     rbg_rates = mean_sims_by_method_game.get("rbg_rg_table1_subset", {})
+    rbg_lines = {
+        game.replace(".rbg", ".hrg"): avg(game_rows, "generated_cpp_lines")
+        for game, game_rows in by_method_game.get("rbg_rg_table1_subset", {}).items()
+        if game.endswith(".rbg")
+    }
+    rbg_edges = {
+        game.replace(".rbg", ".hrg"): avg(game_rows, "automaton_edges")
+        for game, game_rows in by_method_game.get("rbg_rg_table1_subset", {}).items()
+        if game.endswith(".rbg")
+    }
     speedups: list[float] = []
+    line_advantages: list[float] = []
+    edge_advantages: list[float] = []
     for hrg_game, hrg_rate in hrg_rates.items():
         rbg_game = hrg_game.replace(".hrg", ".rbg")
         rbg_rate = rbg_rates.get(rbg_game)
         if hrg_rate > 0 and rbg_rate and rbg_rate > 0:
             speedups.append(hrg_rate / rbg_rate)
+        hrg_lines = avg(by_method_game["hrg_rg_table1_subset"][hrg_game], "generated_cpp_lines")
+        if rbg_lines.get(hrg_game, 0.0) > 0 and hrg_lines > 0:
+            line_advantages.append(100.0 * (rbg_lines[hrg_game] - hrg_lines) / rbg_lines[hrg_game])
+        hrg_edges = avg(by_method_game["hrg_rg_table1_subset"][hrg_game], "automaton_edges")
+        if rbg_edges.get(hrg_game, 0.0) > 0 and hrg_edges > 0:
+            edge_advantages.append(100.0 * (rbg_edges[hrg_game] - hrg_edges) / rbg_edges[hrg_game])
 
     if "hrg_rg_table1_subset" in per_method:
         per_method["hrg_rg_table1_subset"]["speedup_vs_rbg_rg"] = mean(speedups) if speedups else 0.0
+        per_method["hrg_rg_table1_subset"]["generated_cpp_line_advantage_vs_rbg_pct"] = (
+            mean(line_advantages) if line_advantages else 0.0
+        )
+        per_method["hrg_rg_table1_subset"]["automaton_edge_advantage_vs_rbg_pct"] = (
+            mean(edge_advantages) if edge_advantages else 0.0
+        )
     if "rbg_rg_table1_subset" in per_method:
         per_method["rbg_rg_table1_subset"]["speedup_vs_rbg_rg"] = 1.0
     return per_method

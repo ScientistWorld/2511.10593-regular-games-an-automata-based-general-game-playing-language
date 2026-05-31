@@ -19,9 +19,11 @@ Constraint metric:
 Run the paper's flat Monte Carlo playout benchmark through the official generated C++ reasoner path on a matched subset of games with both HRG and RBG source descriptions.
 
 Primary benefit metric:
-- `speedup_vs_rbg_rg`: mean per-game ratio of HRG->RG playout throughput to RBG->RG playout throughput from the same job.
+- `generated_cpp_line_advantage_vs_rbg_pct`: mean percentage by which the HRG-derived generated C++ reasoner is shorter than the matched RBG-derived generated reasoner for the same games.
 
 Supporting metrics:
+- `automaton_edge_advantage_vs_rbg_pct`
+- `speedup_vs_rbg_rg`
 - `sims_per_second`
 - `states_per_second`
 - `games_completed`

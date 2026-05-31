@@ -5,8 +5,17 @@
 set -euo pipefail
 
 cd /home/user
-[ -d method/rg ] || git clone --depth 1 https://github.com/radekmie/rg method/rg
-[ -d method/rgcompiler ] || git clone --depth 1 https://github.com/WoojtekP/RGcompiler method/rgcompiler
+RG_COMMIT="915b69c835c38312cfeeac45b5774f45da17eff8"
+RGCOMPILER_COMMIT="7fc24da037de760d2235fa4a39faf004f9fb6719"
+
+if [ ! -d method/rg ]; then
+  git clone https://github.com/radekmie/rg method/rg
+  (cd method/rg && git checkout "$RG_COMMIT")
+fi
+if [ ! -d method/rgcompiler ]; then
+  git clone https://github.com/WoojtekP/RGcompiler method/rgcompiler
+  (cd method/rgcompiler && git checkout "$RGCOMPILER_COMMIT")
+fi
 
 if ! command -v cargo >/dev/null 2>&1; then
   mkdir -p tmp
