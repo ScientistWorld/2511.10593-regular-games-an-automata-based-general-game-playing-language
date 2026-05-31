@@ -1,0 +1,505 @@
+// Chess with king capture
+// -- Fifty-move rule
+// -- There is no check; a player wins by capturing the enemy king
+
+// Domains
+domain Score = 50 | 0 | 100
+domain Piece = empty | border |
+    whitePawn | whiteRook | whiteRookUnmoved | whiteKnight | whiteBishop | whiteQueen | whiteKing |
+    blackPawn | blackRook | blackRookUnmoved | blackKnight | blackBishop | blackQueen | blackKing
+domain Player = white | black
+domain Position = V(X, Y) where X in 0..7, Y in 0..7
+domain PositionOrNull = null | Position
+domain Counter = C(N) where N in 0..100
+domain CounterOrNan = nan | Counter
+
+domain RookDir = up | down | left | right
+domain BishopDir = upleft | upright | downleft | downright
+domain AllDir = up | down | left | right | upleft | upright | downleft | downright
+domain KnightDir = nne | nnw | sse | ssw | een | ees | wwn | wws
+domain PawnDir = forward | forwardLeft | forwardRight
+
+domain Bool = 0 | 1
+
+// Possible moves
+leftdir : PositionOrNull -> PositionOrNull
+leftdir(V(X, Y)) = if X == 0 then null else V(X - 1, Y)
+leftdir(_) = null
+
+rightdir : PositionOrNull -> PositionOrNull
+rightdir(V(X, Y)) = if X == 7 then null else V(X + 1, Y)
+rightdir(_) = null
+
+updir : PositionOrNull -> PositionOrNull
+updir(V(X, Y)) = if Y == 0 then null else V(X, Y - 1)
+updir(_) = null
+
+downdir : PositionOrNull -> PositionOrNull
+downdir(V(X, Y)) = if Y == 7 then null else V(X, Y + 1)
+downdir(_) = null
+
+upleftdir : PositionOrNull -> PositionOrNull
+upleftdir(V(X, Y)) = updir(leftdir(V(X,Y)))
+upleftdir(_) = null
+
+uprightdir : PositionOrNull -> PositionOrNull
+uprightdir(V(X, Y)) = updir(rightdir(V(X,Y)))
+uprightdir(_) = null
+
+downleftdir : PositionOrNull -> PositionOrNull
+downleftdir(V(X, Y)) = downdir(leftdir(V(X,Y)))
+downleftdir(_) = null
+
+downrightdir : PositionOrNull -> PositionOrNull
+downrightdir(V(X, Y)) = downdir(rightdir(V(X,Y)))
+downrightdir(_) = null
+// END Possible moves
+
+//Knight helpers
+nnedir : PositionOrNull -> PositionOrNull
+nnedir(V(X, Y)) = updir(updir(leftdir(V(X,Y))))
+nnedir(_) = null
+
+nnwdir : PositionOrNull -> PositionOrNull
+nnwdir(V(X, Y)) = updir(updir(rightdir(V(X,Y))))
+nnwdir(_) = null
+
+ssedir : PositionOrNull -> PositionOrNull
+ssedir(V(X, Y)) = downdir(downdir(leftdir(V(X,Y))))
+ssedir(_) = null
+
+sswdir : PositionOrNull -> PositionOrNull
+sswdir(V(X, Y)) = downdir(downdir(rightdir(V(X,Y))))
+sswdir(_) = null
+
+eendir : PositionOrNull -> PositionOrNull
+eendir(V(X, Y)) = leftdir(leftdir(updir(V(X,Y))))
+eendir(_) = null
+
+eesdir : PositionOrNull -> PositionOrNull
+eesdir(V(X, Y)) = leftdir(leftdir(downdir(V(X,Y))))
+eesdir(_) = null
+
+wwndir : PositionOrNull -> PositionOrNull
+wwndir(V(X, Y)) = rightdir(rightdir(updir(V(X,Y))))
+wwndir(_) = null
+
+wwsdir : PositionOrNull -> PositionOrNull
+wwsdir(V(X, Y)) = rightdir(rightdir(downdir(V(X,Y))))
+wwsdir(_) = null
+// END Knight helpers
+
+// Domain -> move
+all_direction: AllDir -> PositionOrNull -> PositionOrNull
+all_direction(up) = updir
+all_direction(left) = leftdir
+all_direction(right) = rightdir
+all_direction(down) = downdir
+all_direction(upright) = uprightdir
+all_direction(upleft) = upleftdir
+all_direction(downright) = downrightdir
+all_direction(downleft) = downleftdir
+
+knight_direction: KnightDir -> PositionOrNull -> PositionOrNull
+knight_direction(nne) = nnedir 
+knight_direction(nnw) = nnwdir
+knight_direction(sse) = ssedir
+knight_direction(ssw) = sswdir
+knight_direction(een) = eendir
+knight_direction(ees) = eesdir
+knight_direction(wwn) = wwndir
+knight_direction(wws) = wwsdir
+
+pawn_direction: PawnDir -> Player -> PositionOrNull -> PositionOrNull
+pawn_direction(forward, white) = updir
+pawn_direction(forwardLeft, white) = upleftdir
+pawn_direction(forwardRight, white) = uprightdir
+pawn_direction(forward, black) = downdir
+pawn_direction(forwardLeft, black) = downleftdir
+pawn_direction(forwardRight, black) = downrightdir
+
+// Helper functions
+compare_y : PositionOrNull -> PositionOrNull
+compare_y(V(X,Y)) = V(1, Y)
+compare_y(_) = V(2,2)
+
+white_pawn_starting_pos : PositionOrNull -> Bool
+white_pawn_starting_pos(V(X,Y)) = if Y == 6 then 1 else 0
+white_pawn_starting_pos(null) = 0
+black_pawn_starting_pos : PositionOrNull -> Bool
+black_pawn_starting_pos(V(X,Y)) = if Y == 1 then 1 else 0
+black_pawn_starting_pos(null) = 0
+pawn_starting_pos : Player -> PositionOrNull -> Bool
+pawn_starting_pos(white) = white_pawn_starting_pos
+pawn_starting_pos(black) = black_pawn_starting_pos
+
+owner : Piece -> PlayerOrSystem
+owner(whiteBishop) = white
+owner(whiteKing) = white
+owner(whiteKnight) = white
+owner(whiteQueen) = white
+owner(whitePawn) = white
+owner(whiteRook) = white
+owner(whiteRookUnmoved) = white
+owner(blackBishop) = black
+owner(blackKing) = black
+owner(blackKnight) = black
+owner(blackPawn) = black
+owner(blackQueen) = black
+owner(blackRook) = black
+owner(blackRookUnmoved) = black
+owner(empty) = keeper
+owner(border) = keeper
+
+opponent : Player -> Player
+opponent(white) = black
+opponent(black) = white
+
+myRook : Player -> Piece
+myRook(white) = whiteRook
+myRook(_) = blackRook
+myRookUnmoved : Player -> Piece
+myRookUnmoved(white) = whiteRookUnmoved
+myRookUnmoved(_) = blackRookUnmoved
+
+myBishop : Player -> Piece
+myBishop(white) = whiteBishop
+myBishop(_) = blackBishop
+
+myQueen : Player -> Piece
+myQueen(white) = whiteQueen
+myQueen(_) = blackQueen
+
+myKnight : Player -> Piece
+myKnight(white) = whiteKnight
+myKnight(_) = blackKnight
+
+myKing : Player -> Piece
+myKing(white) = whiteKing
+myKing(_) = blackKing
+
+myPawn : Player -> Piece
+myPawn(white) = whitePawn
+myPawn(_) = blackPawn
+
+counterIncrease: Counter -> CounterOrNan
+counterIncrease(C(N)) = if N == 100 then nan else C(N + 1)
+
+// Board Setup
+board : PositionOrNull -> Piece = {
+  :empty;
+  null = border;
+  V(X, 0) = blackRookUnmoved where X in {0, 7};
+  V(X, 0) = blackKnight where X in {1, 6};
+  V(X, 0) = blackBishop where X in {2, 5};
+  V(3, 0) = blackQueen;
+  V(4, 0) = blackKing;
+  V(X, 1) = blackPawn where X in 0..7;
+  V(X, 6) = whitePawn where X in 0..7;
+  V(X, 7) = whiteRookUnmoved where X in {0, 7};
+  V(X, 7) = whiteKnight where X in {1, 6};
+  V(X, 7) = whiteBishop where X in {2, 5};
+  V(3, 7) = whiteQueen;
+  V(4, 7) = whiteKing
+}
+
+stagnation: Counter = C(0)
+me : Player = white
+pos : PositionOrNull
+dir : AllDir
+en_passant_position : PositionOrNull
+castlingPermission : Player -> Bool
+kingPos : Player -> PositionOrNull = {:V(4,7); black=V(4,0)}
+
+graph pawnMove() {
+  check(board[pos] == myPawn(me))
+  stagnation = C(0)
+  board[pos] = empty
+  
+  branch {// Normal move
+     branch {// Forward move by 1 square
+       pos = pawn_direction[forward][me][pos]
+       check(board[pos] == empty)
+       $ PF
+     } or {// Captures diagonal
+       branch {
+         pos = pawn_direction[forwardLeft][me][pos]
+         $ PCL
+       } or {
+         pos = pawn_direction[forwardRight][me][pos]
+         $ PCR
+       }
+       check(owner(board[pos]) == opponent[me])
+     }
+     $$ pos
+     
+     if pawn_direction[forward][me][pos] == null {
+        branch { // Promote to queen
+          board[pos] = myQueen(me)
+          $ P_Q
+        } or { // Promote to rook
+          board[pos] = myRook(me)
+          $ P_R
+        } or { // Promote to knight
+          board[pos] = myKnight(me)
+          $ P_N
+        } or { // Promote to bishop
+          board[pos] = myBishop(me)
+          $ P_B
+        }
+     } else {
+      board[pos] = myPawn(me)
+     }
+     en_passant_position = null
+
+   } or { // Forward move by 2 squares
+     $ PFF
+     check(pawn_starting_pos[me][pos] == 1)
+     pos = pawn_direction[forward][me][pos]
+     check(board[pos] == empty)
+     pos = pawn_direction[forward][me][pos]
+     check(board[pos] == empty)
+     $$ pos
+     en_passant_position = pos
+     board[pos] = myPawn(me)
+   } or { // En passant
+     check(en_passant_position != null)
+     $ PEN
+     branch {
+       check(leftdir(pos) == en_passant_position)
+       pos = pawn_direction[forwardLeft][me][pos]
+       $_EL
+     } or {
+       check(rightdir(pos) == en_passant_position)
+       pos = pawn_direction[forwardRight][me][pos]
+       $_ER
+     }
+     $$ pos
+     board[pos] = myPawn(me)
+     board[en_passant_position] = empty
+     en_passant_position = null
+   }
+}
+
+graph queenMoves() {
+  branch dir in AllDir {
+    repeat 7 {
+      pos = all_direction(dir)(pos)
+      $_Q
+      branch {
+        check(owner(board[pos]) == opponent[me])
+        stagnation = C(0)
+        $_C
+        return()
+      } or {
+        check(board[pos] == empty)
+        branch {} or {return()}
+      }
+    }
+  }
+}
+graph queenMove() {
+  check(board[pos] == myQueen(me))
+  board[pos] = empty
+  $ Q
+
+  queenMoves()
+  
+  $$ pos
+  board[pos] = myQueen(me)
+  en_passant_position = null
+}
+
+graph rookMoves() {
+  branch dir in RookDir {
+    repeat 7 {
+      pos = all_direction(dir)(pos)
+      $_R
+      branch {
+        check(owner(board[pos]) == opponent[me])
+        stagnation = C(0)
+        $_C
+        return()
+      } or {
+        check(board[pos] == empty)
+        branch {} or {return()}
+      }
+    }
+  }
+}
+graph rookMove() {
+  check(board[pos] == myRook(me) || board[pos] == myRookUnmoved(me))
+  
+  board[pos] = empty
+  $ R
+
+  rookMoves()
+  $$ pos
+  board[pos] = myRook(me)
+
+  en_passant_position = null
+}
+
+graph bishopMoves() {
+  branch dir in BishopDir {
+    repeat 7 {
+      pos = all_direction(dir)(pos)
+      $_B
+      branch {
+        check(owner(board[pos]) == opponent[me])
+        stagnation = C(0)
+        $_C
+        return()
+      } or {
+        check(board[pos] == empty)
+        branch {} or {return()}
+      }
+    }
+  }
+}
+graph bishopMove() {
+  check(board[pos] == myBishop(me))
+  $ B
+  board[pos] = empty
+  bishopMoves()
+  $$ pos
+  board[pos] = myBishop(me)
+  en_passant_position = null
+}
+
+graph knightMove() {
+  check(board[pos] == myKnight(me))
+  board[pos] = empty
+  $ N
+  
+  branch dir in KnightDir {
+    pos = knight_direction[dir][pos]
+    $_dir
+  }
+  
+  branch {
+    check(board[pos] == empty)
+  } or {
+    check(owner(board[pos]) == opponent[me])
+    stagnation = C(0)
+    $_C
+  }
+  
+  $$ pos
+  board[pos] = myKnight(me)
+  en_passant_position = null
+}
+
+graph kingStandardMove() {
+  board[pos] = empty
+  branch dir in AllDir {
+    pos = all_direction[dir][pos]
+    $_dir
+    $$ pos
+    branch {
+      check(board[pos] == empty) 
+    } or {
+      check(owner(board[pos]) == opponent[me])
+      stagnation = C(0)
+      $_C
+    }
+  }
+  board[pos] = myKing(me)
+  kingPos[me] = pos
+}
+graph kingCastlingMove() {
+  board[pos] = empty
+  branch {// Kingside castle
+    $ OO
+    // If file +1 is empty
+    check(board[rightdir(pos)] == empty)
+    // If file +2 is empty
+    check(board[rightdir(rightdir(pos))] == empty)
+    // If not attacked
+    pos = rightdir(pos)
+    pos = rightdir(pos)
+    check(board[rightdir(pos)] == myRookUnmoved(me))
+    // Apply
+    board[leftdir(pos)] = board[rightdir(pos)]// Rook
+    board[rightdir(pos)] = empty
+  } 
+  or {// Queenside castle
+    $ OOO
+    // If file -1 is empty
+    check(board[leftdir(pos)] == empty)
+    // If file -2 is empty
+    check(board[leftdir(leftdir(pos))] == empty)
+    // If not attacked
+    pos = leftdir(pos)
+    pos = leftdir(pos)
+    check(board[leftdir(leftdir(pos))] == myRookUnmoved(me))
+    // Apply
+    board[rightdir(pos)] = board[leftdir(leftdir(pos))]// Rook
+    board[leftdir(leftdir(pos))] = empty
+  }
+            
+  $$ pos
+  board[pos] = myKing(me)
+  kingPos[me] = pos
+}
+
+graph move() {
+  branch {
+    pos = kingPos[me]
+    $$ pos
+    $ K
+    branch {// 1 tile move
+      kingStandardMove()
+    } or { // Castling moves
+      check(castlingPermission(me) == 1)
+      kingCastlingMove()
+    }
+    castlingPermission[me] = 0
+    en_passant_position = null
+  } or {
+    pos = Position(*)
+    $$ pos
+    branch {
+      pawnMove()
+    } or {
+      queenMove()
+    } or {
+      rookMove()
+    } or {
+      knightMove()
+    } or {
+      bishopMove()
+    }
+  }
+}
+
+graph kingExists() {
+  pos = Position(*)
+  check(board[pos] == myKing(me))
+}
+
+graph turn() {
+  stagnation = counterIncrease(stagnation)
+  player = me
+  move()
+  player = keeper
+  
+  me = opponent[me]
+
+  if not(reachable(kingExists())) {// kingCapture variant
+    goals[me] = 0
+    goals[opponent[me]] = 100
+    end()
+  }
+  
+  // Fifty-move rule
+  if stagnation == C(100) {
+    end()
+  }
+}
+
+graph rules() {
+  loop {
+    turn()
+  }
+}

@@ -1,0 +1,42 @@
+domain Boolean = true | false
+domain BooleanOrNull = Boolean | null
+domain Player = x
+domain Score = 0 | 1
+domain Variable = x | y | z
+
+values : Variable -> BooleanOrNull = { _ = null }
+v : Variable
+
+graph verify() {
+  // (X v Y v Z) ^ (X) ^ (!Y) ^ (!Z)
+  check(values[x] == true || values[y] == true || values[z] == true)
+  check(values[x] == true)
+  check(values[y] == false)
+  check(values[z] == false)
+}
+
+graph missing() {
+  v = Variable(*)
+  check(values[v] == null)
+}
+
+graph rules() {
+  player = x
+  while reachable(missing()) {
+    v = Variable(*)
+    check(values[v] == null)
+    $$ v
+    branch {
+      values[v] = true  $ T
+    } or {
+      values[v] = false $ F
+    }
+  }
+
+  player = keeper
+  if reachable(verify()) {
+    goals[x] = 1
+  }
+
+  end()
+}

@@ -1,0 +1,151 @@
+// ---------------------------- DOTS AND BOXES ----------------------------
+// (https://ludii.games/details.php?keyword=Dots%20and%20Boxes)
+
+
+// Rules: 
+// "It is played on a board that is a grid of dots.
+// Players alternate turns drawing a (unit) line between two of the dots.
+// If a player completes a (unit) square, they receive one point and 
+// play again. The player with the most points when there are 
+// no more moves wins."
+
+// Details:
+// - Board size: 9x9 dots 
+// Each line has either one or two adjacent squares. Let's map a
+// line with two boxes (where one can be none, if line is an edge).
+// Next, every time a line is being set by some player, let's add 1
+// to adjacent boxes' states. In this way, when a box is being 
+// promoted to state 4 it becomes filled and the current player
+// gets 1 point. 
+
+//---------------------DOMAINS AND VARS---------------------
+
+domain Player = red | blue
+domain Line = H(I, J) where I in 1..9, J in 1..8 | V(I, J) where I in 1..8, J in 1..9 // all possible unit lines (horizontal and vertical)
+domain LineState = empty | taken // line can be free or already taken
+domain Box = B(I, J) where I in 1..8, J in 1..8 // all possible unit squares
+domain BoxState = P(I) where I in 0..4 // number of lines surrounding given square
+domain BoxStateOrNone = none | BoxState
+domain BoxOrNone = none | Box 
+domain Points = P(I) where I in 0..64 // number of filled squares (for one player)
+domain PointsOrNan = nan | Points
+domain Score = 50 | 0 | 100
+domain Bool = 0 | 1
+
+lines : Line -> LineState = { _ = empty} // mark all lines as empty
+boxes : Box -> BoxState = { _ = P(0) } // keep number of surrounding lines for all squares
+points : Player -> Points = { _ = P(0) } // keep points for each player, so u can compare them later and get final score
+me : Player = red // starting player
+
+chosenLine : Line
+
+//-------------------------HELPERS-------------------------
+
+op : Player -> Player // switch players
+op(red) = blue
+op(blue) = red
+
+incrPoints : Points -> PointsOrNan
+incrPoints(P(I)) = if I == 64 then nan else P(I + 1)
+
+incrState : BoxState -> BoxStateOrNone
+incrState(P(I)) = if I == 4 then none else P(I + 1)
+
+greater : Points -> Points -> Bool
+greater(P(A), P(B)) = if A > B then 1 else 0
+
+
+//-------------------------MAPPING-------------------------
+
+//     o----H(1,1)----o----H(1,2)----o---...
+//     |              |              |
+//     |              |              |
+// V(1,1)  B(1,1)  V(1,2)  B(1,2)  V(1,3)
+//     |              |              |
+//     |              |              |
+//     o----H(2,1)----o----H(2,2)----o---...
+//     |              |              |
+//     |              |              |
+// V(2,1)  B(2,1)  V(2,2)  B(2,2)  V(2,3)
+//     |              |              |
+//     |              |              |
+
+// Mapping rules:
+// H(i, j) --> B(i-1, j), B(i, j)
+// V(i, j) --> B(i, j-1), B(i, j)
+// Also, remember to check ranges and set "none" accordingly
+
+box1 : Line -> BoxOrNone 
+box1(V(I, J)) = if I > 0 && I < 9 && J > 0 && J < 9 then B(I, J) else none
+box1(H(I, J)) = if I > 0 && I < 9 && J > 0 && J < 9 then B(I, J) else none
+
+box2 : Line -> BoxOrNone 
+box2(V(I, J)) = if I > 0 && I < 9 && J-1 > 0 && J-1 < 9 then B(I, J-1) else none
+box2(H(I, J)) = if I-1 > 0 && I-1 < 9 && J > 0 && J < 9 then B(I-1, J) else none
+
+
+//------------------------MAIN LOGIC------------------------
+
+graph existsEmpty() {
+  chosenLine = Line(*)
+  check(lines[chosenLine] == empty)
+}
+
+graph turn() {
+  if not(reachable(existsEmpty())) {
+    if greater(points[red], points[blue]) == 1 {
+      goals[red] = 100
+      goals[blue] = 0
+    } else {
+      if greater(points[blue], points[red]) == 1{
+        goals[red] = 0
+        goals[blue] = 100
+      }
+    }
+    end()
+  }
+  
+  player = me
+  chosenLine = Line(*)
+  check(lines[chosenLine] == empty)
+  $$ chosenLine
+  player = keeper
+  lines[chosenLine] = taken
+
+  // update box and give points
+  if box1[chosenLine] != none {
+    // increment box state
+    boxes[box1[chosenLine]] = incrState(boxes[box1[chosenLine]])
+    
+    // get 1 point if square has just been filled
+    if boxes[box1(chosenLine)] == P(4) {
+      points[me] = incrPoints(points[me])
+    }
+  }
+
+  // same with the second box
+  if box2(chosenLine) != none {
+    boxes[box2[chosenLine]] = incrState(boxes[box2[chosenLine]])
+    if boxes[box2[chosenLine]] == P(4) {
+      points[me] = incrPoints(points[me])
+    }
+  }
+
+  // player who first fills > 32 (more than half) boxes wins
+  if greater(points[me], P(32)) == 1 {
+    goals[me] = 100
+    goals[op[me]] = 0
+    end()
+  }
+
+  // switch players only when the current one didn't get an extra move
+  if not(boxes[box1[chosenLine]] == P(4) || boxes[box2[chosenLine]] == P(4)) {
+    me = op(me)
+  }
+}
+
+graph rules() {
+  loop {
+    turn()
+  }
+}

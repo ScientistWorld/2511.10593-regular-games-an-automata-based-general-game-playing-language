@@ -1,0 +1,423 @@
+// @author Mariana Carvalho
+
+// Domains
+domain Piece = redpiece | empty | bluepiece | border
+domain Player = red | blue
+domain Position = V(X, Y) where X in 0..6, Y in 0..6
+domain PositionOrNull = null | Position
+domain Counter = C(X) where X in 0..49
+domain CounterOrNan = nan | Counter
+domain Score = 0 | 50 | 100
+
+// Helpers
+// --------------- POSSIBLE MOVES ---------------
+// move 1 cells orthogonally --------
+left : PositionOrNull -> PositionOrNull
+left(null) = null
+left(V(0, _)) = null
+left(V(X, Y)) = V(X - 1, Y)
+
+right : PositionOrNull -> PositionOrNull
+right(null) = null
+right(V(6, _)) = null
+right(V(X, Y)) = V(X + 1, Y)
+
+up : PositionOrNull -> PositionOrNull
+up(null) = null
+up(V(_, 0)) = null
+up(V(X, Y)) = V(X, Y - 1)
+
+down : PositionOrNull -> PositionOrNull
+down(null) = null
+down(V(_, 6)) = null
+down(V(X, Y)) = V(X, Y + 1)
+//--------
+
+// move 1 cells diagonally --------
+diagleftup : PositionOrNull -> PositionOrNull
+diagleftup(null) = null
+diagleftup(V(X, Y)) = if X == 0 || Y == 0 then null else V(X - 1, Y - 1)
+
+diagleftdown : PositionOrNull -> PositionOrNull
+diagleftdown(null) = null
+diagleftdown(V(X, Y)) = if X == 0 || Y == 6 then null else V(X - 1, Y + 1)
+
+diagrightup : PositionOrNull -> PositionOrNull
+diagrightup(null) = null
+diagrightup(V(X, Y)) = if X == 6 || Y == 0 then null else V(X + 1, Y - 1)
+
+diagrightdown : PositionOrNull -> PositionOrNull
+diagrightdown(null) = null
+diagrightdown(V(X, Y)) = if X == 6 || Y == 6 then null else V(X + 1, Y + 1)
+//--------
+
+// jump 2 cells orthogonally --------
+jump_left : PositionOrNull -> PositionOrNull
+jump_left(null) = null
+jump_left(V(0, _)) = null
+jump_left(V(1, _)) = null
+jump_left(V(X, Y)) = V(X - 1, Y)
+
+jump_right : PositionOrNull -> PositionOrNull
+jump_right(null) = null
+jump_right(V(6, _)) = null
+jump_right(V(5, _)) = null
+jump_right(V(X, Y)) = V(X + 1, Y)
+
+jump_up : PositionOrNull -> PositionOrNull
+jump_up(null) = null
+jump_up(V(_, 0)) = null
+jump_up(V(_, 1)) = null
+jump_up(V(X, Y)) = V(X, Y - 1)
+
+jump_down : PositionOrNull -> PositionOrNull
+jump_down(null) = null
+jump_down(V(_, 6)) = null
+jump_down(V(_, 5)) = null
+jump_down(V(X, Y)) = V(X, Y + 1)
+//--------
+
+// jump 2 cells diagonally --------
+jump_diagleftup : PositionOrNull -> PositionOrNull
+jump_diagleftup(null) = null
+jump_diagleftup(V(X, Y)) = if X == 0 || Y == 0 || X == 1 || Y == 1 then null else V(X - 2, Y - 2)
+
+jump_diagleftdown : PositionOrNull -> PositionOrNull
+jump_diagleftdown(null) = null
+jump_diagleftdown(V(X, Y)) = if X == 0 || Y == 6 || X == 1 || Y == 5 then null else V(X - 2, Y + 2)
+
+jump_diagrightup : PositionOrNull -> PositionOrNull
+jump_diagrightup(null) = null
+jump_diagrightup(V(X, Y)) = if X == 6 || Y == 0 || X == 5 || Y == 1 then null else V(X + 2, Y - 2)
+
+jump_diagrightdown : PositionOrNull -> PositionOrNull
+jump_diagrightdown(null) = null
+jump_diagrightdown(V(X, Y)) = if X == 6 || Y == 6 || X == 5 || Y == 5 then null else V(X + 2, Y + 2)
+//--------
+
+// jump 2 cells between diagonals and orthogonal direction --------
+jump_diagleftup1 : PositionOrNull -> PositionOrNull
+jump_diagleftup1(null) = null
+jump_diagleftup1(V(X, Y)) = if X == 0 || Y == 0 || X == 1 then null else V(X - 2, Y - 1)
+
+jump_diagleftup2 : PositionOrNull -> PositionOrNull
+jump_diagleftup2(null) = null
+jump_diagleftup2(V(X, Y)) = if X == 0 || Y == 0 || Y == 1 then null else V(X - 1, Y - 2)
+
+jump_diagrightup1 : PositionOrNull -> PositionOrNull
+jump_diagrightup1(null) = null
+jump_diagrightup1(V(X, Y)) = if X == 6 || Y == 0 || X == 5 then null else V(X + 2, Y - 1)
+
+jump_diagrightup2 : PositionOrNull -> PositionOrNull
+jump_diagrightup2(null) = null
+jump_diagrightup2(V(X, Y)) = if X == 6 || Y == 0 || Y == 1 then null else V(X + 1, Y - 2)
+
+jump_diagleftdown1 : PositionOrNull -> PositionOrNull
+jump_diagleftdown1(null) = null
+jump_diagleftdown1(V(X, Y)) = if X == 0 || Y == 6 || X == 1 then null else V(X - 2, Y + 1)
+
+jump_diagleftdown2 : PositionOrNull -> PositionOrNull
+jump_diagleftdown2(null) = null
+jump_diagleftdown2(V(X, Y)) = if X == 0 || Y == 6 || Y == 5 then null else V(X - 1, Y + 2)
+
+jump_diagrightdown1 : PositionOrNull -> PositionOrNull
+jump_diagrightdown1(null) = null
+jump_diagrightdown1(V(X, Y)) = if X == 6 || Y == 6 || X == 5 then null else V(X + 2, Y + 1)
+
+jump_diagrightdown2 : PositionOrNull -> PositionOrNull
+jump_diagrightdown2(null) = null
+jump_diagrightdown2(V(X, Y)) = if X == 6 || Y == 6 || Y == 5 then null else V(X + 1, Y + 2)
+
+nextPos : PositionOrNull -> PositionOrNull
+nextPos(null) = null
+nextPos(V(X, 6)) = if X == 6 then null else V(X+1, 0)
+nextPos(V(X, Y)) = V(X, Y+1)
+//--------
+
+
+// --------------- PLAYER HELPER FUNCTIONS ---------------
+playerpiece : Player -> Piece
+playerpiece(red) = redpiece
+playerpiece(_) = bluepiece
+
+opponent : Player -> Player
+opponent(red) = blue
+opponent(_) = red
+
+increase_count : Counter -> CounterOrNan
+increase_count(C(X)) = if X < 49 then C(X+1) else nan
+
+compare : Counter -> Counter -> Score
+compare(C(A), C(B)) = if A < B then 0 else if A == B then 50 else 100
+
+// --------------- BOARD ---------------
+// (following ludii rules) board: all cells empty except for the 4 corners: 2 red pieces + 2 blue pieces
+board : PositionOrNull -> Piece = {
+  V(X, Y) = if X == 0 && Y == 0 // top-left corner: Player 2 (in wikipedia player 1 starts at the top-left, but following ludii)
+    then bluepiece
+    else if X == 6 && Y == 6 // bottom-right corner: Player 2
+      then bluepiece
+    else if X == 0 && Y == 6 // bottom-left corner: Player 1
+      then redpiece
+    else if X == 6 && Y == 0 // top-right corner: Player 1
+      then redpiece
+    else if X == null || Y == null
+      then null
+    else empty
+  where X in 0..6, Y in 0..6;
+  null = border
+}
+
+me : Player = red
+position : PositionOrNull
+t : PositionOrNull
+countRed : Counter = C(0)
+countBlue : Counter = C(0)
+
+
+graph existsMove(me: Player) {
+  position = Position(*)
+  check(board[position] == playerpiece(me))
+  // possible directions - one cell away
+  branch {
+    t = left(position)
+    $ LEFT
+  } or {
+    t = right(position)
+    $ RIGHT
+  } or {
+    t = up(position)
+    $ UP
+  } or {
+    t = down(position)
+    $ DOWN
+  } or {
+    t = diagleftup(position)
+    $ DIAGLEFTUP
+  } or {
+    t = diagrightup(position)
+    $ DIAGRIGHTUP
+  } or {
+    t = diagleftdown(position)
+    $ DIAGLEFTDOWN
+  } or {
+    t = diagrightdown(position)
+    $ DIAGRIGHTDOWN
+  } or {
+  // possible directions - two cells away
+    t = jump_left(position)
+    $ JUMPLEFT
+  } or {
+    t = jump_right(position)
+    $ JUMPRIGHT
+  } or {
+    t = jump_up(position)
+    $ JUMPUP
+  } or {
+    t = jump_down(position)
+    $ JUMPDOWN
+  } or {
+    t = jump_diagleftup(position)
+    $ JUMPDIAGLEFTUP
+  } or {
+    t = jump_diagrightup(position)
+    $ JUMPDIAGRIGHTUP
+  } or {
+    t = jump_diagleftdown(position)
+    $ JUMPDIAGLEFTDOWN
+  } or {
+    t = jump_diagrightdown(position)
+    $ JUMPDIAGRIGHTDOWN
+  } or {
+    t = jump_diagleftup1(position)
+    $ JUMPDIAGLEFTUP1
+  } or {
+    t = jump_diagleftup2(position)
+    $ JUMPDIAGLEFTUP2
+  } or {
+    t = jump_diagleftdown1(position)
+    $ JUMPDIAGLEFTDOWN1
+  } or {
+    t = jump_diagleftdown2(position)
+    $ JUMPDIAGLEFTDOWN2
+  } or {
+    t = jump_diagrightup1(position)
+    $ JUMPDIAGRIGHTUP1
+  } or {
+    t = jump_diagrightup2(position)
+    $ JUMPDIAGRIGHTUP2
+  } or {
+    t = jump_diagrightdown1(position)
+    $ JUMPDIAGRIGHTDOWN1
+  } or {
+    t = jump_diagrightdown2(position)
+    $ JUMPDIAGRIGHTDOWN2
+  }
+  check(board[t] == empty)
+}
+
+
+graph move(me: Player) {
+  position = Position(*)
+  $$ position
+  check(board[position] == playerpiece(me))
+  // possible directions - one cell away
+  branch {
+    branch {
+      t = left(position)
+      $ LEFT
+    } or {
+      t = right(position)
+      $ RIGHT
+    } or {
+      t = up(position)
+      $ UP
+    } or {
+      t = down(position)
+      $ DOWN
+    } or {
+      t = diagleftup(position)
+      $ DIAGLEFTUP
+    } or {
+      t = diagrightup(position)
+      $ DIAGRIGHTUP
+    } or {
+      t = diagleftdown(position)
+      $ DIAGLEFTDOWN
+    } or {
+      t = diagrightdown(position)
+      $ DIAGRIGHTDOWN
+    }
+    check(board[t] == empty)
+  } 
+  // possible directions - two cells away
+  or {
+    branch {
+      t = jump_left(position)
+      $ JUMPLEFT
+    } or {
+      t = jump_right(position)
+      $ JUMPRIGHT
+    } or {
+      t = jump_up(position)
+      $ JUMPUP
+    } or {
+      t = jump_down(position)
+      $ JUMPDOWN
+    } or {
+      t = jump_diagleftup(position)
+      $ JUMPDIAGLEFTUP
+    } or {
+      t = jump_diagrightup(position)
+      $ JUMPDIAGRIGHTUP
+    } or {
+      t = jump_diagleftdown(position)
+      $ JUMPDIAGLEFTDOWN
+    } or {
+      t = jump_diagrightdown(position)
+      $ JUMPDIAGRIGHTDOWN
+    } or {
+      t = jump_diagleftup1(position)
+      $ JUMPDIAGLEFTUP1
+    } or {
+      t = jump_diagleftup2(position)
+      $ JUMPDIAGLEFTUP2
+    } or {
+      t = jump_diagleftdown1(position)
+      $ JUMPDIAGLEFTDOWN1
+    } or {
+      t = jump_diagleftdown2(position)
+      $ JUMPDIAGLEFTDOWN2
+    } or {
+      t = jump_diagrightup1(position)
+      $ JUMPDIAGRIGHTUP1
+    } or {
+      t = jump_diagrightup2(position)
+      $ JUMPDIAGRIGHTUP2
+    } or {
+      t = jump_diagrightdown1(position)
+      $ JUMPDIAGRIGHTDOWN1
+    } or {
+      t = jump_diagrightdown2(position)
+      $ JUMPDIAGRIGHTDOWN2
+    }
+    check(board[t] == empty)
+    board[position] = empty
+  }
+  player = keeper
+
+  // capture opponent's pieces that are adjacent to the new position
+  if board[left(t)] == playerpiece(opponent(me)) {
+    board[left(t)] = playerpiece(me)
+  } 
+  if board[right(t)] == playerpiece(opponent(me)) {
+    board[right(t)] = playerpiece(me)
+  }
+  if board[up(t)] == playerpiece(opponent(me)) {
+    board[up(t)] = playerpiece(me)
+  } 
+  if board[down(t)] == playerpiece(opponent(me)) {
+    board[down(t)] = playerpiece(me)
+  }
+  if board[diagleftup(t)] == playerpiece(opponent(me)) {
+    board[diagleftup(t)] = playerpiece(me)
+  } 
+  if board[diagleftdown(t)] == playerpiece(opponent(me)) {
+    board[diagleftdown(t)] = playerpiece(me)
+  }
+  if board[diagrightup(t)] == playerpiece(opponent(me)) {
+    board[diagrightup(t)] = playerpiece(me)
+  }
+  if board[diagrightdown(t)] == playerpiece(opponent(me)) {
+    board[diagrightdown(t)] = playerpiece(me)
+  }
+  board[t] = playerpiece(me)
+}
+
+graph existsEmptyCell() {
+  position = PositionOrNull(*)
+  check(board[position] == empty)
+}
+
+graph turn() {
+  if reachable(existsMove(me)) {
+    player = me
+    move(me)
+    player = keeper
+  } else {
+    if not(reachable(existsEmptyCell())) {
+      position = V(0,0)
+      loop {
+        if board[position] == redpiece {
+          countRed = increase_count[countRed]
+        } else {
+          countBlue = increase_count[countBlue]
+        }
+        $_C
+        position = nextPos[position]
+        if position == null {
+          goals[red] = compare[countRed][countBlue]
+          if goals[red] == 50 {
+            goals[blue] = 50
+          } else {
+            if goals[red] == 100 {
+              goals[blue] = 0
+            }
+            else {
+              goals[blue] = 100
+            }
+          }
+          end()
+        }
+      }
+    }
+  }
+  $_T
+  me = opponent[me]
+}
+
+graph rules() {
+  loop {
+    turn()
+  }
+}

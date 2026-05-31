@@ -1,0 +1,613 @@
+use crate::ast::{
+    Constant, Edge, Expression, Game, Label, Node, Pragma, PragmaAssignment, PragmaTag, Type,
+    Typedef, Value, ValueEntry, Variable,
+};
+use nom::branch::alt;
+use nom::bytes::complete::tag;
+use nom::character::complete::char;
+use nom::combinator::{all_consuming, cut, into, opt, success};
+use nom::error::context;
+use nom::multi::{fold_many0, many0, many1, separated_list0};
+use nom::sequence::{preceded, separated_pair, terminated};
+use nom::Parser;
+use std::cell::RefCell;
+use std::sync::Arc;
+use utils::parser::{
+    comments_and_whitespaces0, expect, expect_preceded_tag, identifier_, in_brackets, in_parens,
+    integer, into_arc, parse_error_line, preceded_tag, preceded_whitespace, with_semicolon,
+    ww_char, Input, ParserState, Result,
+};
+use utils::position::{Position, Positioned, Span};
+use utils::{Identifier, ParserError};
+
+fn identifier(input: Input) -> Result<Identifier> {
+    identifier_
+        .map(|identifier| {
+            let span: Span = Span::from(&identifier);
+            Identifier::new(span, (*identifier.fragment()).to_string())
+        })
+        .parse(input)
+}
+
+fn preceded_opt_id<'a>(context: &'a str) -> impl FnMut(Input<'a>) -> Result<'a, Identifier> {
+    move |input| {
+        let start = Position::from(&input);
+        expect(
+            preceded_whitespace(identifier),
+            format!("{context}: identifier"),
+        )
+        .parse(input)
+        .map(|(input, res)| {
+            if let Some(res) = res {
+                (input, res)
+            } else {
+                let span = start.with_end((&input).into());
+                (input, Identifier::none(span))
+            }
+        })
+    }
+}
+
+fn constant(input: Input) -> Result<Option<Constant<Identifier>>> {
+    with_semicolon(
+        tag("const"),
+        expect(
+            (
+                preceded_opt_id("const"),
+                terminated(preceded_type_, expect_preceded_tag("=")),
+                value,
+            ),
+            "`const <identifier> : <type> = <value>;`",
+        ),
+    )
+    .parse(input)
+}
+
+fn preceded_type_(input: Input) -> Result<Arc<Type<Identifier>>> {
+    preceded(expect_preceded_tag(":"), type_).parse(input)
+}
+
+fn edge(input: Input) -> Result<Option<Edge<Identifier>>> {
+    with_semicolon(
+        terminated(preceded_whitespace(node), expect_preceded_tag(",")),
+        expect(
+            (
+                terminated(preceded_whitespace(expect_node), expect_preceded_tag(":")),
+                label,
+            ),
+            "`<node>, <node> : <label>;",
+        ),
+    )
+    .parse(input)
+}
+
+fn label(input: Input) -> Result<Label<Identifier>> {
+    alt((
+        tag_variable_label,
+        tag_label,
+        compare_or_assign_label,
+        reachability_label,
+        expr_label,
+        success::<_, _, _>(Label::Skip {
+            span: Span::at(&input),
+        }),
+    ))
+    .parse(input)
+}
+
+fn tag_label(input: Input) -> Result<Label<Identifier>> {
+    preceded(
+        preceded_whitespace(char('$')),
+        cut(preceded_opt_id("label")),
+    )
+    .map(|symbol| Label::Tag { symbol })
+    .parse(input)
+}
+
+fn tag_variable_label(input: Input) -> Result<Label<Identifier>> {
+    preceded(
+        preceded_whitespace(tag("$$")),
+        cut(preceded_opt_id("label")),
+    )
+    .map(|identifier| Label::TagVariable { identifier })
+    .parse(input)
+}
+
+fn reachability_label(input: Input) -> Result<Label<Identifier>> {
+    into((
+        preceded_whitespace(alt((tag("!"), tag("?")))),
+        cut(terminated(
+            preceded_whitespace(expect_node),
+            expect_preceded_tag("->"),
+        )),
+        preceded_whitespace(expect_node),
+    ))
+    .parse(input)
+}
+
+fn compare_or_assign_label(input: Input) -> Result<Label<Identifier>> {
+    let error_pos = Span::at(&input);
+    let (input, (lhs, sep)) = (
+        opt(expression),
+        preceded_whitespace(alt((tag("=="), tag("!="), tag("=")))),
+    )
+        .parse(input)?;
+    let separator = *sep.fragment();
+    let lhs = lhs.unwrap_or_else(|| {
+        let err = ParserError::new(error_pos, "expected: expression".to_string());
+        input.extra.report_error(err);
+        Arc::new(Identifier::none(error_pos).into())
+    });
+    let (input, rhs_type) = opt(terminated(type_, in_parens(char('*')))).parse(input)?;
+    if let Some(rhs) = rhs_type {
+        // For AssignmentAny we need "="
+        if separator != "=" {
+            let err = ParserError::new(Span::at(&input), "expected: expression".to_string());
+            input.extra.report_error(err);
+        }
+        Ok((input, (lhs, rhs).into()))
+    } else {
+        let (input, rhs) = expect_expression(input)?;
+        Ok((input, (lhs, separator, rhs).into()))
+    }
+}
+
+// Additional parser for cases like `foo, bar: abc^`
+// It always returns an error or fails, so it's used only in LSP
+fn expr_label(input: Input) -> Result<Label<Identifier>> {
+    let (input, lhs) = preceded_whitespace(expression).parse(input)?;
+    let error_pos = Span::from(&input).focus_start();
+    let err = ParserError::new(error_pos, "expected: `=`, `==` or `!=`".to_string());
+    input.extra.report_error(err);
+    let (input, rhs) = expect_expression(input)?;
+    Ok((input, (lhs, rhs).into()))
+}
+
+fn node(input: Input) -> Result<Node<Identifier>> {
+    identifier.map(Node::new).parse(input)
+}
+
+fn expect_node(input: Input) -> Result<Node<Identifier>> {
+    preceded_opt_id("node").map(Node::new).parse(input)
+}
+
+fn expect_expression(input: Input) -> Result<Arc<Expression<Identifier>>> {
+    let start = Position::from(&input);
+    expect(expression, "expression")
+        .parse(input)
+        .map(|(input, res)| {
+            if let Some(res) = res {
+                (input, res)
+            } else {
+                let span = start.with_end((&input).into());
+                (input, Arc::new(Identifier::none(span).into()))
+            }
+        })
+}
+
+fn expression(input: Input) -> Result<Arc<Expression<Identifier>>> {
+    let (input, identifier) = preceded_whitespace(identifier).parse(input)?;
+    let (input, maybe_cast) = opt(preceded_whitespace(preceded(
+        tag("("),
+        (cut(expect_expression), preceded_tag(")")),
+    )))
+    .parse(input)?;
+    let (input, expression) = fold_many0(
+        preceded(tag("["), (cut(expect_expression), preceded_tag("]"))),
+        || match maybe_cast.clone() {
+            Some((rhs, end)) => {
+                let span = identifier.span().with_end((&end).into());
+                let lhs = Arc::new(identifier.clone().into());
+                Arc::new(Expression::Cast { span, lhs, rhs })
+            }
+            None => Arc::new(identifier.clone().into()),
+        },
+        |lhs, (rhs, end)| {
+            let span = lhs.span().with_end((&end).into());
+            Arc::new(Expression::Access { span, lhs, rhs })
+        },
+    )
+    .parse(input)?;
+
+    Ok((input, expression))
+}
+
+fn type_(input: Input) -> Result<Arc<Type<Identifier>>> {
+    let (input, lhs): (Input, Arc<Type<Identifier>>) = alt((
+        into_arc((
+            preceded_tag("{"),
+            preceded_whitespace(cut(separated_list0(
+                preceded_whitespace(char(',')),
+                preceded_opt_id("type_member"),
+            ))),
+            preceded_tag("}"),
+        )),
+        into_arc(preceded_opt_id("type")),
+    ))
+    .parse(input)?;
+
+    match opt(preceded(preceded_tag("->"), type_)).parse(input)? {
+        (input, Some(rhs)) => Ok((input, Arc::new(Type::Arrow { lhs, rhs }))),
+        (input, None) => Ok((input, lhs)),
+    }
+}
+
+fn typedef(input: Input) -> Result<Option<Typedef<Identifier>>> {
+    with_semicolon(
+        tag("type"),
+        expect(
+            separated_pair(preceded_opt_id("typedef"), expect_preceded_tag("="), type_),
+            "`type <identifier> = <type>;`",
+        ),
+    )
+    .parse(input)
+}
+
+fn value(input: Input) -> Result<Arc<Value<Identifier>>> {
+    alt((value_entries, into_arc(preceded_opt_id("value")))).parse(input)
+}
+
+fn value_entries(input: Input) -> Result<Arc<Value<Identifier>>> {
+    alt((
+        into_arc((preceded_tag("{"), preceded_tag("}"))),
+        into_arc((
+            preceded_tag("{"),
+            cut(separated_list0(
+                preceded_whitespace(char(',')),
+                expect(preceded_whitespace(value_entry), "value entry"),
+            )),
+            preceded_tag("}"),
+        )),
+    ))
+    .parse(input)
+}
+
+fn value_entry(input: Input) -> Result<ValueEntry<Identifier>> {
+    let (input, (identifier, value)) = separated_pair(
+        opt(identifier),
+        preceded_whitespace(char(':')),
+        expect(value, "value"),
+    )
+    .parse(input)?;
+    let (span, value) = value.map_or_else(
+        || {
+            let span = identifier
+                .as_ref()
+                .map_or_else(Span::none, Positioned::span);
+            (span, Arc::new(Value::new(Identifier::none(Span::none()))))
+        },
+        |value| {
+            let span = identifier.as_ref().map_or_else(
+                || value.as_ref().span(),
+                |id| id.span().with_end(value.as_ref().span().end),
+            );
+            (span, value)
+        },
+    );
+    Ok((input, ValueEntry::new(span, identifier, value)))
+}
+
+fn variable(input: Input) -> Result<Option<Variable<Identifier>>> {
+    with_semicolon(
+        tag("var"),
+        expect(
+            (
+                preceded_opt_id("variable"),
+                terminated(preceded_type_, expect_preceded_tag("=")),
+                value,
+            ),
+            "`var <identifier> : <type> = <value>;`",
+        ),
+    )
+    .parse(input)
+}
+
+fn pragma(input: Input) -> Result<Option<Pragma<Identifier>>> {
+    let pragma = alt((
+        (
+            tag("artificialTag"),
+            cut(many1(preceded_whitespace(identifier))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, tags, semicolon)| Pragma::ArtificialTag {
+                span: Span::from((&tag, &semicolon)),
+                tags,
+            }),
+        (
+            tag("disjointExhaustive"),
+            cut(preceded_whitespace(node)),
+            preceded_whitespace(tag(":")),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(
+                |(tag, node, _, nodes, semicolon)| Pragma::DisjointExhaustive {
+                    span: Span::from((&tag, &semicolon)),
+                    node,
+                    nodes,
+                },
+            ),
+        (
+            tag("disjoint"),
+            cut(preceded_whitespace(node)),
+            preceded_whitespace(tag(":")),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, node, _, nodes, semicolon)| Pragma::Disjoint {
+                span: Span::from((&tag, &semicolon)),
+                node,
+                nodes,
+            }),
+        (
+            tag("integer"),
+            preceded_whitespace(integer),
+            preceded_whitespace(tag(":")),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, offset, _, nodes, semicolon)| Pragma::Integer {
+                span: Span::from((&tag, &semicolon)),
+                offset,
+                nodes,
+            }),
+        (
+            tag("iterator"),
+            preceded_whitespace(node),
+            preceded_whitespace(node),
+            preceded_whitespace(node),
+            preceded_whitespace(tag(":")),
+            preceded_whitespace(identifier),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, node_a, node_b, node_c, _, variable, semicolon)| {
+                Pragma::Iterator {
+                    span: Span::from((&tag, &semicolon)),
+                    node_a,
+                    node_b,
+                    node_c,
+                    variable,
+                }
+            }),
+        (
+            tag("repeat"),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(":")),
+            cut(many0(preceded_whitespace(identifier))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, nodes, _, identifiers, semicolon)| Pragma::Repeat {
+                span: Span::from((&tag, &semicolon)),
+                nodes,
+                identifiers,
+            }),
+        (
+            tag("simpleApplyExhaustive"),
+            cut(preceded_whitespace(node)),
+            preceded_whitespace(node),
+            in_brackets(separated_list0(ww_char(','), pragma_tag)),
+            separated_list0(ww_char(','), pragma_assignment),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, lhs, rhs, tags, assignments, semicolon)| {
+                Pragma::SimpleApplyExhaustive {
+                    span: Span::from((&tag, &semicolon)),
+                    lhs,
+                    rhs,
+                    tags,
+                    assignments,
+                }
+            }),
+        (
+            tag("simpleApply"),
+            cut(preceded_whitespace(node)),
+            preceded_whitespace(node),
+            in_brackets(separated_list0(ww_char(','), pragma_tag)),
+            separated_list0(ww_char(','), pragma_assignment),
+            preceded_whitespace(tag(";")),
+        )
+            .map(
+                |(tag, lhs, rhs, tags, assignments, semicolon)| Pragma::SimpleApply {
+                    span: Span::from((&tag, &semicolon)),
+                    lhs,
+                    rhs,
+                    tags,
+                    assignments,
+                },
+            ),
+        (
+            tag("tagIndex"),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(":")),
+            preceded_whitespace(integer),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, nodes, _, index, semicolon)| Pragma::TagIndex {
+                span: Span::from((&tag, &semicolon)),
+                nodes,
+                index,
+            }),
+        (
+            tag("tagMaxIndex"),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(":")),
+            preceded_whitespace(integer),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, nodes, _, index, semicolon)| Pragma::TagMaxIndex {
+                span: Span::from((&tag, &semicolon)),
+                nodes,
+                index,
+            }),
+        tag("translatedFromRbg;").map(|tag| Pragma::TranslatedFromRbg {
+            span: Span::from((&tag, &tag)),
+        }),
+        (
+            tag("unique"),
+            cut(many1(preceded_whitespace(node))),
+            preceded_whitespace(tag(";")),
+        )
+            .map(|(tag, nodes, semicolon)| Pragma::Unique {
+                span: Span::from((&tag, &semicolon)),
+                nodes,
+            }),
+    ));
+
+    context("pragma", preceded(tag("@"), expect(pragma, "pragma"))).parse(input)
+}
+
+fn pragma_assignment(input: Input) -> Result<PragmaAssignment<Identifier>> {
+    into(separated_pair(
+        expression,
+        cut(ww_char('=')),
+        expect_expression,
+    ))
+    .parse(input)
+}
+
+fn pragma_tag(input: Input) -> Result<PragmaTag<Identifier>> {
+    alt((
+        separated_pair(identifier, char(':'), cut(type_))
+            .map(|(identifier, type_)| PragmaTag::Variable { identifier, type_ }),
+        identifier.map(|symbol| PragmaTag::Symbol { symbol }),
+    ))
+    .parse(input)
+}
+
+pub fn game(input: Input) -> Result<Game<Identifier>> {
+    context(
+        "game",
+        terminated(
+            fold_many0(
+                preceded(
+                    comments_and_whitespaces0,
+                    alt((
+                        constant.map(|x| (x, None, None, None, None)),
+                        typedef.map(|x| (None, x, None, None, None)),
+                        variable.map(|x| (None, None, x, None, None)),
+                        edge.map(|x| (None, None, None, x, None)),
+                        pragma.map(|x| (None, None, None, None, x)),
+                        parse_error_line.map(|()| (None, None, None, None, None)),
+                    )),
+                ),
+                Game::default,
+                |mut game, declaration| {
+                    match declaration {
+                        (Some(constant), _, _, _, _) => game.constants.push(constant),
+                        (_, Some(typedef), _, _, _) => game.typedefs.push(typedef),
+                        (_, _, Some(variable), _, _) => game.variables.push(variable),
+                        (_, _, _, Some(edge), _) => game.edges.push(Arc::from(edge)),
+                        (_, _, _, _, Some(pragma)) => game.pragmas.push(pragma),
+                        _ => (),
+                    }
+                    game
+                },
+            ),
+            comments_and_whitespaces0,
+        ),
+    )
+    .parse(input)
+}
+
+pub fn parse_with_errors(input: &str) -> (Game<Identifier>, Vec<ParserError>) {
+    let errors = RefCell::new(Vec::new());
+    let input = nom_locate::LocatedSpan::new_extra(input, ParserState(&errors));
+    let (_, game) = all_consuming(game)
+        .parse(input)
+        .expect("Parser cannot fail");
+    (game, errors.into_inner())
+}
+
+pub fn parse_expression(input: &str) -> Arc<Expression<Identifier>> {
+    let errors = RefCell::new(Vec::new());
+    let input = nom_locate::LocatedSpan::new_extra(input, ParserState(&errors));
+    let (_, expression) = all_consuming(expression)
+        .parse(input)
+        .expect("Parser cannot fail");
+    expression
+}
+
+#[cfg(test)]
+impl Game<Arc<str>> {
+    pub fn test_parse_or_fail(input: &str) -> Self {
+        use crate::parsing::parser::parse_with_errors;
+        use map_id::MapId;
+
+        let (mut game, errors) = parse_with_errors(input);
+        assert!(errors.is_empty(), "Parse errors: {errors:?}");
+        game.pragmas.sort_unstable();
+        game.map_id(&mut |id| Arc::from(id.identifier.as_str()))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::parse_with_errors;
+
+    fn check_parse(input: &str) {
+        let (game, errors) = parse_with_errors(input);
+        assert!(
+            errors.is_empty(),
+            "Failed to parse:\n{input}\nErrors:\n{}",
+            errors
+                .into_iter()
+                .map(|error| error.to_string())
+                .collect::<Vec<_>>()
+                .join("\n")
+        );
+        assert_eq!(
+            input,
+            game.to_string().trim(),
+            "Failed to parse:\n{game}\nExpected:\n{input}"
+        );
+    }
+
+    fn check_error(input: &str) {
+        let (game, errors) = parse_with_errors(input);
+        assert!(
+            !errors.is_empty(),
+            "Expected to fail to parse:\n{input}\nParsed:\n{game}"
+        );
+    }
+
+    #[test]
+    fn typedef() {
+        check_parse("type A = B;");
+        check_parse("type Foo = { foo, bar, goo };");
+        check_parse("type Foo = Bar -> Baz -> Goo;");
+    }
+
+    #[test]
+    fn variable() {
+        check_parse("var foo: Foo = { foo: 1, :bar, :goo };");
+        check_parse("var foo: Foo = {  };");
+        check_parse("var foo: Foo = { :null };");
+        check_parse("var foo: Foo = { :null, :null };");
+    }
+
+    #[test]
+    fn constant() {
+        check_parse("const foo: Foo = { foo: 1, :bar, goo: 3 };");
+    }
+
+    #[test]
+    fn edge() {
+        check_parse("foo, bar: $ F;");
+        check_parse("foo, bar: ;");
+        check_parse("foo, bar: x == y;");
+        check_parse("foo, bar: x = Position(*);");
+        check_parse("foo, bar: ? move -> move;");
+        check_parse("type Z = { z };\nbegin, loop: ;");
+    }
+
+    #[test]
+    fn incorrect_edge() {
+        check_error("foo bar, goo: ;");
+        check_error("foo, goo bar: ;");
+        check_error("foo (x: Y), goo: ;");
+        check_error("foo, goo(x:Y) (y: Y): ;");
+        check_error("foo(x: Y) bar, goo: ;");
+        check_error("(x: Y)foo, goo: ;");
+        check_error("foo,(x: Y)goo: ;");
+    }
+}

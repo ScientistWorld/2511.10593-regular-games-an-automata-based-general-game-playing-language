@@ -2,36 +2,24 @@
 
 ## What Works
 
-<!-- What has been successfully reproduced so far. -->
+- Official source snapshots are staged in `method/rg` and `method/rgcompiler`.
+- Rust crates for the interpreter are cached under `data/downloads/rg_cargo_vendor` and linked from `method/rg/interpreter_rust/vendor`, allowing offline builds on compute nodes.
+- `method/run_experiments.py` drives the paper's actual pipeline: HRG parsing, RG optimization, `rg2cpp` C++ generation, C++ compilation, and deterministic playout checks.
+- `eval/evaluate_results.py` scores only method-produced artifacts and does not import from `method/`.
 
 ## Results
 
-<!-- Reproduced numbers compared to the paper's reported numbers. -->
+No compute job results have returned yet. The next submitted CPU job will build the compiler and produce `scoring/scores.json`.
 
 ## Remaining
 
-<!-- What still needs to be done to reach higher milestones. -->
+- Run the first smoke job.
+- If the pipeline succeeds, compare reproduced structural reductions with the paper and raise the milestone to `method_runs` or `core_claim` depending on the scores.
 
 ## Issues
 
-<!-- Blockers, bugs, or difficulties encountered. -->
+None currently identified beyond the need to validate the container build and offline Rust/C++ compilation on a compute node.
 
 ## Deviations from Paper
 
-<!-- Do not edit this section unless you deviated from the paper's original setup.
-     For each deviation, document: what the paper used, what you substituted, and why.
-
-     ACCEPTABLE deviations (data/resource/scale substitutions — milestones still valid):
-       - Replaced a proprietary dataset with a public one
-       - Used a smaller model of the same architecture
-       - Scaled down training (fewer epochs, smaller batch)
-       - Used a different library for the same algorithm
-
-     UNACCEPTABLE deviations (algorithm substitutions — milestones above 'none' are void):
-       - Replaced the paper's algorithm with a fundamentally different one
-       - Wrote a generic model trained to approximate the method's outputs
-         instead of implementing the method's computational steps
-
-     The test: could someone reading your code identify which algorithm from
-     the paper you implemented? If not, you replaced the method. -->
-
+The paper's primary table reports playouts per second. This workspace records raw timing in method logs but does not score wall-clock speed, because hardware differs across jobs. The scored reproduction uses the paper's reported HRG structural optimization claim: 47% fewer nodes and 41% fewer edges after optimization, with generated playout completion as a correctness constraint.

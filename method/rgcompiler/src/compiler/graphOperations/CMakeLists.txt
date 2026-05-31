@@ -1,0 +1,23 @@
+add_library(GraphOperationsLib
+    BaseOperator.cpp
+    BaseOperator.hpp
+    GenerateGraphsOperator.cpp
+    GenerateGraphsOperator.hpp
+    GetEdgeOperator.cpp
+    GetEdgeOperator.hpp
+    GetOptimizedGraphOperator.cpp
+    GetOptimizedGraphOperator.hpp
+    GetVariableOperator.cpp
+    GetVariableOperator.hpp
+    GraphOperatorManager.hpp
+    PragmaUniqueOperator.cpp
+    PragmaUniqueOperator.hpp
+    GetTagIndexOperator.cpp
+    GetTagIndexOperator.hpp
+    PragmaDisjointOperator.cpp
+    PragmaDisjointOperator.hpp
+    PragmaRepeatOperator.cpp
+    PragmaRepeatOperator.cpp
+    PragmaSimpleApplyOperator.cpp
+    PragmaSimpleApplyOperator.hpp
+)

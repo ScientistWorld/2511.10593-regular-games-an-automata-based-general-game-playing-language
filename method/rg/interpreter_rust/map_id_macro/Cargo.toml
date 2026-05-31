@@ -1,0 +1,16 @@
+[package]
+name = "map_id_macro"
+version = "0.1.0"
+authors = ["Radosław Miernik <radekmie@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+quote = "1.0.23"
+syn = "2.0.68"
+
+[lib]
+bench = false
+proc-macro = true
+
+[lints]
+workspace = true

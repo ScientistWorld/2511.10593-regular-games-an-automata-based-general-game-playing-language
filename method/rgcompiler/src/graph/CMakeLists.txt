@@ -1,0 +1,21 @@
+add_library(GraphLib
+    Action.cpp
+    Action.hpp
+    ActionFactory.cpp
+    ActionFactory.hpp
+    Edge.cpp
+    Edge.hpp
+    Expression.cpp
+    Expression.hpp
+    ExpressionFactory.cpp
+    ExpressionFactory.hpp
+    Graph.cpp
+    Graph.hpp
+    Node.cpp
+    Node.hpp
+)
+
+target_link_libraries(GraphLib
+    PRIVATE
+    ComparisonLib
+)

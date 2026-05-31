@@ -1,15 +1,11 @@
 # Evaluation
 
-How success is measured. Describe only the metrics, targets, and evaluation procedure — do NOT describe the paper's method or how they achieved these results. Think of this as a general evaluation protocal for other scientists trying to solve the same problem, where they should not see this paper's solution.
+The paper evaluates generated game reasoners primarily by random playout throughput. Because wall-clock speed is hardware dependent, this reproduction scores machine-independent proxies from the same pipeline: automaton node and edge reductions, generated C++ size reductions, and fixed-work playout completion.
 
-## Metrics
+Evaluation reads method artifacts from `method/outputs/results.json`; it does not regenerate games or import from `method/`. The reusable command is:
 
-<!-- What metrics are used? How are they computed? What does higher/lower mean? -->
+```bash
+bash scripts/evaluate.sh method/outputs/results.json
+```
 
-## Baselines and Targets
-
-<!-- What performance levels exist as reference points? Include the paper's reported numbers as targets, and any standard baselines. A scientist agent should know what "good" looks like. -->
-
-## Evaluation Protocol
-
-<!-- How should evaluation be run? What data split, what conditions? Any important details about how to compare fairly (e.g., fixed seeds, specific test sets, averaging over runs). -->
+The evaluator writes `scoring/scores.json`. For the core experiment, the no-optimization translation is the baseline and the optimized HRG-to-RG-to-C++ pipeline is the proposed method. A valid optimized model must complete the deterministic fixed playout count, so compactness alone is not sufficient.

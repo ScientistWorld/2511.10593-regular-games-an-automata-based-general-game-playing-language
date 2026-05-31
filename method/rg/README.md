@@ -1,0 +1,113 @@
+[![docs](https://github.com/radekmie/rg/actions/workflows/docs.yml/badge.svg)](https://github.com/radekmie/rg/actions/workflows/docs.yml)
+
+# Regular Games repo
+
+## Quick start (CLI)
+
+```sh
+# In interpreter_rust
+cargo run --release run ../games/rg/ticTacToe.rg 1000
+```
+
+```sh
+# cargo run help
+Regular Games CLI
+
+Usage: interpreter <COMMAND>
+
+Commands:
+  ast     Print RG AST
+  format  Print formatted source
+  moves   Print available moves
+  perf    Benchmark game tree
+  run     Benchmark random playouts
+  schema  Print JSON schema of RG AST
+  source  Print RG source
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
+## Quick start (GUI)
+
+```sh
+# In interpreter_rust
+wasm-pack build --out-dir ../../interpreter_node/src/wasm/cli --out-name index --target web cli
+wasm-pack build --out-dir ../../interpreter_node/src/wasm/lsp --out-name index --target web lsp_browser
+
+# In interpreter_node
+npm clean-install
+npm run start
+```
+
+## Dependencies
+
+- [Node.js](https://nodejs.org/en/) 24.6.0
+- [Rust](https://www.rust-lang.org) 1.89.0
+- [`wasm-pack`](https://rustwasm.github.io/wasm-pack/) 0.13.1
+
+### Manual installation
+
+```sh
+# System-wide tools on Debian-based systems
+apt update
+apt install curl gcc libssl-dev pkg-config
+
+# Node.js via nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install 24.6.0
+
+# Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.bashrc
+rustup install 1.89.0
+
+# wasm-pack
+npm install --global wasm-pack@0.13.1
+```
+
+## Development
+
+### `interpreter_rust`
+
+```sh
+# Format the project.
+cargo fmt
+
+# Lint the project.
+cargo clippy
+
+# Run tests.
+cargo test
+
+# Build the `interpreter` WASM module.
+wasm-pack build --out-dir ../../interpreter_node/src/wasm/cli --out-name index --target web cli
+
+# Build the `interpreter` LSP module.
+wasm-pack build --out-dir ../../interpreter_node/src/wasm/lsp --out-name index --target web lsp_browser
+```
+
+### `interpreter_node`
+
+```sh
+# Install dependencies.
+npm ci
+
+# Build project once.
+npm run build
+
+# Build project on file change.
+npm run watch
+
+# Start server on localhost:1234 and refresh on file change.
+npm start
+
+# Lint the project.
+npm run lint
+
+# Check the project.
+npm run check
+```

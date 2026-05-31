@@ -1,0 +1,432 @@
+use crate::ast::{
+    Constant, Edge, Error, ErrorReason, Expression, Game, Label, Node, Pragma, PragmaAssignment,
+    PragmaTag, Stats, Type, Typedef, Value, ValueEntry, Variable,
+};
+use std::fmt::{Display, Formatter, Result};
+use utils::display::write_with_separator;
+
+impl<Id: Display> Display for Constant<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self {
+            identifier,
+            type_,
+            value,
+            ..
+        } = self;
+        write!(f, "const {identifier}: {type_} = {value};")
+    }
+}
+
+impl<Id: Display> Display for Edge<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self {
+            label, lhs, rhs, ..
+        } = self;
+        write!(f, "{lhs}, {rhs}: {label};")
+    }
+}
+
+impl<Id: Display> Display for Label<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Assignment { lhs, rhs } => write!(f, "{lhs} = {rhs}"),
+            Self::AssignmentAny { lhs, rhs } => write!(f, "{lhs} = {rhs}(*)"),
+            Self::Comparison {
+                lhs,
+                rhs,
+                negated: false,
+            } => write!(f, "{lhs} == {rhs}"),
+            Self::Comparison {
+                lhs,
+                rhs,
+                negated: true,
+            } => write!(f, "{lhs} != {rhs}"),
+            Self::Reachability {
+                lhs,
+                rhs,
+                negated: false,
+                ..
+            } => write!(f, "? {lhs} -> {rhs}"),
+            Self::Reachability {
+                lhs,
+                rhs,
+                negated: true,
+                ..
+            } => write!(f, "! {lhs} -> {rhs}"),
+            Self::Skip { .. } => write!(f, ""),
+            Self::Tag { symbol } => write!(f, "$ {symbol}"),
+            Self::TagVariable { identifier } => write!(f, "$$ {identifier}"),
+        }
+    }
+}
+
+impl<Id: Display> Display for Node<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "{}", self.identifier)?;
+        Ok(())
+    }
+}
+
+impl<Id: Display> Display for Error<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self { game, reason } = self;
+
+        write!(f, "{reason}")?;
+
+        let Some(game) = game else {
+            return Ok(());
+        };
+
+        writeln!(f)?;
+
+        if !game.typedefs.is_empty() {
+            writeln!(f, "  Type definitions:")?;
+            for typedef in &game.typedefs {
+                let Typedef {
+                    identifier, type_, ..
+                } = typedef;
+                writeln!(f, "    {identifier}: {type_}")?;
+            }
+        }
+
+        if !game.constants.is_empty() {
+            writeln!(f, "  Constant definitions:")?;
+            for constant in &game.constants {
+                let Constant {
+                    identifier, type_, ..
+                } = constant;
+                writeln!(f, "    {identifier}: {type_}")?;
+            }
+        }
+
+        if !game.variables.is_empty() {
+            writeln!(f, "  Variable definitions:")?;
+            for variable in &game.variables {
+                let Variable {
+                    identifier, type_, ..
+                } = variable;
+                writeln!(f, "    {identifier}: {type_}")?;
+            }
+        }
+
+        // TODO: Handle operation scopes.
+
+        Ok(())
+    }
+}
+
+impl<Id: Display> Display for ErrorReason<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::ArrowTypeExpected { got } => write!(f, "Expected Arrow type, got {got}."),
+            Self::AssignmentTypeMismatch { lhs, rhs } => {
+                write!(f, "{rhs} is not assignable to {lhs}")
+            }
+            Self::ComparisonTypeMismatch { lhs, rhs } => {
+                write!(f, "{lhs} is not comparable to {rhs}")
+            }
+            Self::ConstantAssignment { identifier, label } => {
+                write!(f, "{identifier} is constant in {label}")
+            }
+            Self::DuplicatedConstant { identifier } => {
+                write!(f, "Multiple constants named {identifier}.")
+            }
+            Self::DuplicatedMapKey { key, value } => match key {
+                Some(key) => write!(f, "Duplicated key {key} in map {value}."),
+                None => write!(f, "Duplicated default value in map {value}."),
+            },
+            Self::DuplicatedTypedef { identifier } => {
+                write!(f, "Multiple typedefs named {identifier}.")
+            }
+            Self::DuplicatedVariable { identifier } => {
+                write!(f, "Multiple variables named {identifier}.")
+            }
+            Self::EmptySetType { identifier } => {
+                write!(f, "Type {identifier} should not be empty.")
+            }
+            Self::MissingDefaultValue { value } => write!(f, "Missing default value in {value}."),
+            Self::MultipleEdges { lhs, rhs } => write!(
+                f,
+                "Multiple edges between two nodes are not allowed ({lhs} -> {rhs})."
+            ),
+            Self::PlayerAnyAssignment { label } => write!(
+                f,
+                "AssignAny is not allowed for the player variable in {label}."
+            ),
+            Self::ReachabilityLoop { lhs, rhs } => write!(
+                f,
+                "Calculating reachability of {rhs} from {lhs} can cause a loop."
+            ),
+            Self::SetTypeExpected { got } => write!(f, "Expected Set type, got {got}."),
+            Self::TagLoop { edge } => write!(f, "Edge {edge} causes a tag generating loop."),
+            Self::TypeDeclarationMismatch {
+                expected,
+                identifier,
+                resolved,
+            } => {
+                writeln!(f, "Type {identifier} is incorrect.")?;
+                writeln!(f, "  Expected: {expected}")?;
+                write!(f, "  Resolved: {resolved}")
+            }
+            Self::Unreachable { lhs, rhs } => write!(f, "{rhs} is not reachable from {lhs}."),
+            Self::UnresolvedConstant { identifier } => {
+                write!(f, "Unresolved constant {identifier}.")
+            }
+            Self::UnresolvedType { identifier } => write!(f, "Unresolved type {identifier}."),
+            Self::UnresolvedVariable { identifier } => {
+                write!(f, "Unresolved variable {identifier}.")
+            }
+            Self::VariableDeclarationMismatch {
+                expected,
+                identifier,
+                resolved,
+            } => {
+                writeln!(f, "Variable {identifier} has incorrect type.")?;
+                writeln!(f, "  Expected: {expected}")?;
+                write!(f, "  Resolved: {resolved}")
+            }
+        }
+    }
+}
+
+impl<Id: Display> Display for Expression<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Access { lhs, rhs, .. } => write!(f, "{lhs}[{rhs}]"),
+            Self::Cast { lhs, rhs, .. } => write!(f, "{lhs}({rhs})"),
+            Self::Reference { identifier } => write!(f, "{identifier}"),
+        }
+    }
+}
+
+impl<Id: Display> Display for Game<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        for pragma in &self.pragmas {
+            writeln!(f, "{pragma}")?;
+        }
+        for typedef in &self.typedefs {
+            writeln!(f, "{typedef}")?;
+        }
+        for constant in &self.constants {
+            writeln!(f, "{constant}")?;
+        }
+        for variable in &self.variables {
+            writeln!(f, "{variable}")?;
+        }
+        for edge in &self.edges {
+            writeln!(f, "{edge}")?;
+        }
+        Ok(())
+    }
+}
+
+impl<Id: Display> Display for Pragma<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::ArtificialTag { tags, .. } => {
+                write!(f, "@artificialTag ")?;
+                write_with_separator(f, tags, " ")?;
+                write!(f, ";")
+            }
+            Self::Disjoint { node, nodes, .. } => {
+                write!(f, "@disjoint {node} :")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, ";")
+            }
+            Self::DisjointExhaustive { node, nodes, .. } => {
+                write!(f, "@disjointExhaustive {node} :")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, ";")
+            }
+            Self::Integer { offset, nodes, .. } => {
+                write!(f, "@integer {offset} : ")?;
+                write_with_separator(f, nodes, " ")?;
+                write!(f, ";")
+            }
+            Self::Iterator {
+                node_a,
+                node_b,
+                node_c,
+                variable,
+                ..
+            } => {
+                write!(f, "@iterator {node_a} {node_b} {node_c} : {variable};")
+            }
+            Self::Repeat {
+                nodes, identifiers, ..
+            } => {
+                write!(f, "@repeat")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, " :")?;
+                identifiers
+                    .iter()
+                    .try_for_each(|identifier| write!(f, " {identifier}"))?;
+                write!(f, ";")
+            }
+            Self::SimpleApply {
+                lhs,
+                rhs,
+                tags,
+                assignments,
+                ..
+            } => {
+                write!(f, "@simpleApply {lhs} {rhs} [")?;
+                write_with_separator(f, tags, ", ")?;
+                write!(f, "{}", if assignments.is_empty() { "]" } else { "] " })?;
+                write_with_separator(f, assignments, ", ")?;
+                write!(f, ";")
+            }
+            Self::SimpleApplyExhaustive {
+                lhs,
+                rhs,
+                tags,
+                assignments,
+                ..
+            } => {
+                write!(f, "@simpleApplyExhaustive {lhs} {rhs} [")?;
+                write_with_separator(f, tags, ", ")?;
+                write!(f, "{}", if assignments.is_empty() { "]" } else { "] " })?;
+                write_with_separator(f, assignments, ", ")?;
+                write!(f, ";")
+            }
+            Self::TagIndex { nodes, index, .. } => {
+                write!(f, "@tagIndex")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, " : {index};")
+            }
+            Self::TagMaxIndex { nodes, index, .. } => {
+                write!(f, "@tagMaxIndex")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, " : {index};")
+            }
+            Self::TranslatedFromRbg { .. } => write!(f, "@translatedFromRbg;"),
+            Self::Unique { nodes, .. } => {
+                write!(f, "@unique")?;
+                nodes.iter().try_for_each(|node| write!(f, " {node}"))?;
+                write!(f, ";")
+            }
+        }
+    }
+}
+
+impl<Id: Display> Display for PragmaAssignment<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "{} = {}", self.lhs, self.rhs)
+    }
+}
+
+impl<Id: Display> Display for PragmaTag<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Symbol { symbol } => write!(f, "{symbol}"),
+            Self::Variable { identifier, type_ } => write!(f, "{identifier}: {type_}"),
+        }
+    }
+}
+
+impl Display for Stats {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(
+            f,
+            "edges: {}\n\
+            nodes: {}\n\
+            constants: {}\n\
+            variables: {}\n\
+            typedefs: {}\n\
+            @repeat or @unique nodes: {} ({:.2}%)\n\
+            @repeat nodes: {} ({:.2}%)\n\
+            @unique nodes: {} ({:.2}%)\n",
+            self.edges,
+            self.nodes,
+            self.constants,
+            self.variables,
+            self.typedefs,
+            self.repeat_or_unique_nodes,
+            100.0 * self.repeat_or_unique_nodes as f32 / self.nodes as f32,
+            self.repeat_nodes,
+            100.0 * self.repeat_nodes as f32 / self.nodes as f32,
+            self.unique_nodes,
+            100.0 * self.unique_nodes as f32 / self.nodes as f32,
+        )
+    }
+}
+
+impl<Id: Display> Display for Type<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Arrow { lhs, rhs } => write!(f, "{lhs} -> {rhs}"),
+            Self::Set { identifiers, .. } => {
+                write!(f, "{{ ")?;
+                for (index, entry) in identifiers.iter().enumerate() {
+                    let separator = if index == 0 { "" } else { ", " };
+                    write!(f, "{separator}{entry}")?;
+                }
+                write!(f, " }}")
+            }
+            Self::TypeReference { identifier } => write!(f, "{identifier}"),
+        }
+    }
+}
+
+impl<Id: Display> Display for Typedef<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self {
+            identifier, type_, ..
+        } = self;
+        write!(f, "type {identifier} = {type_};")
+    }
+}
+
+impl<Id: Display> Display for Value<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        match self {
+            Self::Element { identifier } => write!(f, "{identifier}"),
+            // Single-line display of short and flat values.
+            Self::Map { entries, .. }
+                if entries.len() < 100
+                    || entries
+                        .first()
+                        .is_some_and(|entry| entry.value.is_element()) =>
+            {
+                write!(f, "{{ ")?;
+                for (index, entry) in entries.iter().enumerate() {
+                    let separator = if index == 0 { "" } else { ", " };
+                    write!(f, "{separator}{entry}")?;
+                }
+                write!(f, " }}")
+            }
+            Self::Map { entries, .. } => {
+                write!(f, "{{\n    ")?;
+                for (index, entry) in entries.iter().enumerate() {
+                    let separator = if index == 0 { "" } else { ",\n    " };
+                    write!(f, "{separator}{entry}")?;
+                }
+                write!(f, "\n}}")
+            }
+        }
+    }
+}
+
+impl<Id: Display> Display for ValueEntry<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self {
+            identifier, value, ..
+        } = self;
+        match identifier {
+            Some(identifier) => write!(f, "{identifier}: {value}"),
+            None => write!(f, ":{value}"),
+        }
+    }
+}
+
+impl<Id: Display> Display for Variable<Id> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        let Self {
+            default_value,
+            identifier,
+            type_,
+            ..
+        } = self;
+        write!(f, "var {identifier}: {type_} = {default_value};",)
+    }
+}

@@ -1,0 +1,92 @@
+mod add_builtins;
+mod add_explicit_casts;
+mod calculate_disjoints;
+mod calculate_iterators;
+mod calculate_repeats_and_uniques;
+mod calculate_simple_apply;
+mod calculate_tag_indexes;
+mod compact_comparisons;
+mod compact_reachability;
+mod compact_skip_edges;
+mod expand_assignment_any;
+mod expand_tag_variable;
+mod inline_assignment;
+mod inline_reachability;
+mod join_exclusive_edges;
+mod join_fork_prefixes;
+mod join_fork_suffixes;
+mod mangle_symbols;
+mod merge_accesses;
+mod normalize_constants;
+mod normalize_types;
+mod propagate_constants;
+mod prune_self_loops;
+mod prune_singleton_types;
+mod prune_unreachable_nodes;
+mod prune_unused_constants;
+mod prune_unused_variables;
+mod reorder_conditions;
+mod skip_artificial_tags;
+mod skip_redundant_tags;
+mod skip_self_assignments;
+mod skip_self_comparisons;
+mod skip_unused_tags;
+
+use super::Node;
+#[cfg(test)]
+use super::{Error, Game};
+use std::collections::BTreeSet;
+use std::sync::Arc;
+
+pub fn gen_fresh_node(max_node_id: &mut usize) -> Node<Arc<str>> {
+    *max_node_id += 1;
+    Node::new(Arc::from(max_node_id.to_string()))
+}
+
+pub fn max_node_id(nodes: &BTreeSet<&Node<Arc<str>>>) -> usize {
+    nodes
+        .iter()
+        .map(|node| node.identifier.parse::<usize>().unwrap_or(0))
+        .max()
+        .unwrap_or(0)
+}
+
+#[cfg(test)]
+impl Game<Arc<str>> {
+    pub fn test_transform<F: FnOnce(&mut Self) -> Result<(), Error<Arc<str>>>>(
+        actual: &str,
+        expect: &str,
+        fn_: F,
+    ) {
+        let mut actual = Self::test_parse_or_fail(actual);
+        let expect = Self::test_parse_or_fail(expect);
+        fn_(&mut actual).unwrap();
+
+        // `assert_eq` prints the entire structs and it's not helpful.
+        assert!(
+            actual == expect,
+            "\n\n>>> Actual: <<<\n{actual}\n>>> Expect: <<<\n{expect}\n"
+        );
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[macro_export]
+    macro_rules! test_transform {
+        ($fn:ident, $name:ident, $actual:expr) => {
+            test_transform!($fn, $name, $actual, $actual);
+        };
+
+        ($fn:ident, $name:ident, $actual:expr, adds $extra:expr) => {
+            test_transform!($fn, $name, $actual, concat!($actual, $extra));
+        };
+
+        ($fn:ident, $name:ident, $actual:expr, $expect:expr) => {
+            #[test]
+            fn $name() {
+                $crate::ast::Game::test_transform($actual, $expect, |x| x.$fn());
+            }
+        };
+    }
+}

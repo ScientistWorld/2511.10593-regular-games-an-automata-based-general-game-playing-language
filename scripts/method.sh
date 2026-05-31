@@ -1,14 +1,6 @@
-#!/bin/bash
-# Run the paper's proposed method.
-#
-# This script trains/runs the paper's method using code in method/.
-#
-# Usage:
-#   bash scripts/method.sh
-
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 cd /home/user
-
-# TODO: run the paper's method
-# TODO: call scripts/evaluate.sh to score
+python3 method/run_experiments.py --games connect4.hrg breakthrough.hrg --sims "${SIMS:-200}"
+bash scripts/evaluate.sh method/outputs/results.json

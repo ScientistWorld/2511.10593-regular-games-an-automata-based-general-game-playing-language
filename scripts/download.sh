@@ -1,30 +1,24 @@
-#!/bin/bash
-# Download all data and models needed for this environment.
-#
-# Run on a node with internet access BEFORE building the container
-# or submitting compute jobs.
-#
-# This script should be idempotent — safe to run multiple times.
-# It should skip files that already exist.
-#
-# Update the storage estimate below as you add downloads.
-#
-# Estimated total download size: TODO GB
-# Estimated disk usage after extraction: TODO GB
-#
-# During reproduction, prefer downloading to shared directories
-# (shared/datasets/, shared/models/) so other papers can reuse them.
-# You do not need to run this script during reproduction — it exists
-# for future portability. Write it to download to workspace-local
-# paths (data/, checkpoints/) instead of the shared directories
-# so a future user with just the workspace can run this script and get everything they need.
+#!/usr/bin/env bash
+# Estimated download size: about 150 MB for Rust crate sources if
+# data/downloads/rg_cargo_vendor is missing. Source snapshots are committed;
+# upstream clone commands below are fallbacks for a damaged checkout.
+set -euo pipefail
 
-set -e
+cd /home/user
+[ -d method/rg ] || git clone --depth 1 https://github.com/radekmie/rg method/rg
+[ -d method/rgcompiler ] || git clone --depth 1 https://github.com/WoojtekP/RGcompiler method/rgcompiler
 
-cd "$(dirname "$0")"
+if ! command -v cargo >/dev/null 2>&1; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o tmp/rustup-init.sh
+  sh tmp/rustup-init.sh -y --default-toolchain 1.89.0 --profile minimal
+  # shellcheck disable=SC1091
+  . "$HOME/.cargo/env"
+fi
 
-# TODO: implement downloads
-# Examples:
-#   wget -nc https://example.com/dataset.tar.gz -P data/
-#   python -c "from huggingface_hub import snapshot_download; snapshot_download('model/name', local_dir='checkpoints/')"
-#   huggingface-cli download Qwen/Qwen3-1.7B --local-dir /checkpoints/Qwen3-1.7B
+mkdir -p data/downloads
+if [ ! -d data/downloads/rg_cargo_vendor ]; then
+  (cd method/rg/interpreter_rust && cargo vendor ../../../data/downloads/rg_cargo_vendor >/dev/null)
+fi
+
+rm -f method/rg/interpreter_rust/vendor
+ln -s ../../../data/downloads/rg_cargo_vendor method/rg/interpreter_rust/vendor

@@ -84,6 +84,10 @@ shared/
 .envrc
 .claude/
 .codex/
+/.cargo/
+/.rustup/
+/.profile
+.git-shims/
 
 # Agent-generated scaffolding files
 codex/
@@ -206,6 +210,14 @@ __pycache__/
 CMakeCache.txt
 CMakeFiles/
 cmake-build-*/
+method/rg/interpreter_rust/target/
+method/rg/interpreter_node/
+method/rg/meeting-notes/
+method/rg/.github/
+method/rgcompiler/build/
+method/rgcompiler/build-test/
+method/rgcompiler/gmon.txt
+method/outputs/
 
 # IDE / OS junk
 .idea/
