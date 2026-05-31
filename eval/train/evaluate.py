@@ -12,6 +12,7 @@ from typing import Any
 
 
 STRUCTURE_TRAIN_GAMES = {"breakthrough.hrg", "yavalath.hrg"}
+TABLE1_TRAIN_STEMS = {"breakthrough", "yavalath"}
 
 
 def avg(rows: list[dict[str, Any]], key: str) -> float:
@@ -60,6 +61,8 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
             "benchmark_completion_rate": avg(flat_rows, "playout_completion_rate"),
             "games_completed": float(sum(1 for value in game_rates if value > 0)),
             "speedup_vs_rbg_rg": 0.0,
+            "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
+            "automaton_edge_advantage_vs_rbg_pct": 0.0,
         }
 
     rbg_methods = [
@@ -71,6 +74,16 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
     baseline_by_stem = {
         table1_stem(game): rate
         for game, rate in mean_sims_by_method_game.get(baseline_method, {}).items()
+        if game.endswith(".rbg")
+    }
+    baseline_lines_by_stem = {
+        table1_stem(game): avg(game_rows, "generated_cpp_lines")
+        for game, game_rows in by_method_game.get(baseline_method, {}).items()
+        if game.endswith(".rbg")
+    }
+    baseline_edges_by_stem = {
+        table1_stem(game): avg(game_rows, "automaton_edges")
+        for game, game_rows in by_method_game.get(baseline_method, {}).items()
         if game.endswith(".rbg")
     }
 
@@ -85,6 +98,20 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
             if game.endswith(".hrg") and rate > 0 and baseline_by_stem.get(table1_stem(game), 0.0) > 0
         ]
         per_method[method]["speedup_vs_rbg_rg"] = mean(speedups) if speedups else 0.0
+        line_advantages = [
+            100.0 * (baseline_lines_by_stem[table1_stem(game)] - avg(by_method_game[method][game], "generated_cpp_lines"))
+            / baseline_lines_by_stem[table1_stem(game)]
+            for game in rates
+            if game.endswith(".hrg") and baseline_lines_by_stem.get(table1_stem(game), 0.0) > 0
+        ]
+        edge_advantages = [
+            100.0 * (baseline_edges_by_stem[table1_stem(game)] - avg(by_method_game[method][game], "automaton_edges"))
+            / baseline_edges_by_stem[table1_stem(game)]
+            for game in rates
+            if game.endswith(".hrg") and baseline_edges_by_stem.get(table1_stem(game), 0.0) > 0
+        ]
+        per_method[method]["generated_cpp_line_advantage_vs_rbg_pct"] = mean(line_advantages) if line_advantages else 0.0
+        per_method[method]["automaton_edge_advantage_vs_rbg_pct"] = mean(edge_advantages) if edge_advantages else 0.0
     return per_method
 
 
@@ -99,9 +126,7 @@ def select_structure_rows(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def select_table1_rows(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     table_rows = [row for row in runs if row.get("experiment") == "table1_playout_throughput_subset"]
-    if any(int(row.get("repeat", 1)) % 2 == 0 for row in table_rows):
-        return [row for row in table_rows if int(row.get("repeat", 1)) % 2 == 1]
-    return [row for row in table_rows if table1_stem(str(row.get("game", ""))) in {"breakthrough", "yavalath"}]
+    return [row for row in table_rows if table1_stem(str(row.get("game", ""))) in TABLE1_TRAIN_STEMS]
 
 
 def main() -> None:
@@ -112,7 +137,7 @@ def main() -> None:
 
     payload = json.loads(Path(args.input).read_text())
     runs = payload.get("runs", [])
-    scores = {"experiments": {}}
+    scores = {"metadata": {"slice": "train"}, "experiments": {}}
 
     structure_rows = select_structure_rows(runs)
     if structure_rows:

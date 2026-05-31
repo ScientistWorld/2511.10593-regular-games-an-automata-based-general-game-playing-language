@@ -12,6 +12,7 @@ from typing import Any
 
 
 STRUCTURE_TEST_GAMES = {"connect4.hrg"}
+TABLE1_TEST_STEMS = {"connect4"}
 
 
 def avg(rows: list[dict[str, Any]], key: str) -> float:
@@ -19,10 +20,8 @@ def avg(rows: list[dict[str, Any]], key: str) -> float:
     return mean(values) if values else 0.0
 
 
-def train_methods(train_scores: dict[str, Any], experiment: str) -> set[str]:
-    exp = train_scores.get("experiments", {}).get(experiment, {})
-    results = exp.get("results", {}) if isinstance(exp, dict) else {}
-    return {method for method in results if not method.startswith("_")}
+def artifact_methods(rows: list[dict[str, Any]], experiment: str) -> set[str]:
+    return {row["method"] for row in rows if row.get("experiment") == experiment and row.get("method")}
 
 
 def aggregate_structure(rows: list[dict[str, Any]], methods: set[str] | None = None) -> dict[str, dict[str, float]]:
@@ -66,6 +65,8 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
             "benchmark_completion_rate": avg(flat_rows, "playout_completion_rate"),
             "games_completed": float(sum(1 for value in game_rates if value > 0)),
             "speedup_vs_rbg_rg": 0.0,
+            "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
+            "automaton_edge_advantage_vs_rbg_pct": 0.0,
         }
 
     rbg_methods = [
@@ -77,6 +78,16 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
     baseline_by_stem = {
         table1_stem(game): rate
         for game, rate in mean_sims_by_method_game.get(baseline_method, {}).items()
+        if game.endswith(".rbg")
+    }
+    baseline_lines_by_stem = {
+        table1_stem(game): avg(game_rows, "generated_cpp_lines")
+        for game, game_rows in by_method_game.get(baseline_method, {}).items()
+        if game.endswith(".rbg")
+    }
+    baseline_edges_by_stem = {
+        table1_stem(game): avg(game_rows, "automaton_edges")
+        for game, game_rows in by_method_game.get(baseline_method, {}).items()
         if game.endswith(".rbg")
     }
 
@@ -91,6 +102,20 @@ def aggregate_table1(rows: list[dict[str, Any]], methods: set[str] | None = None
             if game.endswith(".hrg") and rate > 0 and baseline_by_stem.get(table1_stem(game), 0.0) > 0
         ]
         per_method[method]["speedup_vs_rbg_rg"] = mean(speedups) if speedups else 0.0
+        line_advantages = [
+            100.0 * (baseline_lines_by_stem[table1_stem(game)] - avg(by_method_game[method][game], "generated_cpp_lines"))
+            / baseline_lines_by_stem[table1_stem(game)]
+            for game in rates
+            if game.endswith(".hrg") and baseline_lines_by_stem.get(table1_stem(game), 0.0) > 0
+        ]
+        edge_advantages = [
+            100.0 * (baseline_edges_by_stem[table1_stem(game)] - avg(by_method_game[method][game], "automaton_edges"))
+            / baseline_edges_by_stem[table1_stem(game)]
+            for game in rates
+            if game.endswith(".hrg") and baseline_edges_by_stem.get(table1_stem(game), 0.0) > 0
+        ]
+        per_method[method]["generated_cpp_line_advantage_vs_rbg_pct"] = mean(line_advantages) if line_advantages else 0.0
+        per_method[method]["automaton_edge_advantage_vs_rbg_pct"] = mean(edge_advantages) if edge_advantages else 0.0
     return per_method
 
 
@@ -105,36 +130,26 @@ def select_structure_rows(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def select_table1_rows(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     table_rows = [row for row in runs if row.get("experiment") == "table1_playout_throughput_subset"]
-    if any(int(row.get("repeat", 1)) % 2 == 0 for row in table_rows):
-        return [row for row in table_rows if int(row.get("repeat", 1)) % 2 == 0]
-    return [row for row in table_rows if table1_stem(str(row.get("game", ""))) == "connect4"]
+    return [row for row in table_rows if table1_stem(str(row.get("game", ""))) in TABLE1_TEST_STEMS]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", default="method/outputs/results.json")
     parser.add_argument("--output", default="scoring/scores_test.json")
-    parser.add_argument("--train-scores", default="scoring/scores_train.json")
     args = parser.parse_args()
 
-    train_scores_path = Path(args.train_scores)
-    if not train_scores_path.exists():
-        raise FileNotFoundError(
-            f"{args.train_scores} is required so the held-out test scores the same method entries as train"
-        )
-
     payload = json.loads(Path(args.input).read_text())
-    train_scores_payload = json.loads(train_scores_path.read_text())
     runs = payload.get("runs", [])
-    scores = {"experiments": {}}
+    scores = {"metadata": {"slice": "test"}, "experiments": {}}
 
-    structure_methods = train_methods(train_scores_payload, "hrg_optimization_structure")
+    structure_methods = artifact_methods(runs, "hrg_optimization_structure")
     if structure_methods:
         scores["experiments"]["hrg_optimization_structure"] = {
             "results": aggregate_structure(select_structure_rows(runs), structure_methods)
         }
 
-    table1_methods = train_methods(train_scores_payload, "table1_playout_throughput_subset")
+    table1_methods = artifact_methods(runs, "table1_playout_throughput_subset")
     if table1_methods:
         scores["experiments"]["table1_playout_throughput_subset"] = {
             "results": aggregate_table1(select_table1_rows(runs), table1_methods)

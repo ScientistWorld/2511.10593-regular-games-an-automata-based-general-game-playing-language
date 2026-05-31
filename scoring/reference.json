@@ -5,10 +5,10 @@
       "weight": 0.35,
       "primary_metric": "automaton_edge_reduction_pct",
       "metrics": {
-        "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8},
-        "automaton_edge_reduction_pct": {"higher_is_better": true, "coefficient": 1.0},
-        "generated_cpp_line_reduction_pct": {"higher_is_better": true, "coefficient": 0.2},
-        "playout_completion_rate": {"higher_is_better": true, "coefficient": 0.5}
+        "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8, "description": "Percentage reduction in optimized automaton nodes versus the same HRG input compiled without optimizer passes."},
+        "automaton_edge_reduction_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Percentage reduction in optimized automaton edges versus the same HRG input compiled without optimizer passes."},
+        "generated_cpp_line_reduction_pct": {"higher_is_better": true, "coefficient": 0.2, "description": "Percentage reduction in generated C++ source lines versus the same HRG input compiled without optimizer passes."},
+        "playout_completion_rate": {"higher_is_better": true, "coefficient": 0.5, "description": "Fraction of selected generated reasoners that complete deterministic fixed-count playouts without pipeline errors."}
       },
       "results": {
         "hrg_rg_no_optimizations": {
@@ -28,19 +28,23 @@
       }
     },
     "table1_playout_throughput_subset": {
-      "description": "Section 4 / Table 1 flat Monte Carlo playout benchmark on a matched subset (Connect Four, Breakthrough, Yavalath). The paper reports HRG->RG and RBG->RG playouts per second from three 1-minute runs; this gym scores the within-run HRG/RBG speedup ratio to reduce hardware dependence and keeps raw rates as supporting metrics.",
+      "description": "Section 4 / Table 1 matched HRG and RBG source-language benchmark on a subset of games. The paper reports playout throughput; this gym keeps throughput as supporting context but scores machine-independent generated-code and automaton-size advantages to avoid hardware-dependent ranking.",
       "weight": 0.65,
-      "primary_metric": "speedup_vs_rbg_rg",
+      "primary_metric": "generated_cpp_line_advantage_vs_rbg_pct",
       "metrics": {
-        "speedup_vs_rbg_rg": {"higher_is_better": true, "coefficient": 1.0},
-        "sims_per_second": {"higher_is_better": true, "coefficient": 0.0},
-        "states_per_second": {"higher_is_better": true, "coefficient": 0.0},
-        "benchmark_completion_rate": {"higher_is_better": true, "coefficient": 0.5},
-        "games_completed": {"higher_is_better": true, "coefficient": 0.2}
+        "generated_cpp_line_advantage_vs_rbg_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean percentage by which generated HRG-derived C++ source is shorter than the matched RBG-derived generated source for the same games."},
+        "automaton_edge_advantage_vs_rbg_pct": {"higher_is_better": true, "coefficient": 0.6, "description": "Mean percentage by which optimized HRG-derived automata have fewer edges than matched RBG-derived automata for the same games."},
+        "speedup_vs_rbg_rg": {"higher_is_better": true, "coefficient": 0.0, "description": "Within-job HRG/RBG playout-throughput ratio retained only as diagnostic context because wall-clock throughput is hardware-sensitive."},
+        "sims_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw simulation throughput retained only for diagnostics and not used for scoring."},
+        "states_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw state-throughput retained only for diagnostics and not used for scoring."},
+        "benchmark_completion_rate": {"higher_is_better": true, "coefficient": 0.5, "description": "Fraction of selected generated reasoners that complete benchmark-mode playout work without pipeline errors."},
+        "games_completed": {"higher_is_better": true, "coefficient": 0.2, "description": "Number of selected matched games with positive completed benchmark work."}
       },
       "results": {
         "rbg_rg_table1_subset": {
           "type": "baseline",
+          "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
+          "automaton_edge_advantage_vs_rbg_pct": 0.0,
           "speedup_vs_rbg_rg": 1.0,
           "sims_per_second": 187241.0,
           "states_per_second": 0.0,
@@ -49,6 +53,8 @@
         },
         "hrg_rg_table1_subset": {
           "type": "proposed",
+          "generated_cpp_line_advantage_vs_rbg_pct": 27.125223803843365,
+          "automaton_edge_advantage_vs_rbg_pct": 25.488788847567474,
           "speedup_vs_rbg_rg": 4.253984075040034,
           "sims_per_second": 598187.3333333334,
           "states_per_second": 0.0,
