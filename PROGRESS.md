@@ -20,6 +20,7 @@ No compute job results have returned yet. The next submitted CPU job will build 
 
 - Continuation audit found no `method/outputs/results.json`, no `scoring/scores.json`, and no returned job logs. The implementation is staged but has not yet demonstrated `method_runs`.
 - Fixed a portability issue in `scripts/download.sh`: it now creates `tmp/` before downloading `rustup-init.sh` on a fresh checkout.
+- Job `d7726f8b-004` built the container and reached `method/run_experiments.py`, but failed before running playouts. The wrapper passed a full relative path to `scripts/sims.py`, whose upstream parser expects a bare game filename, and passed translate flags in a form argparse treated as options. The wrapper now passes bare filenames, uses `-t=<flags>`, parses upstream fixed-work playout output, and prints captured command output on failures.
 
 ## Deviations from Paper
 

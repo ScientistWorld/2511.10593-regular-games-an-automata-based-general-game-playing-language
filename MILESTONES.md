@@ -12,4 +12,8 @@
 - Continuation audit confirmed the method code wraps the paper's actual HRG/RG optimizer and C++ compiler pipeline, not a surrogate.
 - No reproduced scores are present yet, so the milestone remains `none` until the submitted smoke job returns.
 
+### [2026-05-31 00:00] - none
+- First CPU smoke job built the container and started the official pipeline, but failed while invoking `scripts/sims.py`.
+- Fixed the wrapper invocation and output parsing; no successful method run has completed yet.
+
 ## Stop Justification

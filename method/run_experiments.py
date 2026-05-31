@@ -29,15 +29,19 @@ def run(cmd: list[str], cwd: Path, *, env: dict[str, str] | None = None) -> subp
     merged_env.setdefault("CARGO_NET_OFFLINE", "true")
     if env:
         merged_env.update(env)
-    return subprocess.run(
+    result = subprocess.run(
         cmd,
         cwd=cwd,
         env=merged_env,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        check=True,
+        check=False,
     )
+    if result.returncode != 0:
+        rendered = " ".join(cmd)
+        raise RuntimeError(f"Command failed with exit code {result.returncode}: {rendered}\n{result.stdout}")
+    return result
 
 
 def game_path(game: str) -> Path:
@@ -93,31 +97,42 @@ def parse_sims_output(output: str, requested: int) -> dict[str, Any]:
         "states_visited": 0,
         "playout_completion_rate": 0.0,
     }
-    match = re.search(r"\|\s*sims\s+([0-9.]+)s\s+(\d+)\s+(\d+)", output)
-    if match:
-        completed = int(match.group(2))
-        metrics["raw_sims_elapsed_seconds"] = float(match.group(1))
+    elapsed = re.search(r"\|\s*sims\s+([0-9.]+)s", output)
+    if elapsed:
+        metrics["raw_sims_elapsed_seconds"] = float(elapsed.group(1))
+    fixed_work = re.search(r"sims:\s+(\d+)\s+states:\s+(\d+)", output)
+    if fixed_work:
+        completed = int(fixed_work.group(1))
         metrics["simulations_completed"] = completed
-        metrics["states_visited"] = int(match.group(3))
+        metrics["states_visited"] = int(fixed_work.group(2))
         metrics["playout_completion_rate"] = completed / max(requested, 1)
-    extra = re.search(
-        r"score\s+(-?\d+)\s+(-?\d+)\s+([0-9.]+),\s*depth\s+(\d+)\s+(\d+)\s+([0-9.]+),\s*moves\s+(\d+)\s+(\d+)\s+([0-9.]+)",
-        output,
-    )
-    if extra:
+    depth = re.search(r"depth:\s+min\s+(\d+)\s+avg\s+([0-9.]+)\s+max\s+(\d+)", output)
+    moves = re.search(r"moves:\s+min\s+(\d+)\s+avg\s+([0-9.]+)\s+max\s+(\d+)", output)
+    scores = re.search(r"avg scores:\s+([0-9. \-]+)\s+min scores:\s+([0-9 \-]+)\s+max scores:\s+([0-9 \-]+)", output)
+    if depth:
         metrics.update(
             {
-                "min_score": int(extra.group(1)),
-                "max_score": int(extra.group(2)),
-                "avg_score": float(extra.group(3)),
-                "min_depth": int(extra.group(4)),
-                "max_depth": int(extra.group(5)),
-                "avg_depth": float(extra.group(6)),
-                "min_legal_moves": int(extra.group(7)),
-                "max_legal_moves": int(extra.group(8)),
-                "avg_legal_moves": float(extra.group(9)),
+                "min_depth": int(depth.group(1)),
+                "avg_depth": float(depth.group(2)),
+                "max_depth": int(depth.group(3)),
             }
         )
+    if moves:
+        metrics.update(
+            {
+                "min_legal_moves": int(moves.group(1)),
+                "avg_legal_moves": float(moves.group(2)),
+                "max_legal_moves": int(moves.group(3)),
+            }
+        )
+    if scores:
+        avg_scores = [float(value) for value in scores.group(1).split()]
+        min_scores = [int(value) for value in scores.group(2).split()]
+        max_scores = [int(value) for value in scores.group(3).split()]
+        if avg_scores:
+            metrics["avg_score_mean"] = sum(avg_scores) / len(avg_scores)
+            metrics["min_score_min"] = min(min_scores)
+            metrics["max_score_max"] = max(max_scores)
     return metrics
 
 
@@ -133,10 +148,9 @@ def clean_build_test() -> None:
 def run_variant(game: str, variant: str, transform_flags: str, sims: int) -> dict[str, Any]:
     clean_build_test()
     game_file = game_path(game)
-    rel_game = os.path.relpath(game_file, COMPILER_ROOT)
-    command = ["python3", "scripts/sims.py", rel_game, str(sims), "--test", "-t", transform_flags]
+    command = ["python3", "scripts/sims.py", game_file.name, str(sims), "--test", f"-t={transform_flags}"]
     proc = run(command, cwd=COMPILER_ROOT)
-    ast_file = COMPILER_ROOT / "build-test" / f"{game_file.stem}.json"
+    ast_file = COMPILER_ROOT / "build-test" / f"{game_file.name}.json"
     result: dict[str, Any] = {
         "experiment": "hrg_optimization_structure",
         "method": variant,
