@@ -2,4 +2,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Game-held-out split; 22 train metric values and 22 test metric values populated (14 scored values per slice); structural train/test close, Table 1 held-out connect4 stronger than train but not byte-identical; games_completed diagnostic-only due unequal slice sizes."
+notes: "Packaging audit passed: download.sh has executable public fetches, paths line up, and no shared/ references remain."
