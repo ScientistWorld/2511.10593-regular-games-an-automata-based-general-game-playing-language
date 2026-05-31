@@ -28,4 +28,8 @@
 - Fourth CPU smoke job still failed on `rand`, showing the setup overlay cache was not being used by the job.
 - Updated `environment/container.def` to prefetch Cargo crates during image build and set `CARGO_HOME` explicitly for runtime.
 
+### [2026-05-31 16:37] - none
+- The next environment build failed before job submission because `%files` could not find the Rust source tree from the scheduler's build context.
+- Removed the `%files` dependency and changed the image build to prefetch native Rust crates from a temporary manifest created inside `%post`.
+
 ## Stop Justification

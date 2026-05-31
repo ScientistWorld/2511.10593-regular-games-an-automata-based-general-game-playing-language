@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after moving Cargo prefetch into the Apptainer image build: build native RG CLI from image-cached crates, generate C++ reasoners, run fixed playouts, and write scoring/scores.json."
+notes: "Retry CPU smoke job after replacing the failing container %files prefetch with a build-context-independent Cargo prefetch manifest in %post."

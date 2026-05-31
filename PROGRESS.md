@@ -3,7 +3,7 @@
 ## What Works
 
 - Official source snapshots are staged in `method/rg` and `method/rgcompiler`.
-- Rust crates for the interpreter are cached under `data/downloads/rg_cargo_vendor` and linked from `method/rg/interpreter_rust/vendor`, allowing offline builds on compute nodes.
+- The container build prefetches the Rust crates needed by the native Regular Games CLI, allowing offline builds on compute nodes.
 - `method/run_experiments.py` drives the paper's actual pipeline: HRG parsing, RG optimization, `rg2cpp` C++ generation, C++ compilation, and deterministic playout checks.
 - `eval/evaluate_results.py` scores only method-produced artifacts and does not import from `method/`.
 
@@ -22,7 +22,7 @@ No compute job results have returned yet. The next submitted CPU job will build 
 - Fixed a portability issue in `scripts/download.sh`: it now creates `tmp/` before downloading `rustup-init.sh` on a fresh checkout.
 - Job `d7726f8b-004` built the container and reached `method/run_experiments.py`, but failed before running playouts. The wrapper passed a full relative path to `scripts/sims.py`, whose upstream parser expects a bare game filename, and passed translate flags in a form argparse treated as options. The wrapper now passes bare filenames, uses `-t=<flags>`, parses upstream fixed-work playout output, and prints captured command output on failures.
 - Job `a9b0ccce-9e1` reached the official Rust interpreter build, then failed in offline Cargo resolution for a wasm-only panic-hook dependency. The reproduction path only needs the native CLI used by the HRG/RG optimizer and AST generator, so the upstream wrapper now builds the `cli` binary directly and wasm bindings/dependencies in the CLI crate are gated to `wasm32`. `scripts/download.sh` also verifies the vendored crate set before reusing it on internet-enabled setup runs.
-- Job `e48b7a66-f6e` confirmed the compute checkout did not contain ignored Cargo vendor sources, failing next on `rand`. The repository hook correctly blocks committing dependency archives. A setup-script fetch did not populate the read-only overlay used by the next job, so the container definition now copies the small Rust workspace during image build, runs `cargo fetch --locked`, removes the temporary copy, and exposes `CARGO_HOME=/usr/local/cargo` for offline runtime builds. The vendored-source override remains removed so Cargo resolves from that image cache.
+- Job `e48b7a66-f6e` confirmed the compute checkout did not contain ignored Cargo vendor sources, failing next on `rand`. The repository hook correctly blocks committing dependency archives. A setup-script fetch did not populate the read-only overlay used by the next job. The first container-build prefetch attempt used `%files`, but the scheduler resolved that path outside the synced workspace and the image build failed before job submission. The container definition now avoids `%files` and instead creates a temporary Cargo manifest during `%post` to prefetch the native Regular Games CLI crate dependencies into `/usr/local/cargo`.
 
 ## Deviations from Paper
 

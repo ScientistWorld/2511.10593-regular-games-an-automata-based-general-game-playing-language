@@ -25,22 +25,6 @@ From: rust:1.89-bookworm
 # Use 'runtime' (~1 GB) unless you need to compile CUDA code,
 # in which case use 'devel' (~4 GB).
 
-%files
-    method/rg/interpreter_rust /opt/rg_interpreter_rust
-
-    # Data that the agent can see (training data + test features only)
-    # data/train.csv /home/user/data/train.csv
-    # data/test_features.csv /home/user/data/test_features.csv
-
-    # Baseline for the agent to beat
-    # baseline.py /home/user/baseline.py
-
-    # Example output format
-    # sample_output.csv /home/user/sample_output.csv
-
-    # Container self-test
-    # test_initial_state.py /home/user/test_initial_state.py
-
 %post
     apt-get update && apt-get install -y --no-install-recommends \
         python3 python3-pip python3-dev \
@@ -61,9 +45,33 @@ From: rust:1.89-bookworm
 
     # *** DO NOT put pip install here. Use setup.sh instead. ***
 
-    cd /opt/rg_interpreter_rust && \
-        CARGO_NET_OFFLINE=false cargo fetch --locked --target x86_64-unknown-linux-gnu && \
-        rm -rf /opt/rg_interpreter_rust
+    # Compute nodes are offline. Prefetch the crates needed to build the
+    # Regular Games CLI at runtime, without depending on host-side %files.
+    mkdir -p /tmp/rg_cargo_prefetch/src && \
+    cat > /tmp/rg_cargo_prefetch/Cargo.toml <<'EOF'
+[package]
+name = "rg-cargo-prefetch"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.21", features = ["derive"] }
+rand = { version = "0.8.5", features = ["small_rng"] }
+schemars = "1.2.1"
+serde = { version = "1.0.152", features = ["derive", "rc"] }
+serde_json = "1.0.91"
+web-time = "1.1.0"
+nom = "8.0.0"
+nom-language = "0.1.0"
+nom_locate = "5.0.0"
+natord = "1.0.9"
+quote = "1.0.23"
+syn = "2.0.68"
+EOF
+    echo 'fn main() {}' > /tmp/rg_cargo_prefetch/src/main.rs && \
+        cd /tmp/rg_cargo_prefetch && \
+        CARGO_NET_OFFLINE=false cargo fetch --target x86_64-unknown-linux-gnu && \
+        rm -rf /tmp/rg_cargo_prefetch
 
     mkdir -p /home/user/data
     chmod 755 /home/user
