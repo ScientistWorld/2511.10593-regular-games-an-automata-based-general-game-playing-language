@@ -20,4 +20,8 @@
 - Second CPU smoke job reached the official Rust interpreter build, but offline Cargo resolution failed on a wasm-only dependency.
 - Gated wasm-only CLI bindings/dependencies behind `wasm32` and narrowed the upstream build step to the native CLI binary needed by the reproduction.
 
+### [2026-05-31 00:00] - none
+- Third CPU smoke job failed on `rand`, showing the ignored Cargo vendor tree was absent from the compute checkout.
+- Removed the vendored-source override and added a setup-time Cargo fetch so offline compute builds resolve native Rust crates from the persistent container cache.
+
 ## Stop Justification
