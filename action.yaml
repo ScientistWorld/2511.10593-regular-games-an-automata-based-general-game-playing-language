@@ -1,6 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-milestone: core_claim
-notes: "Core claim reproduced and scripts/reproduce.sh validated with 200 playouts per generated reasoner. Structural reductions match the paper closely and playout completion is 1.0."
+action: pending
+gpus: 1
+test: false
+milestone: method_runs
+notes: ""
