@@ -76,12 +76,22 @@ void PragmaSimpleApplyOperator::parseItem(
         {
             const auto& tagVar = tag["Variable"];
             std::string tagVarName = tagVar["identifier"].get<std::string>();
-            if (tagVar["type_"] != nullptr)
+            const nlohmann::json* tagType = nullptr;
+            if (tagVar.contains("type_") && !tagVar["type_"].is_null())
             {
-                std::string tagType = tagVar["type_"]["identifier"];
+                tagType = &tagVar["type_"];
+            }
+            else if (tagVar.contains("type") && !tagVar["type"].is_null())
+            {
+                tagType = &tagVar["type"];
+            }
+
+            if (tagType != nullptr)
+            {
+                std::string tagTypeName = (*tagType)["identifier"];
                 mapOrgNameToNewName[tagVarName] =
                     std::string(prefixVariableName) + std::to_string(mapOrgNameToNewName.size());
-                data.tagNames_.push_back("(" + mapOrgNameToNewName[tagVarName] + " : " + tagType + ")");
+                data.tagNames_.push_back("(" + mapOrgNameToNewName[tagVarName] + " : " + tagTypeName + ")");
             }
             else
             {

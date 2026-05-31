@@ -2,5 +2,5 @@
 set -euo pipefail
 
 cd /home/user
-bash scripts/method.sh
+SIMS=20 bash scripts/method.sh
 python3 validate.py --compare

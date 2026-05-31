@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after fixing the rg2cpp flag name and error check so generated C++ reasoners compile and playout metrics are real."
+notes: "CPU smoke job after patching the SimpleApply pragma AST schema mismatch; expects rg2cpp to generate C++ reasoners and complete short playout checks."

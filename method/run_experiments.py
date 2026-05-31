@@ -96,6 +96,7 @@ def parse_sims_output(output: str, requested: int) -> dict[str, Any]:
         "simulations_completed": 0,
         "states_visited": 0,
         "playout_completion_rate": 0.0,
+        "pipeline_error": "",
     }
     elapsed = re.search(r"\|\s*sims\s+([0-9.]+)s", output)
     if elapsed:
@@ -133,6 +134,9 @@ def parse_sims_output(output: str, requested: int) -> dict[str, Any]:
             metrics["avg_score_mean"] = sum(avg_scores) / len(avg_scores)
             metrics["min_score_min"] = min(min_scores)
             metrics["max_score_max"] = max(max_scores)
+    error_match = re.search(r"ERROR(?:\x1b\[[0-9;]*m)?\s+(.*)", output)
+    if error_match:
+        metrics["pipeline_error"] = re.sub(r"\x1b\[[0-9;]*m", "", error_match.group(1)).strip()
     return metrics
 
 
@@ -161,6 +165,7 @@ def run_variant(game: str, variant: str, transform_flags: str, sims: int) -> dic
         "raw_log": proc.stdout,
     }
     result.update(parse_sims_output(proc.stdout, sims))
+    result["build_success"] = int(result.get("simulations_completed", 0) > 0 and not result.get("pipeline_error"))
     if ast_file.exists():
         result.update(ast_stats(ast_file))
     result.update(file_metrics(COMPILER_ROOT / "build-test" / "reasoner"))
@@ -209,6 +214,10 @@ def main() -> None:
     }
     Path(args.output).write_text(json.dumps(payload, indent=2, sort_keys=True))
     print(f"Wrote {args.output}")
+    failed = [run_data for run_data in runs if not run_data.get("build_success")]
+    if failed:
+        details = ", ".join(f"{run_data['game']}:{run_data['method']}" for run_data in failed)
+        raise RuntimeError(f"rg2cpp/C++ playout pipeline failed for {details}; see raw_log in {args.output}")
 
 
 if __name__ == "__main__":
