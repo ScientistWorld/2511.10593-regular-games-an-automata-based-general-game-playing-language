@@ -37,4 +37,4 @@
 - No reproduction downgrade was needed; the validated gym baseline remains the committed three-game matched Table 1 subset plus the structural compactness experiment.
 
 ## Stop Justification
-- Final verification passed at `core_claim_plus`; broader benchmark expansion remains optional future work.
+- Completed at milestone `core_claim_plus`.
