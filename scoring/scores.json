@@ -1,0 +1,32 @@
+{
+  "experiments": {
+    "hrg_optimization_structure": {
+      "results": {
+        "hrg_rg_no_optimizations": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_edges": 90.5,
+          "automaton_node_reduction_pct": 0.0,
+          "automaton_nodes": 79.0,
+          "generated_cpp_byte_reduction_pct": 0.0,
+          "generated_cpp_line_reduction_pct": 0.0,
+          "generated_cpp_lines": 0.0,
+          "playout_completion_rate": 0.0,
+          "simulations_completed": 0.0,
+          "states_visited": 0.0
+        },
+        "hrg_rg_optimized": {
+          "automaton_edge_reduction_pct": 39.167082917082915,
+          "automaton_edges": 54.5,
+          "automaton_node_reduction_pct": 44.853896103896105,
+          "automaton_nodes": 43.0,
+          "generated_cpp_byte_reduction_pct": 0.0,
+          "generated_cpp_line_reduction_pct": 0.0,
+          "generated_cpp_lines": 0.0,
+          "playout_completion_rate": 0.0,
+          "simulations_completed": 0.0,
+          "states_visited": 0.0
+        }
+      }
+    }
+  }
+}
