@@ -12,9 +12,11 @@
 
 Job `a0586e53-f4a` validated the full reusable reproduction path. Across Connect4 and Breakthrough, the optimized HRG pipeline produced 44.854% fewer automaton nodes and 39.167% fewer automaton edges, close to the paper's reported 47% node and 41% edge reductions. Generated C++ line count also fell by 33.356%. Both the no-optimization baseline and optimized generated reasoners completed 200/200 playouts, so the correctness constraint is satisfied (`playout_completion_rate = 1.0`).
 
+Job `2e7a31ea-181` expanded the same experiment to six HRG games: Connect4, Breakthrough, Hex, Yavalath, Tic-Tac-Toe, and Tic-Tac-Die. The optimized pipeline averaged 49.427% fewer automaton nodes, 44.911% fewer automaton edges, and 39.283% fewer generated C++ lines, with `playout_completion_rate = 1.0` for every baseline and optimized reasoner. This supports `core_claim_plus`.
+
 ## Remaining
 
-No required work remains for `core_claim`. A continuation run is queued to extend the same experiment from two HRG games to six HRG games (`connect4`, `breakthrough`, `hex`, `yavalath`, `ticTacToe`, and `ticTacDie`) to test the claim across additional settings.
+No required work remains for `core_claim_plus`. A broader CPU run is queued to extend the same experiment to 14 HRG games from the paper's benchmark set.
 
 ## Issues
 
@@ -28,6 +30,7 @@ No required work remains for `core_claim`. A continuation run is queued to exten
 - Job `552e1382-378` confirmed the SimpleApply schema bridge fixed `rg2cpp`. The smoke job completed four generated-reasoner runs with 20/20 playouts each and produced `scoring/scores.json` matching the declared scoring structure.
 - Job `a0586e53-f4a` ran `scripts/reproduce.sh` end to end with the default 200 playouts. The job completed in about four minutes and `validate.py --compare` passed all scoring and separation checks.
 - Continuation audit restored confidence in `core_claim`: `method/run_experiments.py` uses the official HRG/RG optimizer, `rg2cpp` compiler, generated C++ reasoner compilation, and fixed playout checker; `eval/evaluate_results.py` reads only method-produced artifacts and `validate.py --compare` passes.
+- Job `2e7a31ea-181` completed the six-game expansion in about 12 minutes on CPU and `validate.py --compare` passed.
 
 ## Deviations from Paper
 

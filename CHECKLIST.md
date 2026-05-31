@@ -10,3 +10,5 @@
 - [x] Run the first successful smoke job.
 - [x] Inspect generated scores and update milestone to `core_claim`.
 - [x] Validate the end-to-end `scripts/reproduce.sh` path with default playout count.
+- [x] Reproduce the core claim on additional HRG games (`core_claim_plus`).
+- [ ] Run the broader 14-game HRG subset.
