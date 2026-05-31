@@ -14,7 +14,7 @@ Job `a0586e53-f4a` validated the full reusable reproduction path. Across Connect
 
 ## Remaining
 
-No required work remains for `core_claim`. Further expansion would add more HRG games to the same experiment or reproduce additional paper tables.
+No required work remains for `core_claim`. A continuation run is queued to extend the same experiment from two HRG games to six HRG games (`connect4`, `breakthrough`, `hex`, `yavalath`, `ticTacToe`, and `ticTacDie`) to test the claim across additional settings.
 
 ## Issues
 
@@ -27,6 +27,7 @@ No required work remains for `core_claim`. Further expansion would add more HRG 
 - Job `773e609f-499` showed the flag fix was necessary but not sufficient. `rg2cpp` aborted on a nlohmann JSON assertion while reading SimpleApply pragmas. The current official RG interpreter writes typed pragma variables as `{"type": ...}`, while rgcompiler expected the older `type_` field. `PragmaSimpleApplyOperator` now accepts both spellings. `method/run_experiments.py` also marks runs without completed playouts as failed, so future jobs cannot pass validation with zero correctness-constraint scores.
 - Job `552e1382-378` confirmed the SimpleApply schema bridge fixed `rg2cpp`. The smoke job completed four generated-reasoner runs with 20/20 playouts each and produced `scoring/scores.json` matching the declared scoring structure.
 - Job `a0586e53-f4a` ran `scripts/reproduce.sh` end to end with the default 200 playouts. The job completed in about four minutes and `validate.py --compare` passed all scoring and separation checks.
+- Continuation audit restored confidence in `core_claim`: `method/run_experiments.py` uses the official HRG/RG optimizer, `rg2cpp` compiler, generated C++ reasoner compilation, and fixed playout checker; `eval/evaluate_results.py` reads only method-produced artifacts and `validate.py --compare` passes.
 
 ## Deviations from Paper
 
