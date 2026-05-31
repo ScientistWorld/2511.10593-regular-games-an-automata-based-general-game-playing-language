@@ -6,13 +6,13 @@
           "automaton_edge_reduction_pct": 0.0,
           "automaton_node_reduction_pct": 0.0,
           "generated_cpp_line_reduction_pct": 0.0,
-          "playout_completion_rate": 0.0
+          "playout_completion_rate": 1.0
         },
         "hrg_rg_optimized": {
           "automaton_edge_reduction_pct": 39.167082917082915,
           "automaton_node_reduction_pct": 44.853896103896105,
-          "generated_cpp_line_reduction_pct": 0.0,
-          "playout_completion_rate": 0.0
+          "generated_cpp_line_reduction_pct": 33.35649713735021,
+          "playout_completion_rate": 1.0
         }
       }
     }
