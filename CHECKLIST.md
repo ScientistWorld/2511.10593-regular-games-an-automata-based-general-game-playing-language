@@ -16,3 +16,4 @@
 - [x] Run the Table 1 subset benchmark job and validate the resulting scores.
 - [x] Ensure the top-level evaluator reports all Table 1 metrics declared in `reference.json`.
 - [x] Make the compute job entry point regenerate method artifacts before scoring.
+- [x] Final verification: portable data placement, method-agnostic docs, standalone evaluator, and validation.

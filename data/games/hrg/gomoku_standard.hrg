@@ -1,0 +1,119 @@
+// Gomoku (standard)
+// Move form: pos
+
+// Domains
+domain Piece = empty | white | black | border
+domain Player = white | black
+domain Position = V(X, Y) where X in 1..15, Y in 1..15
+domain PositionOrNull = null | Position
+domain Score = 50 | 0 | 100
+
+// Helpers
+up : PositionOrNull -> PositionOrNull
+up(V(X, Y)) = if Y == 15 then null else V(X, Y + 1)
+up(_) = null
+
+right : PositionOrNull -> PositionOrNull
+right(V(X, Y)) = if X == 15 then null else V(X + 1, Y)
+right(_) = null
+
+down : PositionOrNull -> PositionOrNull
+down(V(X, Y)) = if Y == 1 then null else V(X, Y - 1)
+down(_) = null
+
+left : PositionOrNull -> PositionOrNull
+left(V(X, Y)) = if X == 1 then null else V(X - 1, Y)
+left(_) = null
+
+upLeft: PositionOrNull -> PositionOrNull
+upLeft(V(X, Y)) = up(left(V(X, Y)))
+upLeft(_) = null
+
+upRight: PositionOrNull -> PositionOrNull
+upRight(V(X, Y)) = up(right(V(X, Y)))
+upRight(_) = null
+
+downLeft: PositionOrNull -> PositionOrNull
+downLeft(V(X, Y)) = down(left(V(X, Y)))
+downLeft(_) = null
+
+downRight: PositionOrNull -> PositionOrNull
+downRight(V(X, Y)) = down(right(V(X, Y)))
+downRight(_) = null
+
+
+board : PositionOrNull -> Piece = { V(X, Y) = empty where X in 1..15, Y in 1..15; null = border }
+pos : PositionOrNull
+
+
+graph winInDir(piece: Piece, dir1: PositionOrNull->PositionOrNull, dir2: PositionOrNull->PositionOrNull) {
+  if board[dir1[pos]] == piece {
+    if board[dir1[dir1[pos]]] == piece {
+      if board[dir1[dir1[dir1[pos]]]] == piece {
+        if board[dir1[dir1[dir1[dir1[pos]]]]] == piece {
+          check(board[dir1[dir1[dir1[dir1[dir1[pos]]]]]] != piece)
+          check(board[dir2[pos]] != piece)
+        } else {
+          check(board[dir2[pos]] == piece)
+          check(board[dir2[dir2[pos]]] != piece)
+        }
+      } else {
+        check(board[dir2[pos]] == piece)
+        check(board[dir2[dir2[pos]]] == piece)
+        check(board[dir2[dir2[dir2[pos]]]] != piece)
+      }
+    } else {
+      check(board[dir2[pos]] == piece)
+      check(board[dir2[dir2[pos]]] == piece)
+      check(board[dir2[dir2[dir2[pos]]]] == piece)
+      check(board[dir2[dir2[dir2[dir2[pos]]]]] != piece)
+    }
+  } else {
+    check(board[dir2[pos]] == piece)
+    check(board[dir2[dir2[pos]]] == piece)
+    check(board[dir2[dir2[dir2[pos]]]] == piece)
+    check(board[dir2[dir2[dir2[dir2[pos]]]]] == piece)
+    check(board[dir2[dir2[dir2[dir2[dir2[pos]]]]]] != piece)
+  }
+}
+
+graph win(piece: Piece) {
+  branch {
+    winInDir(piece, upLeft, downRight)
+  } or {
+    winInDir(piece, up, down)
+  } or {
+    winInDir(piece, upRight, downLeft)
+  } or {
+    winInDir(piece, left, right)
+  }
+}
+
+graph existsNonempty() {
+  pos = Position(*)
+  check(board[pos] == empty)
+}
+
+graph turn(me: Player, op: Player) {
+  player = me
+  pos = Position(*)
+  check(board[pos] == empty)
+  $$ pos
+  player = keeper
+  board[pos] = me
+  if reachable(win(me)) {
+    goals[me] = 100
+    goals[op] = 0
+    end()
+  }
+  if not(reachable(existsNonempty())) {// Draw
+    end()
+  }
+}
+
+graph rules() {
+  loop {
+    turn(white, black)
+    turn(black, white)
+  }
+}

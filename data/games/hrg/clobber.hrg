@@ -1,0 +1,100 @@
+// Clobber 10x10
+// Move form: Position Position
+
+domain Player = black | white
+domain Piece = empty | blackPawn | whitePawn
+domain Score = 0 | 100
+domain Position = V(X, Y) where X in 0..9, Y in 0..9
+domain PositionOrNull = null | Position
+
+left : PositionOrNull -> PositionOrNull
+left(null) = null
+left(V(X, Y)) = if X == 0 then null else V(X - 1, Y)
+
+right : PositionOrNull -> PositionOrNull
+right(null) = null
+right(V(X, Y)) = if X == 9 then null else V(X + 1, Y)
+
+up : PositionOrNull -> PositionOrNull
+up(null) = null
+up(V(_, 0)) = null
+up(V(X, Y)) = V(X, Y - 1)
+
+down : PositionOrNull -> PositionOrNull
+down(null) = null
+down(V(_, 9)) = null
+down(V(X, Y)) = V(X, Y + 1)
+
+piece : Player -> Piece
+piece(white) = whitePawn
+piece(_) = blackPawn
+
+opponent : Player -> Player
+opponent(white) = black
+opponent(_) = white
+
+board : PositionOrNull -> Piece = {
+  V(X, Y) = if (X + Y) % 2 == 0
+    then blackPawn
+    else whitePawn
+  where X in 0..9, Y in 0..9;
+  null = empty
+}
+
+me : Player = white
+
+pos : PositionOrNull
+
+graph moveExists(me: Player) {
+  pos = Position(*)
+  check(board[pos] == piece[me])
+  branch {
+    check(board[up(pos)] == piece[opponent[me]])
+  } or {
+    check(board[left(pos)] == piece[opponent[me]])
+  } or {
+    check(board[right(pos)] == piece[opponent[me]])
+  } or {
+    check(board[down(pos)] == piece[opponent[me]])
+  }
+}
+
+graph turn() {
+  player = me
+  pos = Position(*)
+  check(board[pos] == piece[me])
+  board[pos] = empty
+  $$ pos
+  branch {
+    pos = up[pos]
+    check(board[pos] == piece[opponent[me]])
+    $_U
+  } or {
+    pos = left[pos]
+    check(board[pos] == piece[opponent[me]])
+    $_L
+  } or {
+    pos = right[pos]
+    check(board[pos] == piece[opponent[me]])
+    $_R
+  } or {
+    pos = down[pos]
+    check(board[pos] == piece[opponent[me]])
+    $_D
+  }
+  $$ pos
+  player = keeper
+  board[pos] = piece[me]
+  if not(reachable(moveExists(opponent[me]))) {
+    goals[me] = 100
+    goals[opponent(me)] = 0
+    end()
+  }
+  me = opponent[me]
+}
+
+graph rules() {
+  loop {
+    turn()
+  }
+}

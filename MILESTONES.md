@@ -21,5 +21,10 @@
 - Updated `scripts/run.sh` so submitted jobs regenerate method artifacts before scoring, avoiding stale gitignored outputs.
 - Prepared a CPU rerun that expands the matched Table 1 subset from three to six paired HRG/RBG games.
 
+### [2026-05-31 19:34] - core_claim_plus
+- Final verification copied benchmark rule sources into tracked `data/games/` for from-scratch agents.
+- Cleaned method-agnostic problem/evaluation/scoring docs so they describe the task and metrics without exposing implementation details.
+- Re-ran standalone evaluators and `python3 validate.py --compare`; all checks passed.
+
 ## Stop Justification
-- Not stopped; continuing with an expanded CPU benchmark run beyond the current `core_claim_plus` milestone.
+- Final verification passed at `core_claim_plus`. Remaining limitations are documented in `VERIFICATION.md`.

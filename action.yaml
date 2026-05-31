@@ -2,4 +2,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Packaging audit passed: download.sh has executable public fetches, paths line up, and no shared/ references remain."
+notes: "Final verification passed; fixed portable data placement and method-agnostic documentation."
