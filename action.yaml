@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after fixing sims.py invocation: build official RG pipeline, generate C++ reasoners for two HRG games, run deterministic fixed playouts, and write scoring/scores.json."
+notes: "Retry CPU smoke job after gating wasm-only Rust dependencies and building only the native CLI: generate C++ reasoners for two HRG games, run deterministic fixed playouts, and write scoring/scores.json."

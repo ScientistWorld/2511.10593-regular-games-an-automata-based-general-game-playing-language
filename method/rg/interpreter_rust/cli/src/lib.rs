@@ -4,13 +4,20 @@ mod flags;
 pub use crate::analyze::analyze;
 pub use crate::flags::Flags;
 
+#[cfg(target_arch = "wasm32")]
 use js_sys::{Array, Function};
+#[cfg(target_arch = "wasm32")]
 use map_id::MapId;
+#[cfg(target_arch = "wasm32")]
 use rand::thread_rng;
+#[cfg(target_arch = "wasm32")]
 use rg_interpreter::Game;
+#[cfg(target_arch = "wasm32")]
 use serde_json::{from_str, json, to_string};
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::{wasm_bindgen, JsValue};
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(js_name = analyze)]
 pub fn wasm_analyze(
     source: String,
@@ -33,6 +40,7 @@ pub fn wasm_analyze(
     Ok(())
 }
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(js_name = apply)]
 pub fn wasm_apply(ast: &str, path: &str) -> Result<String, String> {
     console_error_panic_hook::set_once();
@@ -81,6 +89,7 @@ pub fn wasm_apply(ast: &str, path: &str) -> Result<String, String> {
     to_string(&result).map_err(|error| error.to_string())
 }
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(js_name = perf)]
 pub fn wasm_perf(
     ast: &str,
@@ -98,6 +107,7 @@ pub fn wasm_perf(
     Ok(())
 }
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(js_name = run)]
 pub fn wasm_run(
     ast: &str,

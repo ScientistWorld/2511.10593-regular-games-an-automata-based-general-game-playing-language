@@ -16,4 +16,8 @@
 - First CPU smoke job built the container and started the official pipeline, but failed while invoking `scripts/sims.py`.
 - Fixed the wrapper invocation and output parsing; no successful method run has completed yet.
 
+### [2026-05-31 00:00] - none
+- Second CPU smoke job reached the official Rust interpreter build, but offline Cargo resolution failed on a wasm-only dependency.
+- Gated wasm-only CLI bindings/dependencies behind `wasm32` and narrowed the upstream build step to the native CLI binary needed by the reproduction.
+
 ## Stop Justification

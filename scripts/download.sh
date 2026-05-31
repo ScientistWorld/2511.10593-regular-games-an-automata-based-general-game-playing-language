@@ -17,7 +17,8 @@ if ! command -v cargo >/dev/null 2>&1; then
 fi
 
 mkdir -p data/downloads
-if [ ! -d data/downloads/rg_cargo_vendor ]; then
+if [ ! -d data/downloads/rg_cargo_vendor ] || [ ! -e data/downloads/rg_cargo_vendor/console_error_panic_hook/.cargo-checksum.json ]; then
+  rm -rf data/downloads/rg_cargo_vendor
   (cd method/rg/interpreter_rust && cargo vendor ../../../data/downloads/rg_cargo_vendor >/dev/null)
 fi
 

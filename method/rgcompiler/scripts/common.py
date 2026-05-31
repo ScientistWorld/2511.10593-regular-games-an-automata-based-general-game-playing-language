@@ -10,7 +10,7 @@ def run(cmd):
 def buildInterpreter():
   print('Building interpreter...')
   startTime = time.time()
-  run(f'cargo build --release --manifest-path {cfg.RG_DIR}/interpreter_rust/Cargo.toml')
+  run(f'cargo build --release --manifest-path {cfg.RG_DIR}/interpreter_rust/Cargo.toml --package cli --bin cli')
   print(f'Interpreter built in {"{:6.3f}".format(time.time()-startTime)}s')
 
 def runCap(cmd):
