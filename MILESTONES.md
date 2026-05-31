@@ -48,4 +48,8 @@
 - Job `552e1382-378` generated and compiled C++ reasoners for both no-optimization and optimized HRG pipelines on Connect4 and Breakthrough.
 - The optimized pipeline reproduced the core structural claim with 44.854% fewer automaton nodes and 39.167% fewer edges, close to the paper's 47% and 41%, while both baseline and optimized reasoners completed all playouts (`playout_completion_rate = 1.0`).
 
+### [2026-05-31 17:37] - core_claim
+- Job `a0586e53-f4a` validated the reusable `scripts/reproduce.sh` path with the default 200 playouts per generated reasoner.
+- All four generated C++ reasoner runs completed 200/200 playouts and reproduced the same structural scores, so the packaged environment is usable at `core_claim`.
+
 ## Stop Justification

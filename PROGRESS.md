@@ -10,12 +10,11 @@
 
 ## Results
 
-Job `552e1382-378` reached `core_claim`. Across Connect4 and Breakthrough, the optimized HRG pipeline produced 44.854% fewer automaton nodes and 39.167% fewer automaton edges, close to the paper's reported 47% node and 41% edge reductions. Generated C++ line count also fell by 33.356%. Both the no-optimization baseline and optimized generated reasoners completed all requested playouts, so the correctness constraint is satisfied (`playout_completion_rate = 1.0`).
+Job `a0586e53-f4a` validated the full reusable reproduction path. Across Connect4 and Breakthrough, the optimized HRG pipeline produced 44.854% fewer automaton nodes and 39.167% fewer automaton edges, close to the paper's reported 47% node and 41% edge reductions. Generated C++ line count also fell by 33.356%. Both the no-optimization baseline and optimized generated reasoners completed 200/200 playouts, so the correctness constraint is satisfied (`playout_completion_rate = 1.0`).
 
 ## Remaining
 
-- Run the reusable end-to-end `scripts/reproduce.sh` path with its default 200 playouts as final packaging validation.
-- If that passes, no additional work is required for the core gym; further expansion would add more HRG games to the same experiment.
+No required work remains for `core_claim`. Further expansion would add more HRG games to the same experiment or reproduce additional paper tables.
 
 ## Issues
 
@@ -27,6 +26,7 @@ Job `552e1382-378` reached `core_claim`. Across Connect4 and Breakthrough, the o
 - Job `3e8551a2-cf4` built the image, compiled the official Rust CLI, translated HRG games to RG automata, and wrote method outputs. It still failed before valid playouts because `rg2cpp` was invoked with stale option `--simple-path`; an upstream script bug ignored that failure and tried to compile empty generated C++ files. The compiler wrapper now uses `--simple-path-compression`, checks the `rg2cpp` return value correctly, and evaluation now writes only metrics declared in `reference.json`.
 - Job `773e609f-499` showed the flag fix was necessary but not sufficient. `rg2cpp` aborted on a nlohmann JSON assertion while reading SimpleApply pragmas. The current official RG interpreter writes typed pragma variables as `{"type": ...}`, while rgcompiler expected the older `type_` field. `PragmaSimpleApplyOperator` now accepts both spellings. `method/run_experiments.py` also marks runs without completed playouts as failed, so future jobs cannot pass validation with zero correctness-constraint scores.
 - Job `552e1382-378` confirmed the SimpleApply schema bridge fixed `rg2cpp`. The smoke job completed four generated-reasoner runs with 20/20 playouts each and produced `scoring/scores.json` matching the declared scoring structure.
+- Job `a0586e53-f4a` ran `scripts/reproduce.sh` end to end with the default 200 playouts. The job completed in about four minutes and `validate.py --compare` passed all scoring and separation checks.
 
 ## Deviations from Paper
 

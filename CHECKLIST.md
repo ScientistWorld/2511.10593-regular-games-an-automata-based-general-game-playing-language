@@ -9,4 +9,4 @@
 - [x] Write environment container and setup scripts.
 - [x] Run the first successful smoke job.
 - [x] Inspect generated scores and update milestone to `core_claim`.
-- [ ] Validate the end-to-end `scripts/reproduce.sh` path with default playout count.
+- [x] Validate the end-to-end `scripts/reproduce.sh` path with default playout count.
