@@ -13,4 +13,4 @@
 - [x] Reproduce the core claim on additional HRG games (`core_claim_plus`).
 - [x] Run the broader 14-game HRG subset.
 - [x] Add a Table 1 subset benchmark harness for HRG->RG versus RBG->RG.
-- [ ] Run the Table 1 subset benchmark job and validate the resulting scores.
+- [x] Run the Table 1 subset benchmark job and validate the resulting scores.

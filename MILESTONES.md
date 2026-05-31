@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim_plus**
 
 ## Progress Log
 
@@ -10,5 +10,11 @@
 - Follow-up audit found the existing scored experiment covered the paper's optimizer-size claim but not the Section 4 Table 1 playout-throughput core claim.
 - Added a benchmark-mode Table 1 subset harness for paired HRG->RG and RBG->RG generated reasoners; a compute job is needed before claiming `core_claim`.
 
+### [2026-05-31 19:08] - core_claim_plus
+- Job `2049a1f1-1ef` completed the paired Table 1 subset benchmark for Connect Four, Breakthrough, and Yavalath.
+- HRG->RG generated reasoners averaged 560407.0 playouts/s versus 171690.333 playouts/s for matched RBG->RG generated reasoners, a 4.051x within-job speedup.
+- The benchmark completed all three matched games and `python3 validate.py --compare` passed.
+- Together with the previously validated 14-game structural optimization run, the environment supports the core Section 4 throughput claim plus an additional optimizer-size claim.
+
 ## Stop Justification
-- Not stopped; Table 1 subset benchmark job pending.
+- Stopping at `core_claim_plus`: the core HRG-vs-RBG throughput comparison is reproduced on a matched Table 1 subset, and a broader HRG structural optimization experiment is reproduced. Higher milestones would require adding native RBG/Ludii baselines or more of the full Table 1 game matrix.

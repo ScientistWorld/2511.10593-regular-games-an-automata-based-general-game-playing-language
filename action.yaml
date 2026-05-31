@@ -1,8 +1,6 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
-gpus: 0
-test: true
-milestone: method_runs
-notes: "Run the new Table 1 subset benchmark: paired HRG->RG and RBG->RG generated C++ reasoners for Connect Four, Breakthrough, and Yavalath, then evaluate and validate scores."
+action: done
+milestone: core_claim_plus
+notes: "Job 2049a1f1-1ef reproduced the core HRG-vs-RBG Table 1 subset throughput claim with a 4.051x within-job speedup and completed validation; the environment also retains the broader 14-game structural optimization reproduction."
