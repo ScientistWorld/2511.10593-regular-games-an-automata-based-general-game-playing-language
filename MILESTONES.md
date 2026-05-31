@@ -18,5 +18,10 @@
 - The optimized pipeline averaged 49.427% fewer automaton nodes and 44.911% fewer automaton edges, exceeding the paper's reported 47% and 41% HRG structural reductions on this subset.
 - The correctness constraint still held: all baseline and optimized generated reasoners completed 200/200 deterministic playouts.
 
+### [2026-05-31 18:45] - core_claim_plus
+- Expanded the same experiment to 14 HRG games from the paper's benchmark set.
+- The optimized pipeline averaged 48.942% fewer automaton nodes, 44.325% fewer automaton edges, and 39.930% fewer generated C++ lines.
+- All 28 generated reasoner variants completed 200/200 deterministic playouts and `validate.py --compare` passed.
+
 ## Stop Justification
 - Completed at milestone `core_claim_plus`.

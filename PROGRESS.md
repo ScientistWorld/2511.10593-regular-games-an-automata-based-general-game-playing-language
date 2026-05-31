@@ -14,9 +14,11 @@ Job `a0586e53-f4a` validated the full reusable reproduction path. Across Connect
 
 Job `2e7a31ea-181` expanded the same experiment to six HRG games: Connect4, Breakthrough, Hex, Yavalath, Tic-Tac-Toe, and Tic-Tac-Die. The optimized pipeline averaged 49.427% fewer automaton nodes, 44.911% fewer automaton edges, and 39.283% fewer generated C++ lines, with `playout_completion_rate = 1.0` for every baseline and optimized reasoner. This supports `core_claim_plus`.
 
+Job `b2caa90d-a53` expanded the same experiment to 14 HRG games. The optimized pipeline averaged 48.942% fewer automaton nodes, 44.325% fewer automaton edges, and 39.930% fewer generated C++ lines. Every one of the 28 baseline/optimized generated reasoners completed 200/200 deterministic playouts, and `validate.py --compare` passed.
+
 ## Remaining
 
-No required work remains for `core_claim_plus`. A broader CPU run is queued to extend the same experiment to 14 HRG games from the paper's benchmark set.
+No required work remains for `core_claim_plus`. Higher milestones would require adding a separate speed-oriented reproduction of Table 1 against RBG/Ludii or reproducing additional paper tables; this environment intentionally avoids scoring wall-clock throughput because hardware varies across jobs.
 
 ## Issues
 
@@ -32,6 +34,7 @@ No required work remains for `core_claim_plus`. A broader CPU run is queued to e
 - Continuation audit restored confidence in `core_claim`: `method/run_experiments.py` uses the official HRG/RG optimizer, `rg2cpp` compiler, generated C++ reasoner compilation, and fixed playout checker; `eval/evaluate_results.py` reads only method-produced artifacts and `validate.py --compare` passes.
 - Job `2e7a31ea-181` completed the six-game expansion in about 12 minutes on CPU and `validate.py --compare` passed.
 - Job `279135c0-94d` was cancelled after 20 minutes because no method progress had appeared in stdout. The cause was the experiment wrapper buffering subprocess output until each command completed, making normal rebuild/compile work indistinguishable from a hang during scheduler progress checks. `method/run_experiments.py` now streams subprocess output and emits per-game/per-variant progress lines.
+- Job `b2caa90d-a53` reran the broader 14-game subset with streamed progress and completed in about 26 minutes on CPU.
 
 ## Deviations from Paper
 
