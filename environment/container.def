@@ -26,6 +26,8 @@ From: rust:1.89-bookworm
 # in which case use 'devel' (~4 GB).
 
 %files
+    method/rg/interpreter_rust /opt/rg_interpreter_rust
+
     # Data that the agent can see (training data + test features only)
     # data/train.csv /home/user/data/train.csv
     # data/test_features.csv /home/user/data/test_features.csv
@@ -59,10 +61,15 @@ From: rust:1.89-bookworm
 
     # *** DO NOT put pip install here. Use setup.sh instead. ***
 
+    cd /opt/rg_interpreter_rust && \
+        CARGO_NET_OFFLINE=false cargo fetch --locked --target x86_64-unknown-linux-gnu && \
+        rm -rf /opt/rg_interpreter_rust
+
     mkdir -p /home/user/data
     chmod 755 /home/user
 
 %environment
     export HOME=/home/user
     export PYTHONUNBUFFERED=1
+    export CARGO_HOME=/usr/local/cargo
     export CARGO_NET_OFFLINE=true

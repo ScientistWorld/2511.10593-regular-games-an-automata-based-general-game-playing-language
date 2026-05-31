@@ -22,6 +22,10 @@
 
 ### [2026-05-31 00:00] - none
 - Third CPU smoke job failed on `rand`, showing the ignored Cargo vendor tree was absent from the compute checkout.
-- Removed the vendored-source override and added a setup-time Cargo fetch so offline compute builds resolve native Rust crates from the persistent container cache.
+- Removed the vendored-source override and moved Cargo dependency prefetching into the container build so offline compute builds resolve native Rust crates from the image cache.
+
+### [2026-05-31 00:00] - none
+- Fourth CPU smoke job still failed on `rand`, showing the setup overlay cache was not being used by the job.
+- Updated `environment/container.def` to prefetch Cargo crates during image build and set `CARGO_HOME` explicitly for runtime.
 
 ## Stop Justification

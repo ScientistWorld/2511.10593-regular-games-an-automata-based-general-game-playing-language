@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after prefetching Rust crates into the container overlay and removing the vendored-source override: build native RG CLI, generate C++ reasoners, run fixed playouts, and write scoring/scores.json."
+notes: "Retry CPU smoke job after moving Cargo prefetch into the Apptainer image build: build native RG CLI from image-cached crates, generate C++ reasoners, run fixed playouts, and write scoring/scores.json."
