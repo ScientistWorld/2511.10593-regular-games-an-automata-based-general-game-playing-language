@@ -26,5 +26,10 @@
 - Cleaned method-agnostic problem/evaluation/scoring docs so they describe the task and metrics without exposing implementation details.
 - Re-ran standalone evaluators and `python3 validate.py --compare`; all checks passed.
 
+### [2026-05-31 19:47] - core_claim_plus
+- Local validation still passes for the committed three-game matched benchmark artifact and train/test slices.
+- Prepared a CPU rerun with the existing entrypoint's broader six-game Table 1 matched benchmark configuration.
+- Current milestone remains `core_claim_plus` until that expansion job returns with measured results.
+
 ## Stop Justification
-- Completed at milestone `core_claim_plus`.
+- Not stopping on this turn: a broader CPU-only benchmark expansion is available and has been submitted.
