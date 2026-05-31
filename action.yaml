@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after switching container Cargo prefetch to the official RG repository lockfile so offline builds include target-specific crates."
+notes: "Retry CPU smoke job after fixing the rg2cpp flag name and error check so generated C++ reasoners compile and playout metrics are real."

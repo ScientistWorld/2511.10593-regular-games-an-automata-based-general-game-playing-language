@@ -21,13 +21,7 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, float]:
         "automaton_node_reduction_pct": avg(rows, "automaton_nodes_reduction_pct"),
         "automaton_edge_reduction_pct": avg(rows, "automaton_edges_reduction_pct"),
         "generated_cpp_line_reduction_pct": avg(rows, "generated_cpp_lines_reduction_pct"),
-        "generated_cpp_byte_reduction_pct": avg(rows, "generated_cpp_bytes_reduction_pct"),
         "playout_completion_rate": avg(rows, "playout_completion_rate"),
-        "simulations_completed": avg(rows, "simulations_completed"),
-        "states_visited": avg(rows, "states_visited"),
-        "generated_cpp_lines": avg(rows, "generated_cpp_lines"),
-        "automaton_nodes": avg(rows, "automaton_nodes"),
-        "automaton_edges": avg(rows, "automaton_edges"),
     }
 
 

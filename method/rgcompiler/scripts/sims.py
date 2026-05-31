@@ -207,8 +207,8 @@ for game in games:
     print(f' | rg2cpp ',end='',flush=True)
     startTime = time.time()
     result = rg2cpp(game, cfg.DEFAULT_RG2CPP_OPTIONS + ' ' + cfg.DEBUG_RG2CPP_OPTIONS, True)
-    if error != None:
-      print(f'\n{util.ERROR} {util.CYAN}{error}{util.RESET}')
+    if result != None:
+      print(f'\n{util.ERROR} {util.CYAN}{result}{util.RESET}')
       continue
     elapsedTime = time.time() - startTime
     print(TIME_FORMATTER.format(elapsedTime),end='',flush=True)
