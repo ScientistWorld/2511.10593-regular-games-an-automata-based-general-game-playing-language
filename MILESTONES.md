@@ -27,4 +27,4 @@
 - Re-ran standalone evaluators and `python3 validate.py --compare`; all checks passed.
 
 ## Stop Justification
-- Final verification passed at `core_claim_plus`. Remaining limitations are documented in `VERIFICATION.md`.
+- Completed at milestone `core_claim_plus`.
