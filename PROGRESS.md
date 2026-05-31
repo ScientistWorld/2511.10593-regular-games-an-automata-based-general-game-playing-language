@@ -18,7 +18,8 @@ No compute job results have returned yet. The next submitted CPU job will build 
 
 ## Issues
 
-None currently identified beyond the need to validate the container build and offline Rust/C++ compilation on a compute node.
+- Continuation audit found no `method/outputs/results.json`, no `scoring/scores.json`, and no returned job logs. The implementation is staged but has not yet demonstrated `method_runs`.
+- Fixed a portability issue in `scripts/download.sh`: it now creates `tmp/` before downloading `rustup-init.sh` on a fresh checkout.
 
 ## Deviations from Paper
 

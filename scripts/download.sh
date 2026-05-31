@@ -9,6 +9,7 @@ cd /home/user
 [ -d method/rgcompiler ] || git clone --depth 1 https://github.com/WoojtekP/RGcompiler method/rgcompiler
 
 if ! command -v cargo >/dev/null 2>&1; then
+  mkdir -p tmp
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o tmp/rustup-init.sh
   sh tmp/rustup-init.sh -y --default-toolchain 1.89.0 --profile minimal
   # shellcheck disable=SC1091
