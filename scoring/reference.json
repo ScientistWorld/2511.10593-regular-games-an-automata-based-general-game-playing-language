@@ -2,6 +2,7 @@
   "experiments": {
     "hrg_optimization_structure": {
       "description": "Automaton and generated-model compactness for HRG games after the paper's optimizer and rg2cpp compiler pipeline. The paper reports mean HRG optimization reductions of 47% fewer nodes and 41% fewer edges; fixed playout completion is a correctness constraint for the generated reasoner.",
+      "notes": "The paper reports automaton node and edge reductions for HRG games. Generated C++ line reduction is a machine-independent supplemental gym metric computed from reproduced artifacts, so the reference value is left at 0.0 rather than treated as a published number.",
       "weight": 0.35,
       "primary_metric": "automaton_edge_reduction_pct",
       "metrics": {
@@ -29,6 +30,7 @@
     },
     "table1_playout_throughput_subset": {
       "description": "Section 4 / Table 1 matched HRG and RBG source-language benchmark on a subset of games. The paper reports playout throughput; this gym keeps throughput as supporting context but scores machine-independent generated-code and automaton-size advantages to avoid hardware-dependent ranking.",
+      "notes": "Table 1 reports wall-clock playout throughput. Because throughput is hardware-dependent, the nonzero scoring metrics for this gym are derived from the same matched generated artifacts: generated C++ line advantage and automaton edge advantage. Raw throughput fields are retained with zero coefficient for context only.",
       "weight": 0.65,
       "primary_metric": "generated_cpp_line_advantage_vs_rbg_pct",
       "metrics": {

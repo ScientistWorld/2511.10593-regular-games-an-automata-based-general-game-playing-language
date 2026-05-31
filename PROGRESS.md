@@ -23,7 +23,7 @@ Job `2049a1f1-1ef` ran the new paired Table 1 subset benchmark on Connect Four, 
 
 ## Remaining
 
-No required work remains for `core_claim_plus`. The reusable environment now scores both the Section 4 HRG-vs-RBG playout-throughput comparison on a matched three-game subset and the optimizer-size/correctness experiment on HRG games. The next submitted CPU job attempts to expand the matched Table 1 subset to six paired HRG/RBG games using the current `scripts/run.sh` entrypoint. Higher milestones beyond that would require extending the benchmark matrix toward all Table 1 games and packaging additional baselines that are not currently available in the official RG source tree, especially native RBG and Ludii.
+No required work remains for `core_claim_plus`. The reusable environment now scores both the Section 4 HRG-vs-RBG playout-throughput comparison on a matched three-game subset and the optimizer-size/correctness experiment on HRG games. Higher milestones beyond that would require extending the benchmark matrix toward all Table 1 games and packaging additional baselines that are not currently available in the official RG source tree, especially native RBG and Ludii.
 
 ## Issues
 

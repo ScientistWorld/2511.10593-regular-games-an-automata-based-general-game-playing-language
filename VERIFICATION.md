@@ -2,26 +2,25 @@
 
 ## Initial Assessment
 
-The workspace already had a justified `core_claim_plus` reproduction: the official implementation path runs end to end, the committed score artifact supports the core matched-source claim plus a structural compactness claim, and `python3 validate.py --compare` passed. The main remaining risks were gym-readiness issues rather than reproduction correctness.
+The workspace started this verification at `core_claim_plus`. That milestone is justified: the method code runs the paper's official rule-to-reasoner pipeline, `scores.json` contains a successful structural compactness experiment plus a matched Table 1 subset, and `python3 validate.py --compare` passes.
 
 ## Issues Found
 
-- Minor: selected benchmark rule files were only available through the paper-method checkout, making from-scratch use less self-contained.
-- Minor: several from-scratch-facing documents used implementation-specific wording that could leak the paper approach.
-- Cosmetic: `scoring/EXPERIMENTS.md` described the larger historical 14-file run, while the committed baseline score artifact is regenerated from the current representative subset.
+- Minor: `scoring/reference.json` used machine-independent substitute metrics for generated source size and automaton size where the paper reports wall-clock playout throughput. This is the right scoring choice for the gym, but it needed explicit notes so the values are not mistaken for direct published table entries.
+- Minor: `MILESTONES.md`, `PROGRESS.md`, and `action.yaml` still reflected an optional benchmark-expansion submission rather than final verification.
 
 ## Fixes Applied
 
-- Copied the selected rule sources into tracked `data/games/` so future methods can load the benchmark data without importing from `method/`.
-- Tightened `briefing/evaluation.md`, `scoring/EXPERIMENTS.md`, `scoring/TARGETS.md`, `scoring/CONSTRAINTS.md`, and `scoring/DIRECTION.md` to describe the task, constraints, and research direction without exposing implementation details.
-- Updated `MILESTONES.md`, `PROGRESS.md`, and `CHECKLIST.md` to document the final verification state and the current scored subset.
-- Re-ran `bash scripts/evaluate.sh method/outputs/results.json`, `bash scripts/evaluate_train.sh method/outputs/results.json`, `bash scripts/evaluate_test.sh method/outputs/results.json`, shell syntax checks, Python compile checks, URL checks for `scripts/download.sh`, shared-path grep, and `python3 validate.py --compare`.
+- Added `notes` fields in `scoring/reference.json` explaining which values are directly paper-reported and which are machine-independent substitute metrics computed from reproduced artifacts.
+- Updated milestone/progress text to record final verification and remove stale pending-submission language.
+- Rechecked `scripts/download.sh` URLs with `curl -I -L --max-time 15`; the RG repository, RGcompiler repository, and rustup installer all returned HTTP 200.
+- Re-ran `python3 validate.py --compare`; scoring, import separation, train/test independence, shared-path checks, and method-key checks all passed.
 
 ## Final Judgment
 
-The workspace is ready to serve as a research gym. Improve-mode agents can build on the packaged method, and from-scratch agents have method-agnostic problem/evaluation docs, portable benchmark data, and a reusable evaluator that reads submitted artifacts rather than importing the paper method. Scoring avoids wall-clock-dependent ranking by assigning zero coefficient to throughput diagnostics and using machine-independent generated-model compactness metrics plus completion constraints.
+The workspace is ready to serve as a research gym. Improve-mode agents can build on the packaged paper method, and from-scratch agents have portable rule files, method-agnostic problem/evaluation documentation, and evaluators that score submitted artifacts without importing from `method/`. Scored metrics avoid wall-clock-dependent ranking; throughput remains diagnostic with zero coefficient.
 
 - Milestone: core_claim_plus
 - Ready for gym use: yes
 - Confidence: high
-- Key limitation: the committed gym baseline is a representative subset; broader 14-game structural results are documented in job history but not the current `scores.json`.
+- Key limitation: the committed baseline covers a representative matched subset rather than the full Table 1 benchmark.

@@ -1,5 +1,5 @@
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "CPU expansion run: regenerate method outputs and score the broader six-game matched Table 1 subset configured in scripts/run.sh."
+notes: "Final verification passed; workspace is ready for gym use at core_claim_plus."

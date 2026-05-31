@@ -31,5 +31,10 @@
 - Prepared a CPU rerun with the existing entrypoint's broader six-game Table 1 matched benchmark configuration.
 - Current milestone remains `core_claim_plus` until that expansion job returns with measured results.
 
+### [2026-05-31 19:55] - core_claim_plus
+- Final verification rechecked validation, method/evaluation separation, download URL reachability, train/test artifacts, and method-agnostic documentation.
+- Added explicit notes for machine-independent substitute metrics in `scoring/reference.json`.
+- No reproduction downgrade was needed; the validated gym baseline remains the committed three-game matched Table 1 subset plus the structural compactness experiment.
+
 ## Stop Justification
-- Not stopping on this turn: a broader CPU-only benchmark expansion is available and has been submitted.
+- Final verification passed at `core_claim_plus`; broader benchmark expansion remains optional future work.
