@@ -1,9 +1,4 @@
-# This iteration writes files only — do NOT submit compute jobs.
-# Once you set action to 'done', STOP immediately.
-# Do NOT sleep, poll, or wait. The system reads this file
-# only after your turn ends.
-action: done
+action: submit
 gpus: 0
 test: false
-milestone: core_claim_plus
-notes: "Improvements: self-contained test evaluator, game-held-out Table 1 split, slice metadata, machine-independent Table 1 structural metrics, complete metric descriptions. Notes: held-out Table 1 slice remains small; TARGETS.md still names throughput primary because it was out of scope for this edit-only pass."
+notes: "Run evaluate_train.sh and evaluate_test.sh against method/outputs/results.json to populate split scores."

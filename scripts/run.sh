@@ -2,9 +2,5 @@
 set -euo pipefail
 
 cd /home/user
-export GAMES="${GAMES:-connect4.hrg breakthrough.hrg yavalath.hrg}"
-export SIMS="${SIMS:-100}"
-export BENCHMARK_GAMES="${BENCHMARK_GAMES:-connect4.hrg breakthrough.hrg yavalath.hrg}"
-export BENCHMARK_SECONDS="${BENCHMARK_SECONDS:-10}"
-export BENCHMARK_REPEATS="${BENCHMARK_REPEATS:-2}"
-bash scripts/reproduce.sh
+bash scripts/evaluate_train.sh /home/user/method/outputs/results.json
+bash scripts/evaluate_test.sh /home/user/method/outputs/results.json
