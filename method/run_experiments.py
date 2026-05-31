@@ -23,6 +23,15 @@ VARIANTS = {
     "hrg_rg_optimized": "--enable-all-optimizations --enable-all-pragmas",
 }
 
+TABLE1_RBG_PAIRS = {
+    "breakthrough.hrg": "breakthrough.rbg",
+    "connect4.hrg": "connect4.rbg",
+    "yavalath.hrg": "yavalath.rbg",
+    "reversi.hrg": "reversi.rbg",
+    "hex.hrg": "hex.rbg",
+    "knightthrough.hrg": "knightthrough.rbg",
+}
+
 
 def run(cmd: list[str], cwd: Path, *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
     merged_env = os.environ.copy()
@@ -56,6 +65,9 @@ def game_path(game: str) -> Path:
     if path.is_absolute():
         return path
     if len(path.parts) == 1:
+        suffix = path.suffix.lstrip(".")
+        if suffix in {"hrg", "rbg", "kif", "rg"}:
+            return RG_ROOT / "games" / suffix / game
         return RG_ROOT / "games" / "hrg" / game
     return RG_ROOT / "games" / path
 
@@ -108,6 +120,24 @@ def parse_sims_output(output: str, requested: int) -> dict[str, Any]:
     elapsed = re.search(r"\|\s*sims\s+([0-9.]+)s", output)
     if elapsed:
         metrics["raw_sims_elapsed_seconds"] = float(elapsed.group(1))
+    throughput = re.search(
+        r"\|\s*sims\s+([0-9.]+)s\s+([0-9 .]+?)\s+states/s\s+([0-9 .]+?)\s+sims/s",
+        output,
+    )
+    if throughput:
+        elapsed_seconds = float(throughput.group(1))
+        states_per_second = float(throughput.group(2).replace(" ", ""))
+        sims_per_second = float(throughput.group(3).replace(" ", ""))
+        metrics.update(
+            {
+                "raw_sims_elapsed_seconds": elapsed_seconds,
+                "states_per_second": states_per_second,
+                "sims_per_second": sims_per_second,
+                "simulations_completed": int(round(sims_per_second * max(elapsed_seconds, 0.001))),
+                "states_visited": int(round(states_per_second * max(elapsed_seconds, 0.001))),
+                "playout_completion_rate": 1.0 if sims_per_second > 0 else 0.0,
+            }
+        )
     fixed_work = re.search(r"sims:\s+(\d+)\s+states:\s+(\d+)", output)
     if fixed_work:
         completed = int(fixed_work.group(1))
@@ -156,19 +186,30 @@ def clean_build_test() -> None:
                 path.unlink()
 
 
-def run_variant(game: str, variant: str, transform_flags: str, sims: int) -> dict[str, Any]:
+def run_variant(
+    game: str,
+    variant: str,
+    transform_flags: str,
+    sims: int,
+    *,
+    experiment: str = "hrg_optimization_structure",
+    compile_mode: str = "test",
+    repeat: int = 1,
+) -> dict[str, Any]:
     clean_build_test()
     game_file = game_path(game)
-    print(f"[variant] game={game_file.name} method={variant} sims={sims}", flush=True)
-    command = ["python3", "scripts/sims.py", game_file.name, str(sims), "--test", f"-t={transform_flags}"]
+    print(f"[variant] game={game_file.name} method={variant} mode={compile_mode} limit={sims}", flush=True)
+    command = ["python3", "scripts/sims.py", game_file.name, str(sims), f"--{compile_mode}", f"-t={transform_flags}"]
     proc = run(command, cwd=COMPILER_ROOT)
     ast_file = COMPILER_ROOT / "build-test" / f"{game_file.name}.json"
     result: dict[str, Any] = {
-        "experiment": "hrg_optimization_structure",
+        "experiment": experiment,
         "method": variant,
         "game": game_file.name,
+        "repeat": repeat,
         "source_path": str(game_file.relative_to(ROOT)),
         "transform_flags": transform_flags,
+        "compile_mode": compile_mode,
         "build_success": 1,
         "raw_log": proc.stdout,
     }
@@ -178,6 +219,38 @@ def run_variant(game: str, variant: str, transform_flags: str, sims: int) -> dic
         result.update(ast_stats(ast_file))
     result.update(file_metrics(COMPILER_ROOT / "build-test" / "reasoner"))
     return result
+
+
+def run_table1_subset(games: list[str], seconds: float, repeats: int) -> list[dict[str, Any]]:
+    runs: list[dict[str, Any]] = []
+    limit = f"{seconds:g}s"
+    for repeat in range(1, repeats + 1):
+        for hrg_game in games:
+            runs.append(
+                run_variant(
+                    hrg_game,
+                    "hrg_rg_table1_subset",
+                    VARIANTS["hrg_rg_optimized"],
+                    limit,
+                    experiment="table1_playout_throughput_subset",
+                    compile_mode="benchmark",
+                    repeat=repeat,
+                )
+            )
+            rbg_game = TABLE1_RBG_PAIRS.get(Path(hrg_game).name)
+            if rbg_game:
+                runs.append(
+                    run_variant(
+                        rbg_game,
+                        "rbg_rg_table1_subset",
+                        VARIANTS["hrg_rg_optimized"],
+                        limit,
+                        experiment="table1_playout_throughput_subset",
+                        compile_mode="benchmark",
+                        repeat=repeat,
+                    )
+                )
+    return runs
 
 
 def compute_reductions(runs: list[dict[str, Any]]) -> None:
@@ -199,6 +272,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--games", nargs="+", default=["connect4.hrg", "breakthrough.hrg"])
     parser.add_argument("--sims", type=int, default=200)
+    parser.add_argument("--benchmark-games", nargs="+", default=[])
+    parser.add_argument("--benchmark-seconds", type=float, default=0.0)
+    parser.add_argument("--benchmark-repeats", type=int, default=3)
     parser.add_argument("--output", default=str(OUT_DIR / "results.json"))
     args = parser.parse_args()
 
@@ -209,6 +285,8 @@ def main() -> None:
     for game in args.games:
         for variant, flags in VARIANTS.items():
             runs.append(run_variant(game, variant, flags, args.sims))
+    if args.benchmark_games and args.benchmark_seconds > 0:
+        runs.extend(run_table1_subset(args.benchmark_games, args.benchmark_seconds, args.benchmark_repeats))
     compute_reductions(runs)
 
     payload = {
@@ -216,7 +294,9 @@ def main() -> None:
             "created_utc": datetime.now(timezone.utc).isoformat(),
             "paper": "Regular Games - an Automata-Based General Game Playing Language",
             "sims_per_variant": args.sims,
-            "notes": "Official RG interpreter, HRG optimizer, rg2cpp compiler, and C++ reasoner pipeline.",
+            "benchmark_seconds": args.benchmark_seconds,
+            "benchmark_repeats": args.benchmark_repeats,
+            "notes": "Official RG interpreter, HRG/RBG optimizers, rg2cpp compiler, and C++ reasoner pipeline.",
         },
         "runs": runs,
     }

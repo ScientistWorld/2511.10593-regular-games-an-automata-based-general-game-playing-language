@@ -5,6 +5,7 @@
 - Official source snapshots are staged in `method/rg` and `method/rgcompiler`.
 - The container build prefetches the Rust crates needed by the native Regular Games CLI, allowing offline builds on compute nodes.
 - `method/run_experiments.py` drives the paper's actual pipeline: HRG parsing, RG optimization, `rg2cpp` C++ generation, C++ compilation, and deterministic playout checks.
+- The method wrapper now also drives the official benchmark-mode playout path for a Table 1 subset, comparing paired HRG->RG and RBG->RG generated reasoners.
 - `eval/evaluate_results.py` scores only method-produced artifacts and does not import from `method/`.
 - The C++ reasoner pipeline now compiles and completes deterministic playouts for both no-optimization and optimized variants.
 
@@ -18,7 +19,7 @@ Job `b2caa90d-a53` expanded the same experiment to 14 HRG games. The optimized p
 
 ## Remaining
 
-No required work remains for `core_claim_plus`. Higher milestones would require adding a separate speed-oriented reproduction of Table 1 against RBG/Ludii or reproducing additional paper tables; this environment intentionally avoids scoring wall-clock throughput because hardware varies across jobs.
+Run the new `table1_playout_throughput_subset` job and inspect whether HRG->RG beats the matched RBG->RG generated reasoners on Connect Four, Breakthrough, and Yavalath. Claim `core_claim` only after that job writes a `scores.json` entry for the Table 1 subset and `validate.py --compare` passes.
 
 ## Issues
 
@@ -35,7 +36,8 @@ No required work remains for `core_claim_plus`. Higher milestones would require 
 - Job `2e7a31ea-181` completed the six-game expansion in about 12 minutes on CPU and `validate.py --compare` passed.
 - Job `279135c0-94d` was cancelled after 20 minutes because no method progress had appeared in stdout. The cause was the experiment wrapper buffering subprocess output until each command completed, making normal rebuild/compile work indistinguishable from a hang during scheduler progress checks. `method/run_experiments.py` now streams subprocess output and emits per-game/per-variant progress lines.
 - Job `b2caa90d-a53` reran the broader 14-game subset with streamed progress and completed in about 26 minutes on CPU.
+- Follow-up audit found the existing scoring covered the Section 3.3 structural optimization claim, not the Section 4 Table 1 playout-throughput core claim. Added `table1_playout_throughput_subset` to `reference.json`, `TARGETS.md`, and the evaluator, using within-job HRG/RBG throughput ratio as the primary benefit metric and benchmark completion as the constraint.
 
 ## Deviations from Paper
 
-The paper's primary table reports playouts per second. This workspace records raw timing in method logs but does not score wall-clock speed, because hardware differs across jobs. The scored reproduction uses the paper's reported HRG structural optimization claim: 47% fewer nodes and 41% fewer edges after optimization, with generated playout completion as a correctness constraint.
+The paper's primary table reports playouts per second. The new Table 1 subset uses shorter benchmark windows by default (`BENCHMARK_SECONDS=10` in `scripts/method.sh`, overrideable to 60 seconds) and scores the within-job HRG/RBG speedup ratio rather than raw wall-clock rates. Ludii and native RBG baselines are not packaged; the implemented baseline is the paper's RBG->RG translation path, which is available in the official RG source tree.

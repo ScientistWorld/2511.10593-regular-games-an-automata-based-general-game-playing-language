@@ -2,7 +2,7 @@
   "experiments": {
     "hrg_optimization_structure": {
       "description": "Automaton and generated-model compactness for HRG games after the paper's optimizer and rg2cpp compiler pipeline. The paper reports mean HRG optimization reductions of 47% fewer nodes and 41% fewer edges; fixed playout completion is a correctness constraint for the generated reasoner.",
-      "weight": 1.0,
+      "weight": 0.35,
       "primary_metric": "automaton_edge_reduction_pct",
       "metrics": {
         "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8},
@@ -24,6 +24,36 @@
           "automaton_edge_reduction_pct": 41.0,
           "generated_cpp_line_reduction_pct": 0.0,
           "playout_completion_rate": 1.0
+        }
+      }
+    },
+    "table1_playout_throughput_subset": {
+      "description": "Section 4 / Table 1 flat Monte Carlo playout benchmark on a matched subset (Connect Four, Breakthrough, Yavalath). The paper reports HRG->RG and RBG->RG playouts per second from three 1-minute runs; this gym scores the within-run HRG/RBG speedup ratio to reduce hardware dependence and keeps raw rates as supporting metrics.",
+      "weight": 0.65,
+      "primary_metric": "speedup_vs_rbg_rg",
+      "metrics": {
+        "speedup_vs_rbg_rg": {"higher_is_better": true, "coefficient": 1.0},
+        "sims_per_second": {"higher_is_better": true, "coefficient": 0.0},
+        "states_per_second": {"higher_is_better": true, "coefficient": 0.0},
+        "benchmark_completion_rate": {"higher_is_better": true, "coefficient": 0.5},
+        "games_completed": {"higher_is_better": true, "coefficient": 0.2}
+      },
+      "results": {
+        "rbg_rg_table1_subset": {
+          "type": "baseline",
+          "speedup_vs_rbg_rg": 1.0,
+          "sims_per_second": 187241.0,
+          "states_per_second": 0.0,
+          "benchmark_completion_rate": 1.0,
+          "games_completed": 3.0
+        },
+        "hrg_rg_table1_subset": {
+          "type": "proposed",
+          "speedup_vs_rbg_rg": 4.253984075040034,
+          "sims_per_second": 598187.3333333334,
+          "states_per_second": 0.0,
+          "benchmark_completion_rate": 1.0,
+          "games_completed": 3.0
         }
       }
     }

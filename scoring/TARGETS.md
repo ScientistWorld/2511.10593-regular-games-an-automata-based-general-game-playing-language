@@ -13,3 +13,18 @@ Secondary benefit metrics:
 
 Constraint metric:
 - `playout_completion_rate`: generated C++ reasoners must complete deterministic fixed-count random playouts. A compact model that cannot produce legal playouts is not a valid improvement.
+
+## table1_playout_throughput_subset
+
+Run the paper's flat Monte Carlo playout benchmark through the official generated C++ reasoner path on a matched subset of games with both HRG and RBG source descriptions.
+
+Primary benefit metric:
+- `speedup_vs_rbg_rg`: mean per-game ratio of HRG->RG playout throughput to RBG->RG playout throughput from the same job.
+
+Supporting metrics:
+- `sims_per_second`
+- `states_per_second`
+- `games_completed`
+
+Constraint metric:
+- `benchmark_completion_rate`: benchmark-mode generated reasoners must complete positive playout work for every selected game and source language.
