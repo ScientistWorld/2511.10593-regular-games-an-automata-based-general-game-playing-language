@@ -6,4 +6,4 @@ This experiment checks whether a game-rule compiler can reduce the structural si
 
 ## table1_playout_throughput_subset
 
-This experiment checks the paper's main benchmark form on a small matched subset of games that have both HRG and RBG descriptions. Each source is translated through the same Regular Games compiler path, compiled in benchmark mode, and run for fixed-time random playouts. Scores emphasize the within-job speedup ratio so future agents must improve the generated forward model relative to the matched RBG-translated baseline, not just rely on faster hardware.
+This experiment checks the paper's matched-source benchmark form on a small subset of games that have both HRG and RBG descriptions. Scores emphasize machine-independent generated-code and automaton-size advantages over the matched RBG-translated baseline, while playout throughput and raw game counts remain diagnostic fields rather than ranking metrics.

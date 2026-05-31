@@ -38,7 +38,7 @@
         "sims_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw simulation throughput retained only for diagnostics and not used for scoring."},
         "states_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw state-throughput retained only for diagnostics and not used for scoring."},
         "benchmark_completion_rate": {"higher_is_better": true, "coefficient": 0.5, "description": "Fraction of selected generated reasoners that complete benchmark-mode playout work without pipeline errors."},
-        "games_completed": {"higher_is_better": true, "coefficient": 0.2, "description": "Number of selected matched games with positive completed benchmark work."}
+        "games_completed": {"higher_is_better": true, "coefficient": 0.0, "description": "Number of selected matched games with positive completed benchmark work, retained only as diagnostic context because train and test slices contain different game counts."}
       },
       "results": {
         "rbg_rg_table1_subset": {

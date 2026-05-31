@@ -24,3 +24,10 @@
 - The held-out Table 1 slice is only one game (`connect4`) because the current default benchmark artifact covers three matched games. This is intentional for anti-shortcut pressure but small; if future runs expand `BENCHMARK_GAMES`, the split should be expanded while keeping test games hidden.
 - `scoring/TARGETS.md` still describes `speedup_vs_rbg_rg` as the primary Table 1 benefit metric. I did not edit it because this iteration's allowed edit set excluded `scoring/TARGETS.md`; the scoring schema now treats throughput as diagnostic and uses generated-code compactness as the scored machine-independent proxy.
 - The evaluators assume method artifacts retain the existing row schema: `experiment`, `method`, `game`, `generated_cpp_lines`, `automaton_edges`, playout completion fields, and optional throughput fields.
+
+## Runner Iteration Results
+
+- Job `7e3746a0-4b8` ran `scripts/evaluate_train.sh` and `scripts/evaluate_test.sh` successfully on CPU against `method/outputs/results.json`.
+- Both `scoring/scores_train.json` and `scoring/scores_test.json` contain complete numeric values for all expected method identifiers; no `null` scores were emitted.
+- Train/test values are distinct rather than byte-identical. Structural optimization reductions are close across slices; Table 1 generated-code and automaton advantages are higher on held-out `connect4`, reflecting the intentionally small one-game test slice.
+- After observing the run, `games_completed` was changed to diagnostic-only because train and test contain different numbers of games, making raw counts non-comparable as a scored metric.
