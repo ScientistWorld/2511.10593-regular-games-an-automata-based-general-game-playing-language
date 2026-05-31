@@ -47,30 +47,12 @@ From: rust:1.89-bookworm
 
     # Compute nodes are offline. Prefetch the crates needed to build the
     # Regular Games CLI at runtime, without depending on host-side %files.
-    mkdir -p /tmp/rg_cargo_prefetch/src && \
-    cat > /tmp/rg_cargo_prefetch/Cargo.toml <<'EOF'
-[package]
-name = "rg-cargo-prefetch"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-clap = { version = "4.5.21", features = ["derive"] }
-rand = { version = "0.8.5", features = ["small_rng"] }
-schemars = "1.2.1"
-serde = { version = "1.0.152", features = ["derive", "rc"] }
-serde_json = "1.0.91"
-web-time = "1.1.0"
-nom = "8.0.0"
-nom-language = "0.1.0"
-nom_locate = "5.0.0"
-natord = "1.0.9"
-quote = "1.0.23"
-syn = "2.0.68"
-EOF
-    echo 'fn main() {}' > /tmp/rg_cargo_prefetch/src/main.rs && \
-        cd /tmp/rg_cargo_prefetch && \
-        CARGO_NET_OFFLINE=false cargo fetch --target x86_64-unknown-linux-gnu && \
+    # The official repository lockfile lets Cargo fetch yanked historical
+    # crates that cannot be selected from a synthetic manifest.
+    git clone https://github.com/radekmie/rg /tmp/rg_cargo_prefetch && \
+        cd /tmp/rg_cargo_prefetch/interpreter_rust && \
+        git checkout 915b69c835c38312cfeeac45b5774f45da17eff8 && \
+        CARGO_NET_OFFLINE=false cargo fetch --locked --target x86_64-unknown-linux-gnu && \
         rm -rf /tmp/rg_cargo_prefetch
 
     mkdir -p /home/user/data

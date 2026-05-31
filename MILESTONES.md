@@ -32,4 +32,8 @@
 - The next environment build failed before job submission because `%files` could not find the Rust source tree from the scheduler's build context.
 - Removed the `%files` dependency and changed the image build to prefetch native Rust crates from a temporary manifest created inside `%post`.
 
+### [2026-05-31 17:03] - none
+- Job `dc418534-e51` confirmed the image now builds and the method reaches the official Rust build, but offline Cargo still lacked a target-specific wasm crate from the workspace lockfile.
+- Replaced the synthetic prefetch manifest with a build-time clone of the official RG repository and `cargo fetch --locked`, so the image cache matches the real upstream lockfile.
+
 ## Stop Justification

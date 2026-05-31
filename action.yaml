@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry CPU smoke job after replacing the failing container %files prefetch with a build-context-independent Cargo prefetch manifest in %post."
+notes: "Retry CPU smoke job after switching container Cargo prefetch to the official RG repository lockfile so offline builds include target-specific crates."
