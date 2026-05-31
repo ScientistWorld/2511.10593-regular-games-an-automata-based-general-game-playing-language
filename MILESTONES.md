@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: none**
+**Current: core_claim**
 
 ## Progress Log
 
@@ -43,5 +43,9 @@
 ### [2026-05-31 17:24] - none
 - Job `773e609f-499` reproduced near-paper automaton reductions, but `rg2cpp` still aborted before C++ playouts, leaving the correctness constraint at zero.
 - Found and patched an AST schema mismatch in SimpleApply pragmas (`type` emitted by the current RG interpreter versus `type_` expected by rgcompiler) and made failed playout pipelines fail the method job instead of passing validation with zero playouts.
+
+### [2026-05-31 17:32] - core_claim
+- Job `552e1382-378` generated and compiled C++ reasoners for both no-optimization and optimized HRG pipelines on Connect4 and Breakthrough.
+- The optimized pipeline reproduced the core structural claim with 44.854% fewer automaton nodes and 39.167% fewer edges, close to the paper's 47% and 41%, while both baseline and optimized reasoners completed all playouts (`playout_completion_rate = 1.0`).
 
 ## Stop Justification

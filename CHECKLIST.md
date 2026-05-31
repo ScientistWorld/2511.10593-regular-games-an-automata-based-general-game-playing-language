@@ -7,5 +7,6 @@
 - [x] Write method-agnostic evaluator.
 - [x] Define scoring targets, constraints, and reference metrics.
 - [x] Write environment container and setup scripts.
-- [ ] Run the first submitted smoke job.
-- [ ] Inspect generated scores and update milestone.
+- [x] Run the first successful smoke job.
+- [x] Inspect generated scores and update milestone to `core_claim`.
+- [ ] Validate the end-to-end `scripts/reproduce.sh` path with default playout count.

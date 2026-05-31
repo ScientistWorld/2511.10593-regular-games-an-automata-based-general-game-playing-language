@@ -4,5 +4,5 @@
 action: submit
 gpus: 0
 test: true
-milestone: none
-notes: "CPU smoke job after patching the SimpleApply pragma AST schema mismatch; expects rg2cpp to generate C++ reasoners and complete short playout checks."
+milestone: core_claim
+notes: "Final CPU validation: run scripts/reproduce.sh with the default 200 playouts now that the 20-playout smoke job reached core_claim."
