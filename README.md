@@ -36,7 +36,9 @@ The reproduction keeps the paper's computation intact but scores structural metr
 
 # Evaluation
 
-The paper evaluates generated game reasoners primarily by random playout throughput. Because wall-clock speed is hardware dependent, this reproduction scores machine-independent proxies from the same pipeline: automaton node and edge reductions, generated C++ size reductions, and fixed-work playout completion.
+The paper evaluates generated game reasoners primarily by flat Monte Carlo random playout throughput: Table 1 reports playouts per second, averaged over three one-minute runs, for HRG->RG, RBG->RG, native RBG, and Ludii where available. This reproduction includes a matched Table 1 subset that runs the official benchmark-mode generated C++ reasoners for HRG->RG and RBG->RG. Because raw wall-clock speed is hardware dependent, the primary scored benefit is the within-job HRG/RBG throughput ratio; raw playout and state rates are retained as supporting metrics.
+
+The reproduction also scores the paper's structural optimizer claim from Section 3.3: automaton node and edge reductions after optimization, plus fixed-work playout completion as a correctness constraint.
 
 Evaluation reads method artifacts from `method/outputs/results.json`; it does not regenerate games or import from `method/`. The reusable command is:
 
@@ -44,7 +46,7 @@ Evaluation reads method artifacts from `method/outputs/results.json`; it does no
 bash scripts/evaluate.sh method/outputs/results.json
 ```
 
-The evaluator writes `scoring/scores.json`. For the core experiment, the no-optimization translation is the baseline and the optimized HRG-to-RG-to-C++ pipeline is the proposed method. A valid optimized model must complete the deterministic fixed playout count, so compactness alone is not sufficient.
+The evaluator writes `scoring/scores.json`. For the throughput subset, RBG->RG is the baseline and HRG->RG is the proposed method. For the structural experiment, no-optimization translation is the baseline and the optimized HRG-to-RG-to-C++ pipeline is the proposed method. A valid generated model must complete its playout workload, so compactness or speed alone is not sufficient.
 
 ---
 
@@ -160,12 +162,34 @@ The evaluator writes `scoring/scores.json`. For the core experiment, the no-opti
 
 </details>
 
+### Iteration 3: gpt-5.5
+- **Milestone**: `core_claim_plus` | **Status**: done
+- **Working time**: 7m | **GPU**: 0.0h
+- **Jobs**: 13 total (6 completed, 6 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-05-31 18:46] - method_runs
+- Validated the official HRG -> optimized RG -> rg2cpp -> generated C++ reasoner pipeline on the expanded 14-game subset.
+- Reproduced the paper's structural optimization claim with 48.942% fewer automaton nodes and 44.325% fewer automaton edges, while all generated reasoners completed fixed playout checks.
+- Follow-up audit found the existing scored experiment covered the paper's optimizer-size claim but not the Section 4 Table 1 playout-throughput core claim.
+- Added a benchmark-mode Table 1 subset harness for paired HRG->RG and RBG->RG generated reasoners; a compute job is needed before claiming `core_claim`.
+
+### [2026-05-31 19:08] - core_claim_plus
+- Job `2049a1f1-1ef` completed the paired Table 1 subset benchmark for Connect Four, Breakthrough, and Yavalath.
+- HRG->RG generated reasoners averaged 560407.0 playouts/s versus 171690.333 playouts/s for matched RBG->RG generated reasoners, a 4.051x within-job speedup.
+- The benchmark completed all three matched games and `python3 validate.py --compare` passed.
+- Together with the previously validated 14-game structural optimization run, the environment supports the core Section 4 throughput claim plus an additional optimizer-size claim.
+
+</details>
+
 
 ---
 
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: core_claim_plus**
 
 ## Stop Justification
-- Completed at milestone `core_claim`.
+- Completed at milestone `core_claim_plus`.

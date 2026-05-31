@@ -17,4 +17,4 @@
 - Together with the previously validated 14-game structural optimization run, the environment supports the core Section 4 throughput claim plus an additional optimizer-size claim.
 
 ## Stop Justification
-- Stopping at `core_claim_plus`: the core HRG-vs-RBG throughput comparison is reproduced on a matched Table 1 subset, and a broader HRG structural optimization experiment is reproduced. Higher milestones would require adding native RBG/Ludii baselines or more of the full Table 1 game matrix.
+- Completed at milestone `core_claim_plus`.
