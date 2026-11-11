@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Hardening job 3 (job 2 fixes: smaller automaton-check tree depth on train, evaluator scratch in workspace instead of 64 MB /tmp): canonical reference train/test scores, all variant and shortcut probes on the hidden test, seed and train checks for the better variant."
+notes: "Hardening job 4 (job 3 was preempted repeatedly; script and evaluators now resume after restarts): canonical reference train/test scores, all variant and shortcut probes on the hidden test, seed and train checks for the better variant."

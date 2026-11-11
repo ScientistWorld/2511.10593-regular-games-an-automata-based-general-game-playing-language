@@ -503,11 +503,18 @@ def main() -> None:
     parser.add_argument("--output", default=str(ROOT / "scoring" / f"scores_{SLICE}.json"))
     parser.add_argument("--seed", type=int, default=CONFIG["seed"])
     parser.add_argument("--details", default=None, help="optional path for per-game diagnostics")
+    parser.add_argument("--resume", action="store_true", help="keep methods already scored in --output (same seed) and score the rest")
     args = parser.parse_args()
     if shutil.which("valgrind") is None:
         sys.exit("valgrind is required to measure executed instructions")
 
     started = time.time()
+    previous: dict[str, Any] = {}
+    seed_id = hashlib.sha256(f"rg-eval-{args.seed}".encode()).hexdigest()[:12]
+    if args.resume and Path(args.output).is_file():
+        old = json.loads(Path(args.output).read_text())
+        if old.get("metadata", {}).get("seed_id") == seed_id:
+            previous = old
     # Scratch space lives in the workspace (container /tmp can be a tiny tmpfs);
     # compilers and methods get it as TMPDIR.
     base = Path(os.environ.get("RG_EVAL_WORKDIR", ROOT / "tmp" / "eval_work"))
@@ -570,7 +577,38 @@ def main() -> None:
                 results[exp]["no_method_found"] = dict(vals)
         else:
             methods_status = {}
+        def write_scores(final: bool) -> None:
+            payload = {
+                "metadata": {
+                    "slice": SLICE,
+                    "seed_id": seed_id,
+                    "complete": final,
+                    "games": list(GAMES),
+                    "rbg_games": list(RBG_GAMES),
+                    "methods": {k: {"status": v["status"], **({"reason": v["reason"]} if "reason" in v else {})} for k, v in methods_status.items()},
+                    "elapsed_seconds": round(time.time() - started, 1),
+                },
+                "experiments": {exp: {"results": res} for exp, res in results.items()},
+            }
+            out = Path(args.output)
+            out.parent.mkdir(parents=True, exist_ok=True)
+            tmp_out = out.with_suffix(out.suffix + ".partial")
+            tmp_out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+            tmp_out.replace(out)
+            if args.details:
+                Path(args.details).write_text(json.dumps(details, indent=2, sort_keys=True, default=list) + "\n")
+
+        old_status = previous.get("metadata", {}).get("methods", {})
+        old_details: dict[str, Any] = {}
+        if previous and args.details and Path(args.details).is_file():
+            old_details = json.loads(Path(args.details).read_text()).get("methods", {})
         for name, mdir in methods.items():
+            if name in old_status and all(name in previous["experiments"].get(exp, {}).get("results", {}) for exp in results):
+                for exp in results:
+                    results[exp][name] = previous["experiments"][exp]["results"][name]
+                methods_status[name] = dict(old_details.get(name, old_status[name]))
+                print(f"[{SLICE}] {name}: resumed {methods_status[name]['status']}", flush=True)
+                continue
             vals, status = ev.evaluate_method(name, mdir)
             for exp in results:
                 results[exp][name] = vals[exp]
@@ -582,26 +620,16 @@ def main() -> None:
                 else:
                     row["speedup_vs_direct_rbg"] = ev.cost[RBG_DIRECT][g] / row["cost"]
             methods_status[name] = status
+            details["methods"] = methods_status
+            write_scores(final=False)
             print(f"[{SLICE}] {name}: {status['status']} {json.dumps(vals)}", flush=True)
         details["methods"] = methods_status
+        write_scores(final=True)
     finally:
         ev.pool.shutdown(wait=True, cancel_futures=True)
         shutil.rmtree(work, ignore_errors=True)
 
-    scores = {
-        "metadata": {
-            "slice": SLICE,
-            "games": list(GAMES),
-            "rbg_games": list(RBG_GAMES),
-            "methods": {k: {"status": v["status"], **({"reason": v["reason"]} if "reason" in v else {})} for k, v in methods_status.items()},
-            "elapsed_seconds": round(time.time() - started, 1),
-        },
-        "experiments": {exp: {"results": res} for exp, res in results.items()},
-    }
-    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.output).write_text(json.dumps(scores, indent=2, sort_keys=True) + "\n")
-    if args.details:
-        Path(args.details).write_text(json.dumps(details, indent=2, sort_keys=True, default=list) + "\n")
+    scores = json.loads(Path(args.output).read_text())
     print(json.dumps(scores, indent=2, sort_keys=True))
 
 
