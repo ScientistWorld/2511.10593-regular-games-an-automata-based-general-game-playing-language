@@ -1,0 +1,23 @@
+{
+  "breakthrough.hrg": {
+    "complete": false,
+    "processed": 2494,
+    "states": 50015,
+    "terminal_states": 0,
+    "transitions": 57339
+  },
+  "connect4.hrg": {
+    "complete": false,
+    "processed": 12055,
+    "states": 50001,
+    "terminal_states": 0,
+    "transitions": 84384
+  },
+  "yavalath.hrg": {
+    "complete": false,
+    "processed": 847,
+    "states": 50037,
+    "terminal_states": 0,
+    "transitions": 50036
+  }
+}
