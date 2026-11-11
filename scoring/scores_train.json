@@ -55,7 +55,8 @@
     }
   },
   "metadata": {
-    "elapsed_seconds": 443.0,
+    "complete": true,
+    "elapsed_seconds": 349.2,
     "games": [
       "connect4",
       "breakthrough",
@@ -80,6 +81,7 @@
       "gomoku_standard",
       "foxAndHounds"
     ],
+    "seed_id": "3c1a8f7b82a8",
     "slice": "train"
   }
 }
