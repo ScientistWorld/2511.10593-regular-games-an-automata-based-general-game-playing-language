@@ -1,67 +1,65 @@
 {
   "experiments": {
-    "hrg_optimization_structure": {
-      "description": "Automaton and generated-model compactness for HRG games after the paper's optimizer and rg2cpp compiler pipeline. The paper reports mean HRG optimization reductions of 47% fewer nodes and 41% fewer edges; fixed playout completion is a correctness constraint for the generated reasoner.",
-      "notes": "The paper reports automaton node and edge reductions for HRG games. Generated C++ line reduction is a machine-independent supplemental gym metric computed from reproduced artifacts, so the reference value is left at 0.0 rather than treated as a published number.",
-      "weight": 0.35,
-      "primary_metric": "automaton_edge_reduction_pct",
+    "forward_model_efficiency": {
+      "description": "Section 4 / Table 1: efficiency of the generated forward model under a flat Monte Carlo workload (uniformly random playouts), compared with the same games' matched RBG descriptions translated RBG->RG. The gym measures the work per playout as executed machine instructions of a fixed playout count under an evaluator-owned driver and fixed compiler flags, so the score does not depend on wall-clock time or host. Every scored model must first reproduce the ground-truth game tree and playout statistics of the rule file.",
+      "notes": "Paper values are Table 1 throughput ratios (HRG->RG playouts/s divided by RBG->RG playouts/s, three 1-minute runs on a Ryzen 9 3950X) for the standard board sizes of the five game families the held-out test uses. The held-out games are board-size variants of those families (Breakthrough 7x7, Hex 9x9, Reversi 6x6, Gomoku 13x13, Fox and Hounds 10x10) and the gym counts instructions instead of seconds, so these numbers are the paper's reference points, not values on the gym's exact scale. speedup_vs_direct_translation is reported for context only: per game it differs from the primary metric by a fixed evaluator constant, so scoring it would double-count the same signal.",
+      "weight": 0.75,
+      "primary_metric": "speedup_vs_rbg_translation",
       "metrics": {
-        "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8, "description": "Percentage reduction in optimized automaton nodes versus the same HRG input compiled without optimizer passes."},
-        "automaton_edge_reduction_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Percentage reduction in optimized automaton edges versus the same HRG input compiled without optimizer passes."},
-        "generated_cpp_line_reduction_pct": {"higher_is_better": true, "coefficient": 0.2, "description": "Percentage reduction in generated C++ source lines versus the same HRG input compiled without optimizer passes."},
-        "playout_completion_rate": {"higher_is_better": true, "coefficient": 0.5, "description": "Fraction of selected generated reasoners that complete deterministic fixed-count playouts without pipeline errors."}
+        "speedup_vs_rbg_translation": {"higher_is_better": true, "coefficient": 1.0, "description": "Geometric mean over games of (instructions per playout of the frozen RBG->RG forward model) / (instructions per playout of the submitted forward model), same playout count and seed."},
+        "worst_game_speedup_vs_rbg_translation": {"higher_is_better": true, "coefficient": 0.5, "description": "Minimum over games of the same per-game ratio; the paper claims the HRG pipeline beats RBG->RG on every game."},
+        "verified_game_fraction": {"higher_is_better": true, "coefficient": 1.0, "description": "Constraint: 1 when every game's submitted forward model compiled under the fixed driver, passed the integrity checks and matched the ground-truth game tree and playout statistics; any failure fails the whole run (all metrics take their worst value)."},
+        "speedup_vs_direct_translation": {"higher_is_better": true, "coefficient": 0.0, "description": "Diagnostic: geometric mean speedup over the frozen direct (unoptimized) HRG->RG translation."},
+        "games_faster_than_rbg_fraction": {"higher_is_better": true, "coefficient": 0.0, "description": "Diagnostic: fraction of games on which the submitted model executes fewer instructions per playout than RBG->RG."}
+      },
+      "_paper_table1_hrg_over_rbg_rg_ratio": {
+        "breakthrough": 1.0374, "hex_11x11": 9.6179, "reversi": 12.6478, "gomoku_standard": 1.0949, "fox_and_hounds": 1.3751,
+        "connect_four": 10.5706, "knightthrough": 1.7585, "yavalath": 1.154,
+        "_note": "HRG->RG / RBG->RG playouts per second from Table 1; the first five are the families of the held-out games, all eight are the visible train games."
       },
       "results": {
-        "hrg_rg_no_optimizations": {
+        "rbg_translation_baseline": {
           "type": "baseline",
-          "automaton_node_reduction_pct": 0.0,
-          "automaton_edge_reduction_pct": 0.0,
-          "generated_cpp_line_reduction_pct": 0.0,
-          "playout_completion_rate": 1.0
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
+        },
+        "direct_translation_baseline": {
+          "type": "baseline",
+          "speedup_vs_direct_translation": 1.0,
+          "verified_game_fraction": 1.0
         },
         "hrg_rg_optimized": {
           "type": "proposed",
-          "automaton_node_reduction_pct": 47.0,
-          "automaton_edge_reduction_pct": 41.0,
-          "generated_cpp_line_reduction_pct": 0.0,
-          "playout_completion_rate": 1.0
+          "speedup_vs_rbg_translation": 2.856,
+          "worst_game_speedup_vs_rbg_translation": 1.037,
+          "verified_game_fraction": 1.0,
+          "games_faster_than_rbg_fraction": 1.0
         }
       }
     },
-    "table1_playout_throughput_subset": {
-      "description": "Section 4 / Table 1 matched HRG and RBG source-language benchmark on a subset of games. The paper reports playout throughput; this gym keeps throughput as supporting context but scores machine-independent generated-code and automaton-size advantages to avoid hardware-dependent ranking.",
-      "notes": "Table 1 reports wall-clock playout throughput. Because throughput is hardware-dependent, the nonzero scoring metrics for this gym are derived from the same matched generated artifacts: generated C++ line advantage and automaton edge advantage. Raw throughput fields are retained with zero coefficient for context only.",
-      "weight": 0.65,
-      "primary_metric": "generated_cpp_line_advantage_vs_rbg_pct",
+    "automaton_optimization": {
+      "description": "Section 3.3: size of the optimized rules automaton (nodes and edges) relative to the direct HRG->RG translation of the same rule file. The submitted automaton is recompiled by the evaluator's reference RG compiler (pragmas stripped) and must reproduce the ground-truth game tree and playout statistics before its size counts.",
+      "notes": "Paper values are the reported mean reductions for games written in HRG (47% fewer nodes, 41% fewer edges). The gym averages over its own game set, so the value is comparable in kind but not computed on the same games.",
+      "weight": 0.25,
+      "primary_metric": "automaton_edge_reduction_pct",
       "metrics": {
-        "generated_cpp_line_advantage_vs_rbg_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean percentage by which generated HRG-derived C++ source is shorter than the matched RBG-derived generated source for the same games."},
-        "automaton_edge_advantage_vs_rbg_pct": {"higher_is_better": true, "coefficient": 0.6, "description": "Mean percentage by which optimized HRG-derived automata have fewer edges than matched RBG-derived automata for the same games."},
-        "speedup_vs_rbg_rg": {"higher_is_better": true, "coefficient": 0.0, "description": "Within-job HRG/RBG playout-throughput ratio retained only as diagnostic context because wall-clock throughput is hardware-sensitive."},
-        "sims_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw simulation throughput retained only for diagnostics and not used for scoring."},
-        "states_per_second": {"higher_is_better": true, "coefficient": 0.0, "description": "Raw state-throughput retained only for diagnostics and not used for scoring."},
-        "benchmark_completion_rate": {"higher_is_better": true, "coefficient": 0.5, "description": "Fraction of selected generated reasoners that complete benchmark-mode playout work without pipeline errors."},
-        "games_completed": {"higher_is_better": true, "coefficient": 0.0, "description": "Number of selected matched games with positive completed benchmark work, retained only as diagnostic context because train and test slices contain different game counts."}
+        "automaton_edge_reduction_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean over games of 100 * (1 - edges of the submitted automaton / edges of the direct translation), floored at -100."},
+        "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8, "description": "Mean over games of 100 * (1 - nodes of the submitted automaton / nodes of the direct translation), floored at -100."},
+        "verified_automaton_fraction": {"higher_is_better": true, "coefficient": 0.5, "description": "Constraint: 1 when every submitted automaton reproduced the ground truth through the reference compiler; any failure fails the whole run."}
       },
+      "_paper_rbg_to_rg_reductions_pct": {"nodes": 72, "edges": 66, "state_size": 21, "_note": "Reported for automata translated from RBG; not scored (different source language)."},
       "results": {
-        "rbg_rg_table1_subset": {
+        "direct_translation_baseline": {
           "type": "baseline",
-          "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
-          "automaton_edge_advantage_vs_rbg_pct": 0.0,
-          "speedup_vs_rbg_rg": 1.0,
-          "sims_per_second": 187241.0,
-          "states_per_second": 0.0,
-          "benchmark_completion_rate": 1.0,
-          "games_completed": 3.0
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
         },
-        "hrg_rg_table1_subset": {
+        "hrg_rg_optimized": {
           "type": "proposed",
-          "generated_cpp_line_advantage_vs_rbg_pct": 27.125223803843365,
-          "automaton_edge_advantage_vs_rbg_pct": 25.488788847567474,
-          "speedup_vs_rbg_rg": 4.253984075040034,
-          "sims_per_second": 598187.3333333334,
-          "states_per_second": 0.0,
-          "benchmark_completion_rate": 1.0,
-          "games_completed": 3.0
+          "automaton_edge_reduction_pct": 41.0,
+          "automaton_node_reduction_pct": 47.0,
+          "verified_automaton_fraction": 1.0
         }
       }
     }

@@ -1,0 +1,106 @@
+// Breakthrough 7x7
+// Moves form: pos pos
+
+domain Piece = blackPawn | empty | whitePawn | border
+domain Player = black | white
+domain Score = 0 | 100
+domain Position = V(X, Y) where X in 0..6, Y in { 0, 1, 2, 3, 4, 5, 6 }
+domain PositionOrNull = null | Position
+
+left : PositionOrNull -> PositionOrNull
+left(null) = null
+left(V(X, Y)) = if X == 0 then null else V(X - 1, Y)
+right : PositionOrNull -> PositionOrNull
+right(null) = null
+right(V(X, Y)) = if X == 6 then null else V(X + 1, Y)
+up : PositionOrNull -> PositionOrNull
+up(null) = null
+up(V(X, 0)) = V(X, 0)
+up(V(X, Y)) = V(X, Y - 1)
+down : PositionOrNull -> PositionOrNull
+down(null) = null
+down(V(X, 6)) = V(X, 6)
+down(V(X, Y)) = V(X, Y + 1)
+upLeft : PositionOrNull -> PositionOrNull
+upLeft(null) = null
+upLeft(V(X,Y)) = up(left(V(X,Y)))
+upRight : PositionOrNull -> PositionOrNull
+upRight(null) = null
+upRight(V(X,Y)) = up(right(V(X,Y)))
+downLeft : PositionOrNull -> PositionOrNull
+downLeft(null) = null
+downLeft(V(X,Y)) = down(left(V(X,Y)))
+downRight : PositionOrNull -> PositionOrNull
+downRight(null) = null
+downRight(V(X,Y)) = down(right(V(X,Y)))
+
+directionF : Player -> PositionOrNull -> PositionOrNull
+directionF(white) = up
+directionF(_) = down
+directionFL : Player -> PositionOrNull -> PositionOrNull
+directionFL(white) = upLeft
+directionFL(_) = downLeft
+directionFR : Player -> PositionOrNull -> PositionOrNull
+directionFR(white) = upRight
+directionFR(_) = downRight
+
+piece : Player -> Piece
+piece(white) = whitePawn
+piece(_) = blackPawn
+
+opponent : Player -> Player
+opponent(white) = black
+opponent(_) = white
+
+board : PositionOrNull -> Piece = {
+  V(X, Y) = if Y < 2
+    then blackPawn
+    else if Y > 4
+      then whitePawn
+      else empty
+  where X in 0..6, Y in 0..6;
+  null = border
+}
+
+pos : PositionOrNull
+
+graph existsOppPawn(me:Player) {
+  pos = Position(*)
+  check(board[pos] == piece[opponent[me]])
+}
+
+graph turn(me:Player) {
+  player = me
+  pos = Position(*)
+  check(board[pos] == piece[me])
+  board[pos] = empty
+  $$ pos
+  branch {
+    pos = directionF[me][pos]
+    $_F
+    check(board[pos] == empty)
+  } or {
+    branch {
+      pos = directionFL[me][pos]
+      $_L
+    } or {
+      pos = directionFR[me][pos]
+      $_R
+    }
+    check(board[pos] == empty || board[pos] == piece[opponent[me]])
+  }
+  $$ pos
+  player = keeper
+  board[pos] = piece(me)
+  if directionF[me][pos] == pos || not(reachable(existsOppPawn(me))) {
+    goals[me] = 100
+    end()
+  }
+}
+
+graph rules() {
+  loop {
+    turn(white)
+    turn(black)
+  }
+}

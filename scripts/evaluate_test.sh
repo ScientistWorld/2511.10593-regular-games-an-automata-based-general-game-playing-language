@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
+# Held-out evaluation. No arguments: every method directory on disk
+# (method/compilers/<name>/compile.sh) is compiled on the hidden games, verified
+# against ground truth and measured; results go to scoring/scores_test.json.
 set -euo pipefail
-
-cd /home/user
-INPUT="${1:-method/outputs/results.json}"
-mkdir -p scoring
-python3 eval/test/evaluate.py --input "$INPUT" --output scoring/scores_test.json
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+python3 eval/test/evaluate.py --output scoring/scores_test.json

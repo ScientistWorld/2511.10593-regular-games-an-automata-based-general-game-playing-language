@@ -1,0 +1,18 @@
+{
+  "slice": "train",
+  "games_dir": "data/games/hrg",
+  "seed": 1,
+  "stat_tolerance_z": 6.0,
+  "compile_timeout_s": 60,
+  "prepare_timeout_s": 3600,
+  "games": {
+    "connect4": {"playouts": 30000, "perft_depth": 6},
+    "breakthrough": {"playouts": 12000, "perft_depth": 4},
+    "yavalath": {"playouts": 10000, "perft_depth": 3},
+    "hex": {"playouts": 2000, "perft_depth": 3},
+    "reversi": {"playouts": 4000, "perft_depth": 7},
+    "knightthrough": {"playouts": 15000, "perft_depth": 4},
+    "gomoku_standard": {"playouts": 3000, "perft_depth": 3},
+    "foxAndHounds": {"playouts": 30000, "perft_depth": 8}
+  }
+}
