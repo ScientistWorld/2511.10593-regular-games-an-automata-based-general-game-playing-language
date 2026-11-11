@@ -1,0 +1,5 @@
+{
+  "candidate_uses_hidden_inputs": false,
+  "completed": true,
+  "hidden_command": "bash scripts/evaluate_test.sh"
+}

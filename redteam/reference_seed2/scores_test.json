@@ -1,0 +1,45 @@
+{
+  "experiments": {
+    "hrg_optimization_structure": {
+      "results": {
+        "hrg_rg_no_optimizations": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "generated_cpp_line_reduction_pct": 0.0,
+          "playout_completion_rate": 1.0
+        },
+        "hrg_rg_optimized": {
+          "automaton_edge_reduction_pct": 43.26923076923077,
+          "automaton_node_reduction_pct": 51.13636363636363,
+          "generated_cpp_line_reduction_pct": 36.19957537154989,
+          "playout_completion_rate": 1.0
+        }
+      }
+    },
+    "table1_playout_throughput_subset": {
+      "results": {
+        "hrg_rg_table1_subset": {
+          "automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+          "benchmark_completion_rate": 1.0,
+          "games_completed": 1.0,
+          "generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935,
+          "sims_per_second": 1095805.45,
+          "speedup_vs_rbg_rg": 10.110319385043203,
+          "states_per_second": 23353021.45
+        },
+        "rbg_rg_table1_subset": {
+          "automaton_edge_advantage_vs_rbg_pct": 0.0,
+          "benchmark_completion_rate": 1.0,
+          "games_completed": 1.0,
+          "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
+          "sims_per_second": 108384.85,
+          "speedup_vs_rbg_rg": 1.0,
+          "states_per_second": 2309495.8
+        }
+      }
+    }
+  },
+  "metadata": {
+    "slice": "test"
+  }
+}
