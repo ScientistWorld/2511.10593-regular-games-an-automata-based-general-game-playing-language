@@ -31,7 +31,7 @@ HRG = 'hrg_rg_table1_subset'
 RBG = 'rbg_rg_table1_subset'
 CASES = [
     'reference_seed1', 'reference_seed2', 'reference_seed3',
-    'better_path_compression', 'weaker_no_optimizer', 'weaker_slow_backend',
+    'better_path_compression', 'weaker_no_optimizer', 'shortcut_slow_backend',
     'shortcut_fabricated_results', 'shortcut_impossible_values',
     'shortcut_failed_compact', 'shortcut_baseline_padding',
     'shortcut_minified_source', 'shortcut_cached_results',
@@ -306,7 +306,7 @@ def run_case(case):
         perft_checks(folder)
     elif case=='weaker_no_optimizer':
         payload=real_rows(variant='weaker')
-    elif case=='weaker_slow_backend':
+    elif case=='shortcut_slow_backend':
         payload=real_rows(variant='slow')
     elif case=='bruteforce_probe':
         payload=brute(folder)
@@ -344,7 +344,7 @@ def main():
     failures=[]
     try:
         for case in CASES if args.case=='all' else [args.case]:
-            if (RT/case/'status.json').exists():
+            if args.case=='all' and (RT/case/'status.json').exists():
                 print('Saved completed case:',case,flush=True)
                 continue
             try:

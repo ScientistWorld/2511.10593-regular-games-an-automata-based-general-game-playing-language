@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd /home/user
-bash redteam/run_all.sh
+python3 -u redteam/rescore_saved.py
+python3 redteam/analyze.py

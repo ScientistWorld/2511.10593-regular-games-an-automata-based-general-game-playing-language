@@ -7,3 +7,12 @@
   explored roughly 50,000 states in each game without completing enumeration.
   Fixed the include paths and changed the bundle to return a nonzero exit code
   if any case fails. These infrastructure failures are not method results.
+
+- `174f8808-ade`: corrected CPU bundle completed all 17 cases and both train
+  and hidden-test evaluations (exit 0). All per-case status files are successful.
+  The slow backend case was named `weaker_slow_backend` during execution; its
+  evidence directory and replay command are now named `shortcut_slow_backend`
+  because its exact reference tie pays despite substantially worse throughput.
+- Final verification uses a separate fresh CPU job to replay saved artifacts
+  through the hidden test with no arguments. No build or candidate process from
+  the construction job survives into this verification.

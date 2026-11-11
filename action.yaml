@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Resume bundled redteam audit using generated-model caches; fix missing fast_random.hpp include path and make any failed audit case fail the job."
+notes: "Fresh-container verification: replay all 17 saved submissions through unchanged hidden test with no arguments, assert identical scores, and regenerate audit rank calculations."

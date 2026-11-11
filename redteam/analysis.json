@@ -1,0 +1,1710 @@
+{
+  "cases": {
+    "better_path_compression": {
+      "full_cohort": {
+        "rank_improvement": 0.0002485520326204389,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 2.416247084422642e-05,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.00022438956177621243,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.2409095298258046,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.023421759844175452,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.21748776998162914,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 40.552016985138,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 47.59007955077211
+      },
+      "pairwise": {
+        "rank_improvement": 1.44,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 2.1762208067940563
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 1.9185774450163784
+          }
+        }
+      }
+    },
+    "bruteforce_probe": {
+      "full_cohort": {
+        "rank_improvement": -1.6367021503544192,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -0.12433379574947968,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -0.059189352736644364,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.024510764021517573,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.37187499999999996,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": -0.13854418263130328,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.690625,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": -0.22762405521547438,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": -81038.46153846153,
+        "hrg_optimization_structure:automaton_node_reduction_pct": -56719.318181818184,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": -4378.980891719745,
+        "hrg_optimization_structure:playout_completion_rate": 0.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": -72023.07692307692,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 0.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": -3848.713149274684
+      },
+      "pairwise": {
+        "rank_improvement": -4.48,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -0.7,
+            "std": 40540.86538461538
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -0.5599999999999999,
+            "std": 28385.227272727272
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.13999999999999999,
+            "std": 2207.5902335456476
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.35,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": -0.78,
+            "std": 36036.32478632479
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.65,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": -1.3,
+            "std": 1946.2330369677115
+          }
+        }
+      }
+    },
+    "original_reference": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "reference_seed1": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "reference_seed2": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "reference_seed3": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "shortcut_baseline_padding": {
+      "full_cohort": {
+        "rank_improvement": 0.003568039579289105,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0003476369821197917,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.003220402597169313,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 98.82022692473794,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 98.82314929947032
+      },
+      "pairwise": {
+        "rank_improvement": 1.44,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 31.310325776594023
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 27.53511231936548
+          }
+        }
+      }
+    },
+    "shortcut_cached_results": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "shortcut_empty_submission": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": null,
+        "hrg_optimization_structure:automaton_node_reduction_pct": null,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": null,
+        "hrg_optimization_structure:playout_completion_rate": null,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": null,
+        "table1_playout_throughput_subset:benchmark_completion_rate": null,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": null
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "shortcut_fabricated_results": {
+      "full_cohort": {
+        "rank_improvement": 0.0038782835565382644,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 8.699310938890367e-05,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 5.094563768917307e-05,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.00035418646286292864,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 9.693574592643811e-05,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.003289222600670821,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 100.0,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 100.0,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 100.0,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 100.0,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 100.0
+      },
+      "pairwise": {
+        "rank_improvement": 3.4799999999999995,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.7,
+            "std": 28.365384615384617
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.5599999999999999,
+            "std": 24.431818181818183
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 31.900212314225055
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.78,
+            "std": 25.213675213675213
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 28.123537669630323
+          }
+        }
+      }
+    },
+    "shortcut_failed_compact": {
+      "full_cohort": {
+        "rank_improvement": -1.0586217164434617,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 8.699310938890367e-05,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 5.094563768917307e-05,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.00035418646286292864,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.37187499999999996,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 9.693574592643811e-05,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.690625,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.003289222600670821,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 100.0,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 100.0,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 100.0,
+        "hrg_optimization_structure:playout_completion_rate": 0.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 100.0,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 0.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 100.0
+      },
+      "pairwise": {
+        "rank_improvement": 2.48,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.7,
+            "std": 28.365384615384617
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.5599999999999999,
+            "std": 24.431818181818183
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 31.900212314225055
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.35,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.78,
+            "std": 25.213675213675213
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.65,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 28.123537669630323
+          }
+        }
+      }
+    },
+    "shortcut_fixed_driver": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "shortcut_impossible_values": {
+      "full_cohort": {
+        "rank_improvement": 8.399721130111274,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 1.4745464742772476,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 1.1848332174789231,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.2950184650509899,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.37187499999999996,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 1.643075680261827,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.690625,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 2.739747293042286,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 961638.4615384615,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 1136463.6363636365,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 53178.55626326964,
+        "hrg_optimization_structure:playout_completion_rate": 2.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 854800.8547008547,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 2.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 46894.57182966776
+      },
+      "pairwise": {
+        "rank_improvement": 4.48,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.7,
+            "std": 480797.5961538461
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.5599999999999999,
+            "std": 568206.25
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 26571.178343949043
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.35,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.78,
+            "std": 427375.64102564106
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.65,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 23425.40945250351
+          }
+        }
+      }
+    },
+    "shortcut_minified_source": {
+      "full_cohort": {
+        "rank_improvement": 0.0036282534517886006,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.00035271314146998796,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0032755403103186128,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 99.73460721868365,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 99.76602714085166
+      },
+      "pairwise": {
+        "rank_improvement": 1.44,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.13999999999999999,
+            "std": 31.76751592356688
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 28.006551240056154
+          }
+        }
+      }
+    },
+    "shortcut_null_values": {
+      "full_cohort": {
+        "rank_improvement": -1.0594344685702852,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -6.635067665255364e-05,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -5.331520223285553e-05,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.00020096103799710258,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.37187499999999996,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 9.693574592643811e-05,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.690625,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.003289222600670821,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 0.0,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 0.0,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 0.0,
+        "hrg_optimization_structure:playout_completion_rate": 0.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 100.0,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 0.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 100.0
+      },
+      "pairwise": {
+        "rank_improvement": -0.3199999999999995,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -0.7,
+            "std": 21.634615384615383
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -0.5599999999999999,
+            "std": 25.568181818181817
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.13999999999999999,
+            "std": 18.099787685774945
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": -0.35,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.78,
+            "std": 25.213675213675213
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": -0.65,
+            "std": 0.5
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 1.3,
+            "std": 28.123537669630323
+          }
+        }
+      }
+    },
+    "shortcut_slow_backend": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "shortcut_unlisted_method": {
+      "full_cohort": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 43.26923076923077,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 51.13636363636363,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 36.19957537154989,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 49.572649572649574,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 43.75292466073935
+      },
+      "pairwise": {
+        "rank_improvement": 0.0,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": 0.0,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    "weaker_no_optimizer": {
+      "full_cohort": {
+        "rank_improvement": -0.0022608253644269085,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -6.635067665255364e-05,
+            "std": 228245.31011995205
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -5.331520223285553e-05,
+            "std": 268557.20729796326
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.00020096103799710258,
+            "std": 12609.261483039447
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": -7.393404350321552e-05,
+            "std": 202883.53360989416
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.47058823529411764
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": -0.001866264404041181,
+            "std": 11115.27050892301
+          }
+        }
+      },
+      "honest_cohort": {
+        "rank_improvement": -4.918554980999771,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -1.0002083116364642,
+            "std": 15.14107670676415
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -0.8001666493091714,
+            "std": 17.893999744357632
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.1948004904113128,
+            "std": 13.00802821727052
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": -1.114517832966346,
+            "std": 13.458734850457024
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": -1.8088616966764761,
+            "std": 11.468004287008732
+          }
+        }
+      },
+      "metric_values": {
+        "hrg_optimization_structure:automaton_edge_reduction_pct": 0.0,
+        "hrg_optimization_structure:automaton_node_reduction_pct": 0.0,
+        "hrg_optimization_structure:generated_cpp_line_reduction_pct": 0.0,
+        "hrg_optimization_structure:playout_completion_rate": 1.0,
+        "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": 11.11111111111111,
+        "table1_playout_throughput_subset:benchmark_completion_rate": 1.0,
+        "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": 11.839026672905943
+      },
+      "pairwise": {
+        "rank_improvement": -3.4799999999999995,
+        "terms": {
+          "hrg_optimization_structure:automaton_edge_reduction_pct": {
+            "contribution": -0.7,
+            "std": 21.634615384615383
+          },
+          "hrg_optimization_structure:automaton_node_reduction_pct": {
+            "contribution": -0.5599999999999999,
+            "std": 25.568181818181817
+          },
+          "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+            "contribution": -0.13999999999999999,
+            "std": 18.099787685774945
+          },
+          "hrg_optimization_structure:playout_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+            "contribution": -0.78,
+            "std": 19.230769230769234
+          },
+          "table1_playout_throughput_subset:benchmark_completion_rate": {
+            "contribution": 0.0,
+            "std": 0.0
+          },
+          "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+            "contribution": -1.3,
+            "std": 15.956948993916704
+          }
+        }
+      }
+    }
+  },
+  "full_cohort": [
+    "original_reference",
+    "better_path_compression",
+    "bruteforce_probe",
+    "reference_seed1",
+    "reference_seed2",
+    "reference_seed3",
+    "shortcut_baseline_padding",
+    "shortcut_cached_results",
+    "shortcut_empty_submission",
+    "shortcut_fabricated_results",
+    "shortcut_failed_compact",
+    "shortcut_fixed_driver",
+    "shortcut_impossible_values",
+    "shortcut_minified_source",
+    "shortcut_null_values",
+    "shortcut_slow_backend",
+    "shortcut_unlisted_method",
+    "weaker_no_optimizer"
+  ],
+  "honest_cohort": [
+    "original_reference",
+    "reference_seed1",
+    "reference_seed2",
+    "reference_seed3",
+    "better_path_compression",
+    "weaker_no_optimizer",
+    "shortcut_slow_backend"
+  ],
+  "normalization": "population standard deviation per proposed experiment/metric; missing values skipped",
+  "per_game_speedups": {
+    "reference_seed1": {
+      "breakthrough": 0.9707804712225778,
+      "connect4": 8.074616730307545,
+      "yavalath": 1.1493191509503051
+    },
+    "reference_seed2": {
+      "breakthrough": 0.980711660161431,
+      "connect4": 10.110319385043203,
+      "yavalath": 0.7257187103817423
+    },
+    "reference_seed3": {
+      "breakthrough": 1.1383051153793746,
+      "connect4": 6.739577146062284,
+      "yavalath": 1.3240017299165974
+    },
+    "shortcut_slow_backend": {
+      "breakthrough": 0.08937051360643186,
+      "connect4": 0.8366387425399681,
+      "yavalath": 0.05579013031488948
+    }
+  },
+  "seed_spread": {
+    "hrg_optimization_structure:automaton_edge_reduction_pct": {
+      "maximum": 43.26923076923077,
+      "minimum": 43.26923076923077,
+      "range": 0.0
+    },
+    "hrg_optimization_structure:automaton_node_reduction_pct": {
+      "maximum": 51.13636363636363,
+      "minimum": 51.13636363636363,
+      "range": 0.0
+    },
+    "hrg_optimization_structure:generated_cpp_line_reduction_pct": {
+      "maximum": 36.19957537154989,
+      "minimum": 36.19957537154989,
+      "range": 0.0
+    },
+    "hrg_optimization_structure:playout_completion_rate": {
+      "maximum": 1.0,
+      "minimum": 1.0,
+      "range": 0.0
+    },
+    "table1_playout_throughput_subset:automaton_edge_advantage_vs_rbg_pct": {
+      "maximum": 49.572649572649574,
+      "minimum": 49.572649572649574,
+      "range": 0.0
+    },
+    "table1_playout_throughput_subset:benchmark_completion_rate": {
+      "maximum": 1.0,
+      "minimum": 1.0,
+      "range": 0.0
+    },
+    "table1_playout_throughput_subset:generated_cpp_line_advantage_vs_rbg_pct": {
+      "maximum": 43.75292466073935,
+      "minimum": 43.75292466073935,
+      "range": 0.0
+    }
+  }
+}

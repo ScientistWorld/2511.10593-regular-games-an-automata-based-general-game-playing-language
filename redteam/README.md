@@ -18,7 +18,7 @@ The reference uses its existing three-game benchmark configuration, 100 fixed
 playouts and two 10-second benchmark repetitions per game. Seeds 1, 2, and 3
 change the actual C++ playout RNG. The stronger candidate enables the existing
 path-compression transformation in the generated-model compiler; the weaker
-candidate disables automaton optimizations. A separate weak backend compiles
+candidate disables automaton optimizations. The slow-backend shortcut compiles
 identical generated models without optimization. Exhaustive depth-3 tree counts
 compare direct, reference and compressed models. The brute-force probe attempts
 to enumerate complete state-transition tables and stops at 50,000 states or
@@ -28,3 +28,9 @@ to enumerate complete state-transition tables and stops at 50,000 states or
 `job.log` is diagnostic and ignored. JSON scores, submitted results, per-case
 status and compiler-failure evidence are tracked. No Python environment or
 running evaluator is modified.
+
+Explicit individual `run.sh` calls rerun that case; only the bundled `all`
+command resumes completed cases. `rescore_saved.py` verifies the persisted
+submissions in a separate fresh scoring job, without running candidate code.
+`analyze.py` is reporting-only and computes disclosed cohort-normalized ranks;
+it is never imported by a candidate.
