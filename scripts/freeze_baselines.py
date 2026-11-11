@@ -6,8 +6,12 @@ For every game of a slice this writes, under eval/<slice>/baselines/<game>/:
                              automaton transformations) compiled by rg2cpp
   rbg/reasoner.{hpp,cpp}     the matched RBG description translated RBG->RG
                              with the full optimizer (the paper's RBG->RG column)
-and eval/<slice>/baselines/manifest.json with the direct automaton's node and
-edge counts. The evaluators only read these frozen files; they never call the
+  rbg_direct/reasoner.{hpp,cpp}  the matched RBG description translated
+                             RBG->RG directly (inferred pragmas, no automaton
+                             transformations): ground truth and comparison
+                             point of the translated-rules experiment
+and eval/<slice>/baselines/manifest.json with the automata's node and edge
+counts. The evaluators only read these frozen files; they never call the
 method code. Re-running this script is only needed to rebuild the gym.
 """
 
@@ -70,7 +74,8 @@ def main() -> None:
         for game in spec["games"]:
             direct = build(spec["hrg_dir"] / f"{game}.hrg", base / game / "direct", DIRECT)
             rbg = build(spec["rbg_dir"] / f"{game}.rbg", base / game / "rbg", OPTIMIZED)
-            manifest[game] = {"direct_automaton": direct, "rbg_automaton": rbg}
+            rbg_direct = build(spec["rbg_dir"] / f"{game}.rbg", base / game / "rbg_direct", DIRECT)
+            manifest[game] = {"direct_automaton": direct, "rbg_automaton": rbg, "rbg_direct_automaton": rbg_direct}
             print(slice_name, game, manifest[game], flush=True)
         (base / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 

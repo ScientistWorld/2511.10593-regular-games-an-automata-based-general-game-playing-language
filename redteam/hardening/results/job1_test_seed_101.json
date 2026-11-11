@@ -1,0 +1,102 @@
+{
+  "experiments": {
+    "automaton_optimization": {
+      "results": {
+        "better_inline_unique_states": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_two_pass_optimizer": {
+          "automaton_edge_reduction_pct": 50.09139010337635,
+          "automaton_node_reduction_pct": 55.45238660517678,
+          "verified_automaton_fraction": 1.0
+        },
+        "direct_translation_baseline": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "weaker_no_optimizations": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        }
+      }
+    },
+    "forward_model_efficiency": {
+      "results": {
+        "better_inline_unique_states": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.957438503178735,
+          "speedup_vs_rbg_translation": 3.379854245516437,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.089008645439033
+        },
+        "better_two_pass_optimizer": {
+          "games_faster_than_rbg_fraction": 0.8,
+          "speedup_vs_direct_translation": 1.1340169579523984,
+          "speedup_vs_rbg_translation": 1.2959904409520058,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.20758641842813166
+        },
+        "direct_translation_baseline": {
+          "games_faster_than_rbg_fraction": 0.6,
+          "speedup_vs_direct_translation": 1.0,
+          "speedup_vs_rbg_translation": 1.1428316233401568,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.5022865975177179
+        },
+        "hrg_rg_optimized": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.043001882068102,
+          "speedup_vs_rbg_translation": 3.477638780711039,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0890086679959416
+        },
+        "rbg_translation_baseline": {
+          "speedup_vs_direct_translation": 0.8750195388164861,
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
+        },
+        "weaker_no_optimizations": {
+          "games_faster_than_rbg_fraction": 0.6,
+          "speedup_vs_direct_translation": 0.9999999878430564,
+          "speedup_vs_rbg_translation": 1.1428316094468172,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.5022865972194123
+        }
+      }
+    }
+  },
+  "metadata": {
+    "elapsed_seconds": 2797.8,
+    "games": [
+      "breakthrough_7x7",
+      "hex_9x9",
+      "reversi_6x6",
+      "gomoku_standard_13x13",
+      "foxAndHounds_10x10"
+    ],
+    "methods": {
+      "better_inline_unique_states": {
+        "status": "ok"
+      },
+      "better_two_pass_optimizer": {
+        "status": "ok"
+      },
+      "hrg_rg_optimized": {
+        "status": "ok"
+      },
+      "weaker_no_optimizations": {
+        "status": "ok"
+      }
+    },
+    "slice": "test"
+  }
+}

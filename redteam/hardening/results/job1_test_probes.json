@@ -1,0 +1,309 @@
+{
+  "experiments": {
+    "automaton_optimization": {
+      "results": {
+        "better_combined": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_inline_unique_states": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_path_compression": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_two_pass_inline": {
+          "automaton_edge_reduction_pct": 50.09139010337635,
+          "automaton_node_reduction_pct": 55.45238660517678,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_two_pass_optimizer": {
+          "automaton_edge_reduction_pct": 50.09139010337635,
+          "automaton_node_reduction_pct": 55.45238660517678,
+          "verified_automaton_fraction": 1.0
+        },
+        "direct_translation_baseline": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        },
+        "probe_hybrid_two_pass_automaton": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_backend_override": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_cached_train_output": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_empty_submission": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_fabricated_results": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_failing_method": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_fake_automaton": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_minified_source": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_private_autotune": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_process_hijack": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "weaker_no_optimizations": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "weaker_no_pragmas": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        }
+      }
+    },
+    "forward_model_efficiency": {
+      "results": {
+        "better_combined": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.917886327770799,
+          "speedup_vs_rbg_translation": 3.3401296081895344,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0875950030602128
+        },
+        "better_inline_unique_states": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.9550561395017203,
+          "speedup_vs_rbg_translation": 3.3826782117837424,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0906339540923193
+        },
+        "better_path_compression": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.0223973834490914,
+          "speedup_vs_rbg_translation": 3.459764313672012,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0875949696881637
+        },
+        "better_two_pass_inline": {
+          "games_faster_than_rbg_fraction": 0.8,
+          "speedup_vs_direct_translation": 1.1389884435493896,
+          "speedup_vs_rbg_translation": 1.3038098802812117,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.2135910142396379
+        },
+        "better_two_pass_optimizer": {
+          "games_faster_than_rbg_fraction": 0.8,
+          "speedup_vs_direct_translation": 1.1328373607484645,
+          "speedup_vs_rbg_translation": 1.2967686828259661,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.20736163659063353
+        },
+        "direct_translation_baseline": {
+          "games_faster_than_rbg_fraction": 0.6,
+          "speedup_vs_direct_translation": 1.0,
+          "speedup_vs_rbg_translation": 1.1447086119839767,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.5061268364379399
+        },
+        "probe_hybrid_two_pass_automaton": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "rbg_translation_baseline": {
+          "speedup_vs_direct_translation": 0.8735847616860575,
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
+        },
+        "shortcut_backend_override": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_cached_train_output": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_empty_submission": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_fabricated_results": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_failing_method": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_fake_automaton": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_minified_source": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_private_autotune": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_process_hijack": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "weaker_no_optimizations": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "weaker_no_pragmas": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        }
+      }
+    }
+  },
+  "metadata": {
+    "elapsed_seconds": 1718.1,
+    "games": [
+      "breakthrough_7x7",
+      "hex_9x9",
+      "reversi_6x6",
+      "gomoku_standard_13x13",
+      "foxAndHounds_10x10"
+    ],
+    "methods": {
+      "better_combined": {
+        "status": "ok"
+      },
+      "better_inline_unique_states": {
+        "status": "ok"
+      },
+      "better_path_compression": {
+        "status": "ok"
+      },
+      "better_two_pass_inline": {
+        "status": "ok"
+      },
+      "better_two_pass_optimizer": {
+        "status": "ok"
+      },
+      "probe_hybrid_two_pass_automaton": {
+        "reason": "C++ build failed (exit 1): lto1: fatal error: write: No space left on device\ncompilation terminated.\nlto1: fatal error: write: No space left on device\ncompilation terminated.\nlto-wrapper: fatal error: g++ returned 1 exit status\ncompilation terminated.\n/usr/bin/ld: error: lto-wrapper failed\ncollect2: error: ld returned 1 exit status\n",
+        "status": "failed"
+      },
+      "shortcut_backend_override": {
+        "reason": "shortcut_backend_override compile.sh on gomoku_standard_13x13 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 48, in compile_game\n    shutil.copyfile(tmp / name, outdir / name)\n  File \"/usr/lib/python3.11/shutil.py\", line 269, in copyfile\n    _fastcopy_sendfile(fsrc, fdst)\n  File \"/usr/lib/python3.11/shutil.py\", line 158, in _fastcopy_sendfile\n    raise err from None\n  File \"/usr/lib/python3.11/shutil.py\", line 144, in _fastcopy_sendfile\n    sent = os.sendfile(outfd, infd, offset, blocksize)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: [Errno 28] No space left on device: '/tmp/tmp3ia954h6/reasoner.hpp' -> '/tmp/rg_eval_test_zjduq11h/out_moi199w4/reasoner.hpp'\n",
+        "status": "failed"
+      },
+      "shortcut_cached_train_output": {
+        "reason": "C++ build failed (exit 1): lto1: fatal error: write: No space left on device\ncompilation terminated.\nlto-wrapper: fatal error: g++ returned 1 exit status\ncompilation terminated.\n/usr/bin/ld: error: lto-wrapper failed\ncollect2: error: ld returned 1 exit status\n",
+        "status": "failed"
+      },
+      "shortcut_empty_submission": {
+        "reason": "shortcut_empty_submission produced no reasoner.hpp for breakthrough_7x7",
+        "status": "failed"
+      },
+      "shortcut_fabricated_results": {
+        "reason": "scan compile probe.cpp failed (exit 1):                     ^~~~~\n/home/user/eval/test/probe.cpp:17:30: error: \u2018cache\u2019 was not declared in this scope\n   17 |     state.getAllMoves(moves, cache);\n      |                              ^~~~~\n/home/user/eval/test/probe.cpp:18:15: error: request for member \u2018empty\u2019 in \u2018moves\u2019, which is of non-class type \u2018int\u2019\n   18 |     if (moves.empty()) break;\n      |               ^~~~~\n/home/user/eval/test/probe.cpp:19:5: error: \u2018reasoner\u2019 is not a class, namespace, or enumeration\n   19 |     reasoner::GameState copy = state;\n      |     ^~~~~~~~\n/home/user/eval/test/probe.cpp:20:5: error: \u2018copy\u2019 was not declared in this scope; did you mean \u2018std::copy\u2019?\n   20 |     copy.applyMove(moves[i % moves.size()], cache);\n      |     ^~~~\n      |     std::copy\nIn file included from /usr/include/c++/12/vector:60,\n                 from /home/user/eval/test/probe.cpp:3:\n/usr/include/c++/12/bits/stl_algobase.h:611:5: note: \u2018std::copy\u2019 declared here\n  611 |     copy(_II __first, _II __last, _OI __result)\n      |     ^~~~\n/home/user/eval/test/probe.cpp:20:36: error: request for member \u2018size\u2019 in \u2018moves\u2019, which is of non-class type \u2018int\u2019\n   20 |     copy.applyMove(moves[i % moves.size()], cache);\n      |                                    ^~~~\n/home/user/eval/test/probe.cpp:22:57: error: \u2018reasoner\u2019 is not a class, namespace, or enumeration\n   22 |     volatile auto score = state.getPlayerScore(2 + (i % reasoner::PLAYERS_COUNT));\n      |                                                         ^~~~~~~~\n",
+        "status": "failed"
+      },
+      "shortcut_failing_method": {
+        "reason": "shortcut_failing_method compile.sh on breakthrough_7x7 failed (exit 3): not implemented\n",
+        "status": "failed"
+      },
+      "shortcut_fake_automaton": {
+        "reason": "shortcut_fake_automaton compile.sh on reversi_6x6 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/rgcompiler/scripts/adjust_AST.py\", line 170, in <module>\n    json.dump(ast_json, json_file, indent=4)\n  File \"/usr/lib/python3.11/json/__init__.py\", line 180, in dump\n    fp.write(chunk)\nOSError: [Errno 28] No space left on device\nTraceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 45, in compile_game\n    subprocess.run([sys.executable, str(ADJUST), str(raw), str(tmp / \"game.json\")], check=True)\n  File \"/usr/lib/python3.11/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/user/method/rgcompiler/scripts/adjust_AST.py', '/tmp/tmp38ifenqz/raw.json', '/tmp/tmp38ifenqz/game.json']' returned non-zero exit status 1.\n",
+        "status": "failed"
+      },
+      "shortcut_minified_source": {
+        "reason": "shortcut_minified_source compile.sh on breakthrough_7x7 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 48, in compile_game\n    shutil.copyfile(tmp / name, outdir / name)\n  File \"/usr/lib/python3.11/shutil.py\", line 269, in copyfile\n    _fastcopy_sendfile(fsrc, fdst)\n  File \"/usr/lib/python3.11/shutil.py\", line 158, in _fastcopy_sendfile\n    raise err from None\n  File \"/usr/lib/python3.11/shutil.py\", line 144, in _fastcopy_sendfile\n    sent = os.sendfile(outfd, infd, offset, blocksize)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: [Errno 28] No space left on device: '/tmp/tmphnt9lbzi/game.json' -> '/tmp/rg_eval_test_zjduq11h/out_fy01q16s/game.json'\n",
+        "status": "failed"
+      },
+      "shortcut_private_autotune": {
+        "reason": "shortcut_private_autotune compile.sh on breakthrough_7x7 failed (exit 1): no configuration compiled\n",
+        "status": "failed"
+      },
+      "shortcut_process_hijack": {
+        "reason": "shortcut_process_hijack compile.sh on breakthrough_7x7 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 48, in compile_game\n    shutil.copyfile(tmp / name, outdir / name)\n  File \"/usr/lib/python3.11/shutil.py\", line 269, in copyfile\n    _fastcopy_sendfile(fsrc, fdst)\n  File \"/usr/lib/python3.11/shutil.py\", line 158, in _fastcopy_sendfile\n    raise err from None\n  File \"/usr/lib/python3.11/shutil.py\", line 144, in _fastcopy_sendfile\n    sent = os.sendfile(outfd, infd, offset, blocksize)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: [Errno 28] No space left on device: '/tmp/tmp54pg3qdz/game.json' -> '/tmp/rg_eval_test_zjduq11h/out_yh0nbdn5/game.json'\n",
+        "status": "failed"
+      },
+      "weaker_no_optimizations": {
+        "reason": "weaker_no_optimizations compile.sh on breakthrough_7x7 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/rgcompiler/scripts/adjust_AST.py\", line 170, in <module>\n    json.dump(ast_json, json_file, indent=4)\n  File \"/usr/lib/python3.11/json/__init__.py\", line 180, in dump\n    fp.write(chunk)\nOSError: [Errno 28] No space left on device\n\nDuring handling of the above exception, another exception occurred:\n\nOSError: [Errno 28] No space left on device\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/user/method/rgcompiler/scripts/adjust_AST.py\", line 169, in <module>\n    with open(output_file, \"w\") as json_file:\nOSError: [Errno 28] No space left on device\nTraceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 45, in compile_game\n    subprocess.run([sys.executable, str(ADJUST), str(raw), str(tmp / \"game.json\")], check=True)\n  File \"/usr/lib/python3.11/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/user/method/rgcompiler/scripts/adjust_AST.py', '/tmp/tmp8o80eeeu/raw.json', '/tmp/tmp8o80eeeu/game.json']' returned non-zero exit status 1.\n",
+        "status": "failed"
+      },
+      "weaker_no_pragmas": {
+        "reason": "weaker_no_pragmas compile.sh on breakthrough_7x7 failed (exit 1): Traceback (most recent call last):\n  File \"/home/user/method/toolchain/compile_game.py\", line 62, in <module>\n    main()\n  File \"/home/user/method/toolchain/compile_game.py\", line 58, in main\n    compile_game(args.game.resolve(), args.outdir.resolve(), args.translate, args.rg2cpp)\n  File \"/home/user/method/toolchain/compile_game.py\", line 48, in compile_game\n    shutil.copyfile(tmp / name, outdir / name)\n  File \"/usr/lib/python3.11/shutil.py\", line 269, in copyfile\n    _fastcopy_sendfile(fsrc, fdst)\n  File \"/usr/lib/python3.11/shutil.py\", line 158, in _fastcopy_sendfile\n    raise err from None\n  File \"/usr/lib/python3.11/shutil.py\", line 144, in _fastcopy_sendfile\n    sent = os.sendfile(outfd, infd, offset, blocksize)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nOSError: [Errno 28] No space left on device: '/tmp/tmpm8x7l9zl/game.json' -> '/tmp/rg_eval_test_zjduq11h/out_9y2lj1vr/game.json'\n",
+        "status": "failed"
+      }
+    },
+    "slice": "test"
+  }
+}

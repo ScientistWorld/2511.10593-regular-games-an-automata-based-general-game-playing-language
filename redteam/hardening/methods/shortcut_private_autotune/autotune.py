@@ -3,7 +3,7 @@ import re, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
 
 START = time.time()
-BUDGET = 50.0
+BUDGET = 13.0
 ROOT = Path("/home/user")
 COMPILE = ROOT / "method" / "toolchain" / "compile_game.py"
 SIMS = ROOT / "method" / "rgcompiler" / "test" / "sims.cpp"

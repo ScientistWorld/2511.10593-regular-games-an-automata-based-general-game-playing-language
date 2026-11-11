@@ -7,6 +7,10 @@
     "rbg_automaton": {
       "edges": 65,
       "nodes": 56
+    },
+    "rbg_direct_automaton": {
+      "edges": 223,
+      "nodes": 214
     }
   },
   "foxAndHounds_10x10": {
@@ -17,6 +21,10 @@
     "rbg_automaton": {
       "edges": 58,
       "nodes": 50
+    },
+    "rbg_direct_automaton": {
+      "edges": 227,
+      "nodes": 220
     }
   },
   "gomoku_standard_13x13": {
@@ -27,6 +35,10 @@
     "rbg_automaton": {
       "edges": 121,
       "nodes": 100
+    },
+    "rbg_direct_automaton": {
+      "edges": 409,
+      "nodes": 406
     }
   },
   "hex_9x9": {
@@ -37,6 +49,10 @@
     "rbg_automaton": {
       "edges": 82,
       "nodes": 57
+    },
+    "rbg_direct_automaton": {
+      "edges": 251,
+      "nodes": 228
     }
   },
   "reversi_6x6": {
@@ -47,6 +63,10 @@
     "rbg_automaton": {
       "edges": 1397,
       "nodes": 1156
+    },
+    "rbg_direct_automaton": {
+      "edges": 3265,
+      "nodes": 2870
     }
   }
 }

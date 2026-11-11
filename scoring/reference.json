@@ -1,20 +1,46 @@
 {
   "experiments": {
     "forward_model_efficiency": {
-      "description": "Section 4 / Table 1: efficiency of the generated forward model under a flat Monte Carlo workload (uniformly random playouts), compared with the same games' matched RBG descriptions translated RBG->RG. The gym measures the work per playout as executed machine instructions of a fixed playout count under an evaluator-owned driver and fixed compiler flags, so the score does not depend on wall-clock time or host. Every scored model must first reproduce the ground-truth game tree and playout statistics of the rule file.",
+      "description": "Section 4 / Table 1: efficiency of the generated forward model under a flat Monte Carlo workload (uniformly random playouts), compared with the same games' matched RBG descriptions translated RBG->RG (frozen). The gym measures the work per playout as executed machine instructions of a fixed playout count under an evaluator-owned driver and fixed compiler flags, so the score does not depend on wall-clock time or host. Every scored model must first reproduce the ground-truth game tree and playout statistics of the rule file.",
       "notes": "Paper values are Table 1 throughput ratios (HRG->RG playouts/s divided by RBG->RG playouts/s, three 1-minute runs on a Ryzen 9 3950X) for the standard board sizes of the five game families the held-out test uses. The held-out games are board-size variants of those families (Breakthrough 7x7, Hex 9x9, Reversi 6x6, Gomoku 13x13, Fox and Hounds 10x10) and the gym counts instructions instead of seconds, so these numbers are the paper's reference points, not values on the gym's exact scale. speedup_vs_direct_translation is reported for context only: per game it differs from the primary metric by a fixed evaluator constant, so scoring it would double-count the same signal.",
-      "weight": 0.75,
+      "weight": 0.6,
       "primary_metric": "speedup_vs_rbg_translation",
       "metrics": {
-        "speedup_vs_rbg_translation": {"higher_is_better": true, "coefficient": 1.0, "description": "Geometric mean over games of (instructions per playout of the frozen RBG->RG forward model) / (instructions per playout of the submitted forward model), same playout count and seed."},
-        "worst_game_speedup_vs_rbg_translation": {"higher_is_better": true, "coefficient": 0.5, "description": "Minimum over games of the same per-game ratio; the paper claims the HRG pipeline beats RBG->RG on every game."},
-        "verified_game_fraction": {"higher_is_better": true, "coefficient": 1.0, "description": "Constraint: 1 when every game's submitted forward model compiled under the fixed driver, passed the integrity checks and matched the ground-truth game tree and playout statistics; any failure fails the whole run (all metrics take their worst value)."},
-        "speedup_vs_direct_translation": {"higher_is_better": true, "coefficient": 0.0, "description": "Diagnostic: geometric mean speedup over the frozen direct (unoptimized) HRG->RG translation."},
-        "games_faster_than_rbg_fraction": {"higher_is_better": true, "coefficient": 0.0, "description": "Diagnostic: fraction of games on which the submitted model executes fewer instructions per playout than RBG->RG."}
+        "speedup_vs_rbg_translation": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Geometric mean over games of (instructions per playout of the frozen RBG->RG forward model) / (instructions per playout of the submitted forward model), same playout count and seed."
+        },
+        "worst_game_speedup_vs_rbg_translation": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Minimum over games of the same per-game ratio; the paper claims the HRG pipeline beats RBG->RG on every game."
+        },
+        "verified_game_fraction": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Constraint: 1 when every game's submitted forward model compiled under the fixed driver, passed the integrity checks and matched the ground-truth game tree and playout statistics; any failure fails the whole run (all metrics take their worst value)."
+        },
+        "speedup_vs_direct_translation": {
+          "higher_is_better": true,
+          "coefficient": 0.0,
+          "description": "Diagnostic: geometric mean speedup over the frozen direct (unoptimized) HRG->RG translation."
+        },
+        "games_faster_than_rbg_fraction": {
+          "higher_is_better": true,
+          "coefficient": 0.0,
+          "description": "Diagnostic: fraction of games on which the submitted model executes fewer instructions per playout than RBG->RG."
+        }
       },
       "_paper_table1_hrg_over_rbg_rg_ratio": {
-        "breakthrough": 1.0374, "hex_11x11": 9.6179, "reversi": 12.6478, "gomoku_standard": 1.0949, "fox_and_hounds": 1.3751,
-        "connect_four": 10.5706, "knightthrough": 1.7585, "yavalath": 1.154,
+        "breakthrough": 1.0374,
+        "hex_11x11": 9.6179,
+        "reversi": 12.6478,
+        "gomoku_standard": 1.0949,
+        "fox_and_hounds": 1.3751,
+        "connect_four": 10.5706,
+        "knightthrough": 1.7585,
+        "yavalath": 1.154,
         "_note": "HRG->RG / RBG->RG playouts per second from Table 1; the first five are the families of the held-out games, all eight are the visible train games."
       },
       "results": {
@@ -40,14 +66,25 @@
     "automaton_optimization": {
       "description": "Section 3.3: size of the optimized rules automaton (nodes and edges) relative to the direct HRG->RG translation of the same rule file. The submitted automaton is recompiled by the evaluator's reference RG compiler (pragmas stripped) and must reproduce the ground-truth game tree and playout statistics before its size counts.",
       "notes": "Paper values are the reported mean reductions for games written in HRG (47% fewer nodes, 41% fewer edges). The gym averages over its own game set, so the value is comparable in kind but not computed on the same games.",
-      "weight": 0.25,
+      "weight": 0.15,
       "primary_metric": "automaton_edge_reduction_pct",
       "metrics": {
-        "automaton_edge_reduction_pct": {"higher_is_better": true, "coefficient": 1.0, "description": "Mean over games of 100 * (1 - edges of the submitted automaton / edges of the direct translation), floored at -100."},
-        "automaton_node_reduction_pct": {"higher_is_better": true, "coefficient": 0.8, "description": "Mean over games of 100 * (1 - nodes of the submitted automaton / nodes of the direct translation), floored at -100."},
-        "verified_automaton_fraction": {"higher_is_better": true, "coefficient": 0.5, "description": "Constraint: 1 when every submitted automaton reproduced the ground truth through the reference compiler; any failure fails the whole run."}
+        "automaton_edge_reduction_pct": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Mean over games of 100 * (1 - edges of the submitted automaton / edges of the direct translation), floored at -100."
+        },
+        "automaton_node_reduction_pct": {
+          "higher_is_better": true,
+          "coefficient": 0.8,
+          "description": "Mean over games of 100 * (1 - nodes of the submitted automaton / nodes of the direct translation), floored at -100."
+        },
+        "verified_automaton_fraction": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Constraint: 1 when every submitted automaton reproduced the ground truth through the reference compiler; any failure fails the whole run."
+        }
       },
-      "_paper_rbg_to_rg_reductions_pct": {"nodes": 72, "edges": 66, "state_size": 21, "_note": "Reported for automata translated from RBG; not scored (different source language)."},
       "results": {
         "direct_translation_baseline": {
           "type": "baseline",
@@ -60,6 +97,61 @@
           "automaton_edge_reduction_pct": 41.0,
           "automaton_node_reduction_pct": 47.0,
           "verified_automaton_fraction": 1.0
+        }
+      }
+    },
+    "translated_rules_optimization": {
+      "description": "Where the paper's method falls short: forward models compiled from rule descriptions automatically translated from another rule language (the matched Regular Boardgames descriptions of the same games). The paper reports large automaton reductions for RBG->RG translations, but its Table 1 shows that the optimized RBG->RG forward models only sometimes match the native RBG system (e.g. Connect Four, Hex and Reversi are 7-9x slower). Each submitted model is verified against the frozen direct (untransformed) RBG->RG translation of the same description and measured in executed instructions per random playout relative to it; the submitted automaton is verified through the reference RG compiler and its size counted relative to the direct translation.",
+      "notes": "The paper reports 72% fewer nodes and 66% fewer edges for optimized automata translated from RBG (Section 3.3); it does not report the speedup over the untransformed translation, so speedup_vs_direct_rbg_translation has no paper value. The 49k-line direct Reversi translation is excluded from this experiment's game set to keep the held-out evaluation light. Table 1's RBG->RG / native RBG throughput ratios are kept under _paper_table1_rbg_rg_over_native_rbg as evidence of the shortfall; native RBG is not part of the gym.",
+      "weight": 0.25,
+      "primary_metric": "rbg_automaton_edge_reduction_pct",
+      "metrics": {
+        "speedup_vs_direct_rbg_translation": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Geometric mean over games of (instructions per playout of the frozen direct RBG->RG model) / (instructions per playout of the submitted model compiled from the RBG description)."
+        },
+        "rbg_automaton_edge_reduction_pct": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Mean % fewer edges of the submitted automaton than the direct RBG->RG translation (floored at -100)."
+        },
+        "rbg_automaton_node_reduction_pct": {
+          "higher_is_better": true,
+          "coefficient": 0.3,
+          "description": "Mean % fewer nodes of the submitted automaton than the direct RBG->RG translation (floored at -100)."
+        },
+        "verified_rbg_game_fraction": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Constraint: 1 when every translated game's model and automaton reproduced the ground truth; any failure fails the whole run."
+        }
+      },
+      "_paper_table1_rbg_rg_over_native_rbg": {
+        "connect_four": 0.1342,
+        "breakthrough": 1.5532,
+        "yavalath": 1.0196,
+        "hex_11x11": 0.109,
+        "knightthrough": 0.9481,
+        "gomoku_standard": 1.0625,
+        "fox_and_hounds": 0.9734,
+        "reversi": 0.1134,
+        "pentago": 0.0222,
+        "chess": 0.5337
+      },
+      "results": {
+        "direct_rbg_translation_baseline": {
+          "type": "baseline",
+          "speedup_vs_direct_rbg_translation": 1.0,
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "type": "proposed",
+          "rbg_automaton_edge_reduction_pct": 66.0,
+          "rbg_automaton_node_reduction_pct": 72.0,
+          "verified_rbg_game_fraction": 1.0
         }
       }
     }

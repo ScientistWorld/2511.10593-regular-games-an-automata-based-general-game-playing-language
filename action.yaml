@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Hardening check: rebuild container (adds valgrind), reproduce reference on rebuilt train/test evaluators, run better/weaker variants, shortcut probes and 3-seed noise check through the hidden test."
+notes: "Hardening job 2 (job 1's worker died): final three-experiment evaluators; canonical reference train/test scores, all variant and shortcut probes on the hidden test, seed check and train check for the better variant."

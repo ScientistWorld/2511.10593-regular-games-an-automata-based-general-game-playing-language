@@ -1,44 +1,33 @@
 #!/usr/bin/env bash
-# Hardening job: reproduce the reference end to end on the rebuilt gym, then
-# run the better/weaker variants, the shortcut probes and the seed-noise check
-# through the same evaluators. Each step writes its own file so a partial run
-# keeps what finished.
+# Hardening job 2: rerun the canonical reference scores with the final
+# three-experiment evaluators, rerun the shortcut/variant probes (job 1's probe
+# run ran out of /tmp space), and the seed/train checks for the better variant.
 set -uo pipefail
 cd /home/user
 OUT=redteam/hardening/results
 mkdir -p "$OUT"
 step() { echo "=== $(date -u +%H:%M:%S) $*"; }
-command -v valgrind && valgrind --version
-nproc; free -g || true
+nproc; df -h /tmp | tail -1
 
 step "prepare reference toolchain"
 bash method/compilers/hrg_rg_optimized/prepare.sh || exit 1
 
-step "held-out test (canonical script, reference methods on disk)"
+step "held-out test (canonical script)"
 bash scripts/evaluate_test.sh > "$OUT/evaluate_test.log" 2>&1 || { tail -50 "$OUT/evaluate_test.log"; exit 1; }
-tail -5 "$OUT/evaluate_test.log"
-
 step "train slice (canonical script)"
 bash scripts/evaluate_train.sh --details "$OUT/train_reference_details.json" > "$OUT/evaluate_train.log" 2>&1 || { tail -50 "$OUT/evaluate_train.log"; exit 1; }
-tail -5 "$OUT/evaluate_train.log"
 
-step "held-out test: variants and shortcut probes"
+step "held-out test: variants and shortcut probes (rerun)"
 python3 eval/test/evaluate.py --methods-dir redteam/hardening/methods \
   --output "$OUT/test_probes.json" --details "$OUT/test_probes_details.json" > "$OUT/test_probes.log" 2>&1
-grep "^\[test\]" "$OUT/test_probes.log" | cut -c1-200
+grep "^\[test\]" "$OUT/test_probes.log" | cut -c1-160
 
-step "held-out test: reference + variants with the default seed (details)"
-python3 eval/test/evaluate.py --methods-dir redteam/hardening/seed_methods \
-  --output "$OUT/test_seed_default.json" --details "$OUT/test_seed_default_details.json" > "$OUT/test_seed_default.log" 2>&1
+step "held-out test: reference, better and weaker variant, seed 101"
+python3 eval/test/evaluate.py --methods-dir redteam/hardening/seed2_methods --seed 101 \
+  --output "$OUT/test_seed_101.json" --details "$OUT/test_seed_101_details.json" > "$OUT/test_seed_101.log" 2>&1
 
-for seed in 101 202; do
-  step "held-out test: seed $seed"
-  python3 eval/test/evaluate.py --methods-dir redteam/hardening/seed_methods --seed "$seed" \
-    --output "$OUT/test_seed_$seed.json" --details "$OUT/test_seed_${seed}_details.json" > "$OUT/test_seed_$seed.log" 2>&1
-done
-
-step "train slice: variants"
-python3 eval/train/evaluate.py --methods-dir redteam/hardening/seed_methods \
+step "train slice: reference, better and weaker variant"
+python3 eval/train/evaluate.py --methods-dir redteam/hardening/seed2_methods \
   --output "$OUT/train_variants.json" --details "$OUT/train_variants_details.json" > "$OUT/train_variants.log" 2>&1
 
 step "validate"

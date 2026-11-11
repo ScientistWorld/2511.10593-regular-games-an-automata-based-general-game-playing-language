@@ -1,45 +1,60 @@
 {
   "experiments": {
-    "hrg_optimization_structure": {
+    "automaton_optimization": {
       "results": {
-        "hrg_rg_no_optimizations": {
+        "direct_translation_baseline": {
           "automaton_edge_reduction_pct": 0.0,
           "automaton_node_reduction_pct": 0.0,
-          "generated_cpp_line_reduction_pct": 0.0,
-          "playout_completion_rate": 1.0
+          "verified_automaton_fraction": 1.0
         },
         "hrg_rg_optimized": {
-          "automaton_edge_reduction_pct": 46.1765353290777,
-          "automaton_node_reduction_pct": 50.58201058201058,
-          "generated_cpp_line_reduction_pct": 40.584760949470784,
-          "playout_completion_rate": 1.0
+          "automaton_edge_reduction_pct": 45.81348646530547,
+          "automaton_node_reduction_pct": 51.11857694531826,
+          "verified_automaton_fraction": 1.0
         }
       }
     },
-    "table1_playout_throughput_subset": {
+    "forward_model_efficiency": {
       "results": {
-        "hrg_rg_table1_subset": {
-          "automaton_edge_advantage_vs_rbg_pct": 13.446858485026423,
-          "benchmark_completion_rate": 1.0,
-          "games_completed": 2.0,
-          "generated_cpp_line_advantage_vs_rbg_pct": 18.81137337539537,
-          "sims_per_second": 230216.25,
-          "speedup_vs_rbg_rg": 1.142812953086603,
-          "states_per_second": 6438379.0
+        "direct_translation_baseline": {
+          "games_faster_than_rbg_fraction": 0.625,
+          "speedup_vs_direct_translation": 1.0,
+          "speedup_vs_rbg_translation": 1.2810841031717726,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.3967969456647377
         },
-        "rbg_rg_table1_subset": {
-          "automaton_edge_advantage_vs_rbg_pct": 0.0,
-          "benchmark_completion_rate": 1.0,
-          "games_completed": 2.0,
-          "generated_cpp_line_advantage_vs_rbg_pct": 0.0,
-          "sims_per_second": 195674.75,
-          "speedup_vs_rbg_rg": 1.0,
-          "states_per_second": 5487864.25
+        "hrg_rg_optimized": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.6411141837559002,
+          "speedup_vs_rbg_translation": 3.383489395471175,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0501912784298009
+        },
+        "rbg_translation_baseline": {
+          "speedup_vs_direct_translation": 0.7805888758779768,
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
         }
       }
     }
   },
   "metadata": {
+    "elapsed_seconds": 834.6,
+    "games": [
+      "connect4",
+      "breakthrough",
+      "yavalath",
+      "hex",
+      "reversi",
+      "knightthrough",
+      "gomoku_standard",
+      "foxAndHounds"
+    ],
+    "methods": {
+      "hrg_rg_optimized": {
+        "status": "ok"
+      }
+    },
     "slice": "train"
   }
 }

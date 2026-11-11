@@ -19,6 +19,11 @@ this evaluator, without trusting anything the method reports:
    reference rg2cpp (pragmas stripped), verifies it the same way and counts
    its nodes and edges against the frozen direct translation.
 
+Steps 1-5 run on two tracks: the HRG rule files (experiments
+forward_model_efficiency and automaton_optimization) and the matched RBG rule
+files (experiment translated_rules_optimization, compared with the frozen
+direct RBG->RG translation).
+
 Any failure, impossible value or missing artifact makes the method's run fail:
 it then receives the worst value of every scored metric of every experiment.
 """
@@ -27,11 +32,13 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures as cf
+import hashlib
 import json
 import math
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -45,6 +52,9 @@ CONFIG = json.loads((HERE / "config.json").read_text())
 SLICE = CONFIG["slice"]
 GAMES: dict[str, dict[str, Any]] = CONFIG["games"]
 GAME_DIR = ROOT / CONFIG["games_dir"]
+RBG_GAMES: dict[str, dict[str, Any]] = CONFIG["rbg_games"]
+RBG_GAME_DIR = ROOT / CONFIG["rbg_games_dir"]
+TRACKS = {"hrg": (GAMES, GAME_DIR), "rbg": (RBG_GAMES, RBG_GAME_DIR)}
 BASELINE_DIR = HERE / "baselines"
 MANIFEST = json.loads((BASELINE_DIR / "manifest.json").read_text())
 DRIVER = HERE / "driver" / "fm_driver.cpp"
@@ -53,12 +63,19 @@ RGCOMPILER_SRC = HERE / "tools" / "rgcompiler"
 
 DIRECT = "direct_translation_baseline"
 RBG = "rbg_translation_baseline"
+RBG_DIRECT = "direct_rbg_translation_baseline"
 REFERENCE_RG2CPP_FLAGS = (
     "--simple-path-compression 0 --disjoint 1 --all-unique 0 --arithmetic 1 --max-move-len -1 --gccinline 0 "
     "--support-apply-move-for-keeper 0 --remove-unecessary-funcion-arguments 1 --no-cycle-detection 0 "
     "--print-function-names 0 --preserve-original-node-names 1 --verification 0"
 ).split()
-CXX = os.environ.get("RG_EVAL_CXX", "g++")
+CXX = shutil.which(os.environ.get("RG_EVAL_CXX", "g++")) or "g++"
+NM = shutil.which("nm") or "nm"
+VALGRIND = shutil.which("valgrind") or "valgrind"
+# Evaluator sources are read once, before any method code runs, and written
+# fresh into every build directory.
+DRIVER_SRC = DRIVER.read_text()
+PROBE_SRC = PROBE.read_text()
 CXXFLAGS = [
     "-std=c++23", "-O3", "-flto=auto", "-ftracer", "--param", "max-inline-insns-auto=1024",
     "-march=x86-64-v2", "-mtune=generic", "-DNDEBUG", "-w",
@@ -67,6 +84,7 @@ SCAN_FLAGS = ["-std=c++23", "-O1", "-march=x86-64-v2", "-DNDEBUG", "-w", "-fno-l
 
 EFF = "forward_model_efficiency"
 STRUCT = "automaton_optimization"
+TRANS = "translated_rules_optimization"
 WORST = {
     EFF: {
         "speedup_vs_rbg_translation": 0.0,
@@ -76,8 +94,16 @@ WORST = {
         "games_faster_than_rbg_fraction": 0.0,
     },
     STRUCT: {"automaton_edge_reduction_pct": -100.0, "automaton_node_reduction_pct": -100.0, "verified_automaton_fraction": 0.0},
+    TRANS: {
+        "speedup_vs_direct_rbg_translation": 0.0,
+        "rbg_automaton_edge_reduction_pct": -100.0,
+        "rbg_automaton_node_reduction_pct": -100.0,
+        "verified_rbg_game_fraction": 0.0,
+    },
 }
-MAX_WORKERS = max(1, min(int(os.environ.get("RG_EVAL_WORKERS", os.cpu_count() or 4)), 12))
+# Concurrency follows the CPUs this process may actually use (cgroup/cpuset),
+# not the host's core count, to bound memory from parallel LTO builds.
+MAX_WORKERS = max(1, min(int(os.environ.get("RG_EVAL_WORKERS", len(os.sched_getaffinity(0)) + 1)), 12))
 
 # ---------------------------------------------------------------- integrity
 FORBIDDEN_UNDEFINED = re.compile(
@@ -118,6 +144,22 @@ def run(cmd: list[str], *, timeout: float, cwd: Path | None = None, env: dict[st
         raise RunFailure(f"timeout after {timeout}s: {' '.join(map(str, cmd[:3]))}") from exc
 
 
+def run_method(cmd: list[str], *, timeout: float) -> subprocess.CompletedProcess:
+    """Run method code in its own session and kill everything it left behind."""
+    proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
+    try:
+        out, err = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        raise RunFailure(f"timeout after {timeout}s: {' '.join(map(str, cmd[:3]))}") from exc
+    finally:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.wait()
+    return subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+
+
 def check(proc: subprocess.CompletedProcess, what: str) -> subprocess.CompletedProcess:
     if proc.returncode != 0:
         tail = (proc.stdout + proc.stderr)[-1500:]
@@ -148,18 +190,20 @@ def scan_submission(src_dir: Path, work: Path) -> None:
     for pattern, label in FORBIDDEN_SOURCE:
         if pattern.search(text):
             raise RunFailure(f"submitted reasoner uses forbidden construct: {label}")
+    probe = work / "rg_eval_probe.cpp"
+    probe.write_text(PROBE_SRC)
     objs = []
-    for src in [src_dir / "reasoner.cpp", PROBE]:
+    for src in [src_dir / "reasoner.cpp", probe]:
         obj = work / (src.stem + ".scan.o")
         check(run([CXX, *SCAN_FLAGS, *boost_include_flags(), "-c", str(src), "-I", str(src_dir), "-o", str(obj)], timeout=900), f"scan compile {src.name}")
         objs.append(obj)
     for obj in objs:
-        undefined = check(run(["nm", "-u", "-C", str(obj)], timeout=120), "nm").stdout
+        undefined = check(run([NM, "-u", "-C", str(obj)], timeout=120), "nm").stdout
         for line in undefined.splitlines():
             sym = line.strip().removeprefix("U ").strip()
             if FORBIDDEN_UNDEFINED.search(sym):
                 raise RunFailure(f"submitted reasoner references forbidden symbol: {sym}")
-        defined = check(run(["nm", "--defined-only", "-C", str(obj)], timeout=120), "nm").stdout
+        defined = check(run([NM, "--defined-only", "-C", str(obj)], timeout=120), "nm").stdout
         for line in defined.splitlines():
             parts = line.split(" ", 2)
             if len(parts) < 3:
@@ -177,7 +221,9 @@ def scan_submission(src_dir: Path, work: Path) -> None:
 
 
 def build_binary(src_dir: Path, out: Path) -> Path:
-    check(run([CXX, *CXXFLAGS, *boost_include_flags(), str(DRIVER), str(src_dir / "reasoner.cpp"), "-I", str(src_dir), "-o", str(out)], timeout=1800), "C++ build")
+    driver = out.with_name(out.name + "_driver.cpp")
+    driver.write_text(DRIVER_SRC)
+    check(run([CXX, *CXXFLAGS, *boost_include_flags(), str(driver), str(src_dir / "reasoner.cpp"), "-I", str(src_dir), "-o", str(out)], timeout=1800), "C++ build")
     return out
 
 
@@ -208,7 +254,7 @@ def parse_play(stdout: str, expected_count: int) -> dict[str, Any]:
 def run_play(binary: Path, count: int, seed: int, *, valgrind: bool) -> tuple[dict[str, Any] | None, int | None]:
     cmd = [str(binary), "play", str(count), str(seed)]
     if valgrind:
-        cmd = ["valgrind", "--tool=cachegrind", "--cache-sim=no", "--cachegrind-out-file=/dev/null", *cmd]
+        cmd = [VALGRIND, "--tool=cachegrind", "--cache-sim=no", "--cachegrind-out-file=/dev/null", *cmd]
     proc = check(run(cmd, timeout=3600), "playouts")
     instr = None
     if valgrind:
@@ -260,17 +306,22 @@ class Evaluator:
         self.seed = seed
         self.pool = cf.ThreadPoolExecutor(MAX_WORKERS)
         self.rg2cpp: Path | None = None
-        self.truth: dict[str, dict[str, Any]] = {}
-        self.cost: dict[str, dict[str, float]] = {DIRECT: {}, RBG: {}}
-        self.floor: dict[str, int] = {}
+        self.rg2cpp_digest = ""
+        self.rg2cpp_tampered = False
+        self.rg2cpp_builds = 0
+        self.truth: dict[tuple[str, str], dict[str, Any]] = {}
+        self.cost: dict[str, dict[str, float]] = {DIRECT: {}, RBG: {}, RBG_DIRECT: {}}
+        self.floor: dict[tuple[str, str], int] = {}
 
     def build_reference_rg2cpp(self) -> Path:
         if os.environ.get("RG_EVAL_PREBUILT_RG2CPP"):
             return Path(os.environ["RG_EVAL_PREBUILT_RG2CPP"])
-        build = self.work / "rgcompiler_build"
-        shutil.copytree(RGCOMPILER_SRC, self.work / "rgcompiler_src")
+        self.rg2cpp_builds += 1
+        build = self.work / f"rgcompiler_build_{self.rg2cpp_builds}"
+        src = self.work / f"rgcompiler_src_{self.rg2cpp_builds}"
+        shutil.copytree(RGCOMPILER_SRC, src)
         build.mkdir()
-        check(run(["cmake", str(self.work / "rgcompiler_src"), "-DCMAKE_BUILD_TYPE=Release"], cwd=build, timeout=600), "cmake reference rg2cpp")
+        check(run(["cmake", str(src), "-DCMAKE_BUILD_TYPE=Release"], cwd=build, timeout=600), "cmake reference rg2cpp")
         check(run(["make", f"-j{MAX_WORKERS}", "rg2cpp"], cwd=build, timeout=3600), "make reference rg2cpp")
         return build / "src" / "rg2cpp"
 
@@ -284,31 +335,45 @@ class Evaluator:
         stats, instr = run_play(direct, cfg["playouts"], self.seed, valgrind=True)
         _, floor = run_play(direct, 0, self.seed, valgrind=True)
         rbg_stats, rbg_instr = run_play(rbg, cfg["playouts"], self.seed, valgrind=True)
-        self.truth[game] = {"perft": perft, "play": stats}
-        self.floor[game] = floor
+        self.truth[("hrg", game)] = {"perft": perft, "play": stats}
+        self.floor[("hrg", game)] = floor
         self.cost[DIRECT][game] = (instr - floor) / cfg["playouts"]
         self.cost[RBG][game] = (rbg_instr - floor) / cfg["playouts"]
         if self.cost[DIRECT][game] <= 0 or self.cost[RBG][game] <= 0:
             raise RunFailure(f"baseline cost not positive for {game}")
 
-    def check_reasoner(self, binary: Path, game: str) -> None:
-        cfg, truth = GAMES[game], self.truth[game]
+    def rbg_baseline_task(self, game: str) -> None:
+        cfg = RBG_GAMES[game]
+        gdir = self.work / "baselines_rbg" / game
+        gdir.mkdir(parents=True)
+        direct = build_binary(BASELINE_DIR / game / "rbg_direct", gdir / "rbg_direct")
+        perft = run_perft(direct, cfg["perft_depth"])
+        stats, instr = run_play(direct, cfg["playouts"], self.seed, valgrind=True)
+        _, floor = run_play(direct, 0, self.seed, valgrind=True)
+        self.truth[("rbg", game)] = {"perft": perft, "play": stats}
+        self.floor[("rbg", game)] = floor
+        self.cost[RBG_DIRECT][game] = (instr - floor) / cfg["playouts"]
+        if self.cost[RBG_DIRECT][game] <= 0:
+            raise RunFailure(f"baseline cost not positive for {game}")
+
+    def check_reasoner(self, binary: Path, track: str, game: str) -> None:
+        cfg, truth = TRACKS[track][0][game], self.truth[(track, game)]
         perft = run_perft(binary, cfg["perft_depth"])
         if perft != truth["perft"]:
             raise RunFailure(f"{game}: game-tree counts {perft} differ from ground truth {truth['perft']}")
 
-    def method_game_task(self, method: str, game: str, out: Path) -> dict[str, Any]:
-        cfg = GAMES[game]
-        gwork = self.work / "methods" / method / game
+    def method_game_task(self, method: str, track: str, game: str, out: Path) -> dict[str, Any]:
+        cfg = TRACKS[track][0][game]
+        gwork = self.work / "methods" / method / f"{track}_{game}"
         gwork.mkdir(parents=True, exist_ok=True)
         scan_submission(out, gwork)
         binary = build_binary(out, gwork / "fm")
-        self.check_reasoner(binary, game)
+        self.check_reasoner(binary, track, game)
         stats, instr = run_play(binary, cfg["playouts"], self.seed, valgrind=True)
-        problem = same_distribution(stats, self.truth[game]["play"], CONFIG["stat_tolerance_z"])
+        problem = same_distribution(stats, self.truth[(track, game)]["play"], CONFIG["stat_tolerance_z"])
         if problem:
             raise RunFailure(f"{game}: playout statistics differ: {problem}")
-        cost = (instr - self.floor[game]) / cfg["playouts"]
+        cost = (instr - self.floor[(track, game)]) / cfg["playouts"]
         if not math.isfinite(cost) or cost <= 0:
             raise RunFailure(f"{game}: impossible instruction cost {cost}")
         # Structural experiment: the submitted RG automaton, compiled by the reference rg2cpp.
@@ -318,54 +383,71 @@ class Evaluator:
         rgdir = gwork / "rg"
         rgdir.mkdir(exist_ok=True)
         (rgdir / "game.json").write_text(json.dumps(ast))
+        if hashlib.sha256(self.rg2cpp.read_bytes()).hexdigest() != self.rg2cpp_digest:
+            self.rg2cpp_tampered = True
+            raise RunFailure("evaluator's reference rg2cpp was modified during this method's evaluation")
         check(run([str(self.rg2cpp), "--file", "game.json", "-o", "reasoner", *REFERENCE_RG2CPP_FLAGS], cwd=rgdir, timeout=600), f"{game}: reference rg2cpp on submitted automaton")
         rg_binary = build_binary(rgdir, gwork / "rg_fm")
-        self.check_reasoner(rg_binary, game)
+        self.check_reasoner(rg_binary, track, game)
         rg_stats, _ = run_play(rg_binary, cfg["playouts"], self.seed, valgrind=False)
-        problem = same_distribution(rg_stats, self.truth[game]["play"], CONFIG["stat_tolerance_z"])
+        problem = same_distribution(rg_stats, self.truth[(track, game)]["play"], CONFIG["stat_tolerance_z"])
         if problem:
             raise RunFailure(f"{game}: submitted automaton playout statistics differ: {problem}")
         return {"cost": cost, "nodes": size["nodes"], "edges": size["edges"], "mean_playout_length": stats["depth"][0] / stats["count"]}
 
-    def compile_method(self, method: str, mdir: Path) -> dict[str, Path]:
-        outs: dict[str, Path] = {}
+    def compile_method(self, method: str, mdir: Path, scratch: Path) -> dict[tuple[str, str], Path]:
+        outs: dict[tuple[str, str], Path] = {}
         prepare = mdir / "prepare.sh"
         if prepare.exists():
-            check(run(["bash", str(prepare)], cwd=ROOT, timeout=CONFIG["prepare_timeout_s"]), f"{method} prepare.sh")
-        for game in GAMES:
-            gin = Path(tempfile.mkdtemp(prefix="rules_", dir=self.work))
-            rules = gin / "rules.hrg"
-            shutil.copyfile(GAME_DIR / f"{game}.hrg", rules)
-            out = Path(tempfile.mkdtemp(prefix="out_", dir=self.work))
-            check(run(["bash", str(mdir / "compile.sh"), str(rules), str(out)], cwd=ROOT, timeout=CONFIG["compile_timeout_s"]), f"{method} compile.sh on {game}")
+            check(run_method(["bash", str(prepare)], timeout=CONFIG["prepare_timeout_s"]), f"{method} prepare.sh")
+        for track, game in [(t, g) for t, (games, _) in TRACKS.items() for g in games]:
+            gin = Path(tempfile.mkdtemp(prefix="rules_", dir=scratch))
+            rules = gin / f"rules.{track}"
+            shutil.copyfile(TRACKS[track][1] / f"{game}.{track}", rules)
+            out = Path(tempfile.mkdtemp(prefix="out_", dir=scratch))
+            check(run_method(["bash", str(mdir / "compile.sh"), str(rules), str(out)], timeout=CONFIG["compile_timeout_s"]), f"{method} compile.sh on {game}")
             for name in ["reasoner.hpp", "reasoner.cpp", "game.json"]:
                 if not (out / name).is_file():
-                    raise RunFailure(f"{method} produced no {name} for {game}")
-            outs[game] = out
+                    raise RunFailure(f"{method} produced no {name} for {game}.{track}")
+            outs[(track, game)] = out
         return outs
 
     def evaluate_method(self, method: str, mdir: Path) -> tuple[dict[str, dict[str, float]], dict[str, Any]]:
         status: dict[str, Any] = {"status": "ok"}
+        scratch = self.work / "methods" / method
+        scratch.mkdir(parents=True, exist_ok=True)
+        if self.rg2cpp_tampered:
+            self.rg2cpp = self.build_reference_rg2cpp()
+            self.rg2cpp_digest = hashlib.sha256(self.rg2cpp.read_bytes()).hexdigest()
+            self.rg2cpp_tampered = False
         try:
-            outs = self.compile_method(method, mdir)
-            futures = {game: self.pool.submit(self.method_game_task, method, game, outs[game]) for game in GAMES}
-            per_game = {game: fut.result() for game, fut in futures.items()}
+            outs = self.compile_method(method, mdir, scratch)
+            futures = {key: self.pool.submit(self.method_game_task, method, key[0], key[1], out) for key, out in outs.items()}
+            cf.wait(list(futures.values()))
+            per_game = {key: fut.result() for key, fut in futures.items()}
         except (RunFailure, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
             status = {"status": "failed", "reason": str(exc)[:2000]}
             return {exp: dict(vals) for exp, vals in WORST.items()}, status
-        status["per_game"] = per_game
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
+        status["per_game"] = {f"{t}:{g}": row for (t, g), row in per_game.items()}
         return self.metrics(per_game), status
 
-    def metrics(self, per_game: dict[str, dict[str, Any]]) -> dict[str, dict[str, float]]:
+    def metrics(self, per_game: dict[tuple[str, str], dict[str, Any]]) -> dict[str, dict[str, float]]:
         def geomean(values: list[float]) -> float:
             return math.exp(sum(math.log(v) for v in values) / len(values))
 
-        vs_rbg = geomean([self.cost[RBG][g] / per_game[g]["cost"] for g in GAMES])
-        worst_vs_rbg = min(self.cost[RBG][g] / per_game[g]["cost"] for g in GAMES)
-        vs_direct = geomean([self.cost[DIRECT][g] / per_game[g]["cost"] for g in GAMES])
-        edge_red = [max(-100.0, 100.0 * (1 - per_game[g]["edges"] / MANIFEST[g]["direct_automaton"]["edges"])) for g in GAMES]
-        node_red = [max(-100.0, 100.0 * (1 - per_game[g]["nodes"] / MANIFEST[g]["direct_automaton"]["nodes"])) for g in GAMES]
-        faster = sum(self.cost[RBG][g] > per_game[g]["cost"] for g in GAMES) / len(GAMES)
+        hrg = {g: per_game[("hrg", g)] for g in GAMES}
+        rbg = {g: per_game[("rbg", g)] for g in RBG_GAMES}
+        vs_rbg = geomean([self.cost[RBG][g] / hrg[g]["cost"] for g in GAMES])
+        worst_vs_rbg = min(self.cost[RBG][g] / hrg[g]["cost"] for g in GAMES)
+        vs_direct = geomean([self.cost[DIRECT][g] / hrg[g]["cost"] for g in GAMES])
+
+        def reduction(rows: dict[str, dict[str, Any]], key: str, base: str) -> float:
+            vals = [max(-100.0, 100.0 * (1 - rows[g][key] / MANIFEST[g][base][key])) for g in rows]
+            return sum(vals) / len(vals)
+
+        faster = sum(self.cost[RBG][g] > hrg[g]["cost"] for g in GAMES) / len(GAMES)
         values = {
             EFF: {
                 "speedup_vs_rbg_translation": vs_rbg,
@@ -375,9 +457,15 @@ class Evaluator:
                 "games_faster_than_rbg_fraction": faster,
             },
             STRUCT: {
-                "automaton_edge_reduction_pct": sum(edge_red) / len(edge_red),
-                "automaton_node_reduction_pct": sum(node_red) / len(node_red),
+                "automaton_edge_reduction_pct": reduction(hrg, "edges", "direct_automaton"),
+                "automaton_node_reduction_pct": reduction(hrg, "nodes", "direct_automaton"),
                 "verified_automaton_fraction": 1.0,
+            },
+            TRANS: {
+                "speedup_vs_direct_rbg_translation": geomean([self.cost[RBG_DIRECT][g] / rbg[g]["cost"] for g in RBG_GAMES]),
+                "rbg_automaton_edge_reduction_pct": reduction(rbg, "edges", "rbg_direct_automaton"),
+                "rbg_automaton_node_reduction_pct": reduction(rbg, "nodes", "rbg_direct_automaton"),
+                "verified_rbg_game_fraction": 1.0,
             },
         }
         for exp in values.values():
@@ -413,11 +501,12 @@ def main() -> None:
     methods = discover_methods(Path(args.methods_dir).resolve())
     try:
         rg2cpp_future = ev.pool.submit(ev.build_reference_rg2cpp)
-        for fut in [ev.pool.submit(ev.baseline_task, game) for game in GAMES]:
+        for fut in [ev.pool.submit(ev.baseline_task, game) for game in GAMES] + [ev.pool.submit(ev.rbg_baseline_task, game) for game in RBG_GAMES]:
             fut.result()
         ev.rg2cpp = rg2cpp_future.result()
+        ev.rg2cpp_digest = hashlib.sha256(ev.rg2cpp.read_bytes()).hexdigest()
 
-        results: dict[str, dict[str, dict[str, float]]] = {EFF: {}, STRUCT: {}}
+        results: dict[str, dict[str, dict[str, float]]] = {EFF: {}, STRUCT: {}, TRANS: {}}
         details: dict[str, Any] = {"baselines": {}, "methods": {}}
         geo = lambda xs: math.exp(sum(math.log(x) for x in xs) / len(xs))  # noqa: E731
         results[EFF][DIRECT] = {
@@ -433,16 +522,30 @@ def main() -> None:
             "speedup_vs_direct_translation": geo([ev.cost[DIRECT][g] / ev.cost[RBG][g] for g in GAMES]),
         }
         results[STRUCT][DIRECT] = {"automaton_edge_reduction_pct": 0.0, "automaton_node_reduction_pct": 0.0, "verified_automaton_fraction": 1.0}
+        results[TRANS][RBG_DIRECT] = {
+            "speedup_vs_direct_rbg_translation": 1.0,
+            "rbg_automaton_edge_reduction_pct": 0.0,
+            "rbg_automaton_node_reduction_pct": 0.0,
+            "verified_rbg_game_fraction": 1.0,
+        }
         details["baselines"] = {
-            g: {
+            f"hrg:{g}": {
                 "direct_instructions_per_playout": ev.cost[DIRECT][g],
                 "rbg_instructions_per_playout": ev.cost[RBG][g],
-                "ground_truth_perft": ev.truth[g]["perft"],
-                "ground_truth_mean_playout_length": ev.truth[g]["play"]["depth"][0] / ev.truth[g]["play"]["count"],
+                "ground_truth_perft": ev.truth[("hrg", g)]["perft"],
+                "ground_truth_mean_playout_length": ev.truth[("hrg", g)]["play"]["depth"][0] / ev.truth[("hrg", g)]["play"]["count"],
                 "direct_automaton": MANIFEST[g]["direct_automaton"],
             }
             for g in GAMES
         }
+        details["baselines"].update({
+            f"rbg:{g}": {
+                "direct_rbg_instructions_per_playout": ev.cost[RBG_DIRECT][g],
+                "ground_truth_perft": ev.truth[("rbg", g)]["perft"],
+                "rbg_direct_automaton": MANIFEST[g]["rbg_direct_automaton"],
+            }
+            for g in RBG_GAMES
+        })
         if not methods:
             methods_status = {"no_method_found": {"status": "failed", "reason": "no method/compilers/<name>/compile.sh on disk"}}
             for exp, vals in WORST.items():
@@ -453,9 +556,13 @@ def main() -> None:
             vals, status = ev.evaluate_method(name, mdir)
             for exp in results:
                 results[exp][name] = vals[exp]
-            for g, row in status.get("per_game", {}).items():
-                row["speedup_vs_direct"] = ev.cost[DIRECT][g] / row["cost"]
-                row["speedup_vs_rbg"] = ev.cost[RBG][g] / row["cost"]
+            for key, row in status.get("per_game", {}).items():
+                track, g = key.split(":", 1)
+                if track == "hrg":
+                    row["speedup_vs_direct"] = ev.cost[DIRECT][g] / row["cost"]
+                    row["speedup_vs_rbg"] = ev.cost[RBG][g] / row["cost"]
+                else:
+                    row["speedup_vs_direct_rbg"] = ev.cost[RBG_DIRECT][g] / row["cost"]
             methods_status[name] = status
             print(f"[{SLICE}] {name}: {status['status']} {json.dumps(vals)}", flush=True)
         details["methods"] = methods_status
@@ -467,6 +574,7 @@ def main() -> None:
         "metadata": {
             "slice": SLICE,
             "games": list(GAMES),
+            "rbg_games": list(RBG_GAMES),
             "methods": {k: {"status": v["status"], **({"reason": v["reason"]} if "reason" in v else {})} for k, v in methods_status.items()},
             "elapsed_seconds": round(time.time() - started, 1),
         },

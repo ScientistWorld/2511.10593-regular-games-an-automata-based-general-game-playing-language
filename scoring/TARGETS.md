@@ -1,32 +1,41 @@
 # Scoring Targets
 
-## hrg_optimization_structure
+## forward_model_efficiency  (weight 0.60)
 
-Produce compact generated forward models from the selected high-level game-rule descriptions while preserving executable legal playouts.
+Generate, from each HRG rule file, a C++ forward model that executes a fixed
+flat Monte Carlo workload with as few instructions as possible while playing
+exactly the game.
 
-Primary benefit metric:
-- `automaton_edge_reduction_pct`: percentage reduction in automaton edges versus a direct generated-model baseline for the same game.
+- Primary benefit: `speedup_vs_rbg_translation` — geometric mean over games of
+  (instructions per playout of the frozen RBG->RG model) / (instructions per
+  playout of the submitted model).
+- Secondary benefit: `worst_game_speedup_vs_rbg_translation` — the same ratio
+  on the least favourable game (the paper claims a win on every game).
+- Constraint: `verified_game_fraction` — every game's model must compile under
+  the evaluator's driver, pass the integrity checks and reproduce the ground
+  truth game tree and playout statistics; otherwise the run fails.
+- Diagnostics (zero coefficient): `speedup_vs_direct_translation`,
+  `games_faster_than_rbg_fraction`.
 
-Secondary benefit metrics:
-- `automaton_node_reduction_pct`
-- `generated_cpp_line_reduction_pct`
+## automaton_optimization  (weight 0.15)
 
-Constraint metric:
-- `playout_completion_rate`: generated C++ reasoners must complete deterministic fixed-count random playouts. A compact model that cannot produce legal playouts is not a valid improvement.
+Derive, from each HRG rule file, an RG rules automaton with as few nodes and
+edges as possible that still plays exactly the game.
 
-## table1_playout_throughput_subset
+- Primary benefit: `automaton_edge_reduction_pct` (vs the direct translation).
+- Secondary benefit: `automaton_node_reduction_pct`.
+- Constraint: `verified_automaton_fraction` — the automaton, compiled by the
+  reference compiler, must reproduce the ground truth; otherwise the run fails.
 
-Run the flat Monte Carlo playout benchmark on a matched subset of games with two source-rule families.
+## translated_rules_optimization  (weight 0.25)
 
-Primary benefit metric:
-- `generated_cpp_line_advantage_vs_rbg_pct`: mean percentage by which the candidate source family's generated C++ reasoner is shorter than the matched baseline source family's generated reasoner for the same games.
+Compile the RBG descriptions of the same games (automatically translated rules)
+into efficient, exact forward models and compact automata.
 
-Supporting metrics:
-- `automaton_edge_advantage_vs_rbg_pct`
-- `speedup_vs_rbg_rg`
-- `sims_per_second`
-- `states_per_second`
-- `games_completed`
-
-Constraint metric:
-- `benchmark_completion_rate`: benchmark-mode generated reasoners must complete positive playout work for every selected game and source language.
+- Benefit (largest coefficient): `speedup_vs_direct_rbg_translation` —
+  geometric mean over games of the direct RBG->RG translation's instructions
+  per playout divided by the submitted model's.
+- Benefit (primary metric, the paper's reported quantity):
+  `rbg_automaton_edge_reduction_pct`; secondary `rbg_automaton_node_reduction_pct`.
+- Constraint: `verified_rbg_game_fraction` — every RBG file's model and
+  automaton must reproduce the ground truth; otherwise the run fails.

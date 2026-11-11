@@ -7,6 +7,10 @@
     "rbg_automaton": {
       "edges": 65,
       "nodes": 56
+    },
+    "rbg_direct_automaton": {
+      "edges": 223,
+      "nodes": 214
     }
   },
   "connect4": {
@@ -17,6 +21,10 @@
     "rbg_automaton": {
       "edges": 117,
       "nodes": 90
+    },
+    "rbg_direct_automaton": {
+      "edges": 404,
+      "nodes": 372
     }
   },
   "foxAndHounds": {
@@ -27,6 +35,10 @@
     "rbg_automaton": {
       "edges": 58,
       "nodes": 50
+    },
+    "rbg_direct_automaton": {
+      "edges": 227,
+      "nodes": 220
     }
   },
   "gomoku_standard": {
@@ -37,6 +49,10 @@
     "rbg_automaton": {
       "edges": 121,
       "nodes": 100
+    },
+    "rbg_direct_automaton": {
+      "edges": 409,
+      "nodes": 406
     }
   },
   "hex": {
@@ -47,6 +63,10 @@
     "rbg_automaton": {
       "edges": 82,
       "nodes": 57
+    },
+    "rbg_direct_automaton": {
+      "edges": 251,
+      "nodes": 228
     }
   },
   "knightthrough": {
@@ -57,6 +77,10 @@
     "rbg_automaton": {
       "edges": 56,
       "nodes": 51
+    },
+    "rbg_direct_automaton": {
+      "edges": 183,
+      "nodes": 182
     }
   },
   "reversi": {
@@ -67,6 +91,10 @@
     "rbg_automaton": {
       "edges": 1397,
       "nodes": 1156
+    },
+    "rbg_direct_automaton": {
+      "edges": 3265,
+      "nodes": 2870
     }
   },
   "yavalath": {
@@ -77,6 +105,10 @@
     "rbg_automaton": {
       "edges": 131,
       "nodes": 100
+    },
+    "rbg_direct_automaton": {
+      "edges": 413,
+      "nodes": 382
     }
   }
 }
