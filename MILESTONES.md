@@ -36,5 +36,10 @@
 - Added explicit notes for machine-independent substitute metrics in `scoring/reference.json`.
 - No reproduction downgrade was needed; the validated gym baseline remains the committed three-game matched Table 1 subset plus the structural compactness experiment.
 
+### [2026-11-11 22:50] - core_claim_plus (hardening, iteration 11)
+- Rebuilt the gym so a method is a compiler that the evaluator executes on hidden rule files. The evaluator verifies each generated forward model against frozen ground truth, measures executed instructions per random playout against frozen RBG->RG / direct-translation models, and verifies submitted automata through its own rg2cpp. Nothing self-reported is scored.
+- Held-out reference: 3.48x faster than RBG->RG (geomean; every game faster, worst 1.09x); 46.7% / 51.7% fewer automaton edges / nodes (paper 41 / 47); new translated-rules experiment 4.04x vs the direct RBG translation, with 70.8% / 75.4% reductions (paper 66 / 72). Train: 3.38x, 45.8 / 51.1, 4.05x.
+- A genuine code-generation improvement scores higher (+1.4% main, +4.2% translated). Every red-team shortcut now fails or ties exactly. Details in HARDENING.md.
+
 ## Stop Justification
 - Completed at milestone `core_claim_plus`.

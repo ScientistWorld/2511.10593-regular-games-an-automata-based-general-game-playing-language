@@ -125,11 +125,29 @@ cohort is all 18 runs in `redteam/hardening/results/test_probes.json`; see
 
 So seed noise is about 0.1%, an order of magnitude below the better
 variants' gains. Methods that keep the reference's move order produce
-identical trajectories, so the comparisons are paired. SEED101_PLACEHOLDER
+identical trajectories, so the comparisons are paired.
+
+Job 6 repeated this at seed 101 for the translated-rules experiment:
+
+| Translated-rules speedup | Default seed | Seed 101 |
+|---|---:|---:|
+| Reference | 4.0353 | 4.0386 |
+| `better_flatten_translated_rules` | 4.2045 | 4.2077 |
+| Gap | 0.169 | 0.169 |
+
+So the better variant's +4.2% is stable across seeds.
+(`results/test_probes.json`, `results/test_seed_101.json`)
 
 **Train vs test** (same thing at comparable difficulty): reference
 3.38 / 3.48 (efficiency), 45.8 / 46.7 (edges), 4.05 / 4.04 (translated).
-TRAIN_PLACEHOLDER
+On the train slice:
+* The better variant also beats the reference on translated rules: 4.3074
+  vs 4.0462 (+6.5%), and ties it exactly on the HRG experiments, as
+  designed.
+* The weaker variant scores 1.28 / 0.40 (efficiency geomean / worst game;
+  reference 3.38 / 1.05).
+
+(`results/train_variants.json`)
 
 ## Shortcuts: fix, score before and after (hidden test)
 

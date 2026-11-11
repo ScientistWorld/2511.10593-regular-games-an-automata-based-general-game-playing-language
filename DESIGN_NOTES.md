@@ -1,3 +1,5 @@
+> Superseded by HARDENING.md (iteration 11): the evaluator, metrics and scripts described below were replaced.
+
 # Design Notes
 
 ## Checks Performed

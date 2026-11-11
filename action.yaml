@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim_plus
-notes: "Hardening job 6 (resubmit; job 5 was preempted and not restarted): canonical reference train/test scores with final evaluators, finalize resumed probes, seed and train checks for reference/better/weaker variants."
+notes: "Hardened gym: the evaluator executes each method as a compiler on hidden rule files, verifies the generated forward models and automata against frozen ground truth, and scores executed instructions per playout against frozen RBG->RG/direct models, plus a new translated-rules experiment. Reference 3.48x vs RBG->RG (held-out); a genuinely better variant scores higher; all red-team shortcuts fail or tie. See HARDENING.md."
