@@ -113,7 +113,7 @@ def driver(where, seed, benchmark=False, backend='fast', fixed=False):
         flags = (common.cfg.GCC_BENCHMARK_FLAGS if benchmark else common.cfg.GCC_TEST_FLAGS).split()
         if backend == 'slow':
             flags = ['-std=c++23', '-O0'] + (['-DNDEBUG'] if benchmark else [])
-        command(['g++', main, where/'reasoner.cpp', '-I'+str(where), *flags,
+        command(['g++', main, where/'reasoner.cpp', '-I'+str(where), '-I'+str(COMP/'test'), *flags,
                  '-DUSE_TIME='+str(int(benchmark)), '-o', exe])
     work = 10000 if benchmark else 100
     raw = command([exe, str(work)], timeout=120)
@@ -201,7 +201,7 @@ def perft_checks(folder):
             where, row = model(game,kind)
             exe = where/'perft_audit'
             if not exe.exists():
-                command(['g++', COMP/'test/perft.cpp', where/'reasoner.cpp', '-I'+str(where), '-std=c++23','-O2','-o',exe])
+                command(['g++', COMP/'test/perft.cpp', where/'reasoner.cpp', '-I'+str(where), '-I'+str(COMP/'test'), '-std=c++23','-O2','-o',exe])
             results[game+':'+kind] = command([exe,'3'],timeout=120).strip()
     dump(folder/'perft_checks.json',results)
 
@@ -321,6 +321,7 @@ def run_case(case):
     output=command(['bash','scripts/evaluate_test.sh'])
     (folder/'test_stdout.txt').write_text(output)
     shutil.copy2(ROOT/'scoring/scores_test.json',folder/'scores_test.json')
+    (folder/'error.json').unlink(missing_ok=True)
     dump(folder/'status.json',{'completed':True,'hidden_command':'bash scripts/evaluate_test.sh',
                              'candidate_uses_hidden_inputs':False})
 
@@ -340,6 +341,7 @@ def main():
     parser.add_argument('case',choices=CASES+['all','restore'])
     args=parser.parse_args()
     if args.case=='restore': restore(); return
+    failures=[]
     try:
         for case in CASES if args.case=='all' else [args.case]:
             if (RT/case/'status.json').exists():
@@ -350,8 +352,11 @@ def main():
             except Exception as e:
                 dump(RT/case/'error.json',{'error':str(e)})
                 if args.case!='all': raise
+                failures.append(case)
                 print('CASE FAILED:',case,str(e),flush=True)
     finally:
         restore()
+    if failures:
+        raise RuntimeError('Audit cases failed: '+', '.join(failures))
 
 if __name__=='__main__': main()
