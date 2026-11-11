@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Hardening job 5: resume probes (18 of 19 done; dropped the 160x-slower no-pragma probe, added a 30x fail-fast guard), rerun canonical scores with final evaluators, seed and train checks for reference/better/weaker variants."
+notes: "Hardening job 6 (resubmit; job 5 was preempted and not restarted): canonical reference train/test scores with final evaluators, finalize resumed probes, seed and train checks for reference/better/weaker variants."
