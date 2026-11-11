@@ -1,0 +1,6 @@
+{
+  "completed": true,
+  "matches_construction_job": true,
+  "command": "bash scripts/evaluate_test.sh",
+  "candidate_executed_in_this_job": false
+}
