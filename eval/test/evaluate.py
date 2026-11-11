@@ -137,16 +137,19 @@ class RunFailure(Exception):
     pass
 
 
+CHILD_ENV = dict(os.environ)
+
+
 def run(cmd: list[str], *, timeout: float, cwd: Path | None = None, env: dict[str, str] | None = None) -> subprocess.CompletedProcess:
     try:
-        return subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout)
+        return subprocess.run(cmd, cwd=cwd, env=env or CHILD_ENV, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired as exc:
         raise RunFailure(f"timeout after {timeout}s: {' '.join(map(str, cmd[:3]))}") from exc
 
 
 def run_method(cmd: list[str], *, timeout: float) -> subprocess.CompletedProcess:
     """Run method code in its own session and kill everything it left behind."""
-    proc = subprocess.Popen(cmd, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
+    proc = subprocess.Popen(cmd, cwd=ROOT, env=CHILD_ENV, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
     try:
         out, err = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired as exc:
@@ -233,6 +236,11 @@ def run_perft(binary: Path, depth: int) -> tuple[int, int, int]:
     if not match:
         raise RunFailure(f"perft output missing: {proc.stdout[-300:]}")
     return tuple(int(x) for x in match.groups())  # type: ignore[return-value]
+
+
+def rg_depth(cfg: dict[str, Any]) -> int:
+    """Tree depth for checking a submitted automaton (compiled without pragmas, so slower)."""
+    return int(cfg.get("rg_perft_depth", cfg["perft_depth"]))
 
 
 def parse_play(stdout: str, expected_count: int) -> dict[str, Any]:
@@ -332,10 +340,11 @@ class Evaluator:
         direct = build_binary(BASELINE_DIR / game / "direct", gdir / "direct")
         rbg = build_binary(BASELINE_DIR / game / "rbg", gdir / "rbg")
         perft = run_perft(direct, cfg["perft_depth"])
+        rg_perft = run_perft(direct, rg_depth(cfg)) if rg_depth(cfg) != cfg["perft_depth"] else perft
         stats, instr = run_play(direct, cfg["playouts"], self.seed, valgrind=True)
         _, floor = run_play(direct, 0, self.seed, valgrind=True)
         rbg_stats, rbg_instr = run_play(rbg, cfg["playouts"], self.seed, valgrind=True)
-        self.truth[("hrg", game)] = {"perft": perft, "play": stats}
+        self.truth[("hrg", game)] = {"perft": perft, "rg_perft": rg_perft, "play": stats}
         self.floor[("hrg", game)] = floor
         self.cost[DIRECT][game] = (instr - floor) / cfg["playouts"]
         self.cost[RBG][game] = (rbg_instr - floor) / cfg["playouts"]
@@ -348,19 +357,22 @@ class Evaluator:
         gdir.mkdir(parents=True)
         direct = build_binary(BASELINE_DIR / game / "rbg_direct", gdir / "rbg_direct")
         perft = run_perft(direct, cfg["perft_depth"])
+        rg_perft = run_perft(direct, rg_depth(cfg)) if rg_depth(cfg) != cfg["perft_depth"] else perft
         stats, instr = run_play(direct, cfg["playouts"], self.seed, valgrind=True)
         _, floor = run_play(direct, 0, self.seed, valgrind=True)
-        self.truth[("rbg", game)] = {"perft": perft, "play": stats}
+        self.truth[("rbg", game)] = {"perft": perft, "rg_perft": rg_perft, "play": stats}
         self.floor[("rbg", game)] = floor
         self.cost[RBG_DIRECT][game] = (instr - floor) / cfg["playouts"]
         if self.cost[RBG_DIRECT][game] <= 0:
             raise RunFailure(f"baseline cost not positive for {game}")
 
-    def check_reasoner(self, binary: Path, track: str, game: str) -> None:
+    def check_reasoner(self, binary: Path, track: str, game: str, *, automaton_check: bool = False) -> None:
         cfg, truth = TRACKS[track][0][game], self.truth[(track, game)]
-        perft = run_perft(binary, cfg["perft_depth"])
-        if perft != truth["perft"]:
-            raise RunFailure(f"{game}: game-tree counts {perft} differ from ground truth {truth['perft']}")
+        depth = rg_depth(cfg) if automaton_check else cfg["perft_depth"]
+        expected = truth["rg_perft"] if automaton_check else truth["perft"]
+        perft = run_perft(binary, depth)
+        if perft != expected:
+            raise RunFailure(f"{game}: game-tree counts {perft} differ from ground truth {expected}")
 
     def method_game_task(self, method: str, track: str, game: str, out: Path) -> dict[str, Any]:
         cfg = TRACKS[track][0][game]
@@ -388,8 +400,8 @@ class Evaluator:
             raise RunFailure("evaluator's reference rg2cpp was modified during this method's evaluation")
         check(run([str(self.rg2cpp), "--file", "game.json", "-o", "reasoner", *REFERENCE_RG2CPP_FLAGS], cwd=rgdir, timeout=600), f"{game}: reference rg2cpp on submitted automaton")
         rg_binary = build_binary(rgdir, gwork / "rg_fm")
-        self.check_reasoner(rg_binary, track, game)
-        rg_stats, _ = run_play(rg_binary, cfg["playouts"], self.seed, valgrind=False)
+        self.check_reasoner(rg_binary, track, game, automaton_check=True)
+        rg_stats, _ = run_play(rg_binary, cfg.get("rg_playouts", cfg["playouts"]), self.seed, valgrind=False)
         problem = same_distribution(rg_stats, self.truth[(track, game)]["play"], CONFIG["stat_tolerance_z"])
         if problem:
             raise RunFailure(f"{game}: submitted automaton playout statistics differ: {problem}")
@@ -496,7 +508,13 @@ def main() -> None:
         sys.exit("valgrind is required to measure executed instructions")
 
     started = time.time()
-    work = Path(tempfile.mkdtemp(prefix=f"rg_eval_{SLICE}_"))
+    # Scratch space lives in the workspace (container /tmp can be a tiny tmpfs);
+    # compilers and methods get it as TMPDIR.
+    base = Path(os.environ.get("RG_EVAL_WORKDIR", ROOT / "tmp" / "eval_work"))
+    base.mkdir(parents=True, exist_ok=True)
+    work = Path(tempfile.mkdtemp(prefix=f"rg_eval_{SLICE}_", dir=base))
+    (work / "tmp").mkdir()
+    CHILD_ENV["TMPDIR"] = str(work / "tmp")
     ev = Evaluator(work, args.seed)
     methods = discover_methods(Path(args.methods_dir).resolve())
     try:

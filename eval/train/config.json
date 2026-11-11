@@ -8,66 +8,96 @@
   "games": {
     "connect4": {
       "playouts": 30000,
-      "perft_depth": 6
+      "perft_depth": 6,
+      "rg_perft_depth": 5,
+      "rg_playouts": 2000
     },
     "breakthrough": {
       "playouts": 12000,
-      "perft_depth": 4
+      "perft_depth": 4,
+      "rg_perft_depth": 3,
+      "rg_playouts": 2000
     },
     "yavalath": {
       "playouts": 10000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "hex": {
       "playouts": 2000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "reversi": {
       "playouts": 4000,
-      "perft_depth": 7
+      "perft_depth": 7,
+      "rg_perft_depth": 6,
+      "rg_playouts": 2000
     },
     "knightthrough": {
       "playouts": 15000,
-      "perft_depth": 4
+      "perft_depth": 4,
+      "rg_perft_depth": 3,
+      "rg_playouts": 2000
     },
     "gomoku_standard": {
       "playouts": 3000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "foxAndHounds": {
       "playouts": 30000,
-      "perft_depth": 8
+      "perft_depth": 8,
+      "rg_perft_depth": 7,
+      "rg_playouts": 2000
     }
   },
   "rbg_games_dir": "data/games/rbg",
   "rbg_games": {
     "connect4": {
       "playouts": 10000,
-      "perft_depth": 6
+      "perft_depth": 6,
+      "rg_perft_depth": 5,
+      "rg_playouts": 2000
     },
     "breakthrough": {
       "playouts": 6000,
-      "perft_depth": 4
+      "perft_depth": 4,
+      "rg_perft_depth": 3,
+      "rg_playouts": 2000
     },
     "yavalath": {
       "playouts": 3000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "hex": {
       "playouts": 500,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 500
     },
     "knightthrough": {
       "playouts": 6000,
-      "perft_depth": 4
+      "perft_depth": 4,
+      "rg_perft_depth": 3,
+      "rg_playouts": 2000
     },
     "gomoku_standard": {
       "playouts": 500,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 500
     },
     "foxAndHounds": {
       "playouts": 15000,
-      "perft_depth": 8
+      "perft_depth": 8,
+      "rg_perft_depth": 7,
+      "rg_playouts": 2000
     }
   }
 }

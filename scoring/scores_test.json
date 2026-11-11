@@ -25,8 +25,8 @@
         },
         "hrg_rg_optimized": {
           "games_faster_than_rbg_fraction": 1.0,
-          "speedup_vs_direct_translation": 3.040611159024275,
-          "speedup_vs_rbg_translation": 3.4806137794296688,
+          "speedup_vs_direct_translation": 3.0406111246042866,
+          "speedup_vs_rbg_translation": 3.480613740028811,
           "verified_game_fraction": 1.0,
           "worst_game_speedup_vs_rbg_translation": 1.0906339548727568
         },
@@ -36,10 +36,26 @@
           "worst_game_speedup_vs_rbg_translation": 1.0
         }
       }
+    },
+    "translated_rules_optimization": {
+      "results": {
+        "direct_rbg_translation_baseline": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 1.0,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 4.035328613270901,
+          "verified_rbg_game_fraction": 1.0
+        }
+      }
     }
   },
   "metadata": {
-    "elapsed_seconds": 478.8,
+    "elapsed_seconds": 744.9,
     "games": [
       "breakthrough_7x7",
       "hex_9x9",
@@ -52,6 +68,12 @@
         "status": "ok"
       }
     },
+    "rbg_games": [
+      "breakthrough_7x7",
+      "hex_9x9",
+      "gomoku_standard_13x13",
+      "foxAndHounds_10x10"
+    ],
     "slice": "test"
   }
 }

@@ -8,42 +8,60 @@
   "games": {
     "breakthrough_7x7": {
       "playouts": 20000,
-      "perft_depth": 5
+      "perft_depth": 5,
+      "rg_perft_depth": 4,
+      "rg_playouts": 2000
     },
     "hex_9x9": {
       "playouts": 6000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "reversi_6x6": {
       "playouts": 10000,
-      "perft_depth": 6
+      "perft_depth": 6,
+      "rg_perft_depth": 5,
+      "rg_playouts": 2000
     },
     "gomoku_standard_13x13": {
       "playouts": 6000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 2000
     },
     "foxAndHounds_10x10": {
       "playouts": 30000,
-      "perft_depth": 9
+      "perft_depth": 9,
+      "rg_perft_depth": 8,
+      "rg_playouts": 2000
     }
   },
   "rbg_games_dir": "eval/test/games/rbg",
   "rbg_games": {
     "breakthrough_7x7": {
       "playouts": 10000,
-      "perft_depth": 5
+      "perft_depth": 5,
+      "rg_perft_depth": 4,
+      "rg_playouts": 2000
     },
     "hex_9x9": {
       "playouts": 1500,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 1500
     },
     "gomoku_standard_13x13": {
       "playouts": 1000,
-      "perft_depth": 3
+      "perft_depth": 3,
+      "rg_perft_depth": 2,
+      "rg_playouts": 1000
     },
     "foxAndHounds_10x10": {
       "playouts": 15000,
-      "perft_depth": 9
+      "perft_depth": 9,
+      "rg_perft_depth": 8,
+      "rg_playouts": 2000
     }
   }
 }

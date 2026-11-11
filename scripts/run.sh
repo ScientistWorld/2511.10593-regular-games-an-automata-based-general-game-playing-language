@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hardening job 2: rerun the canonical reference scores with the final
+# Hardening job 3 (rerun of job 2 after fixes): rerun the canonical reference scores with the final
 # three-experiment evaluators, rerun the shortcut/variant probes (job 1's probe
 # run ran out of /tmp space), and the seed/train checks for the better variant.
 set -uo pipefail
