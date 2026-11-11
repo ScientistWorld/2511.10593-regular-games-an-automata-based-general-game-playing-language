@@ -259,6 +259,15 @@ def parse_play(stdout: str, expected_count: int) -> dict[str, Any]:
     return out
 
 
+SLOWDOWN_CAP = 30.0  # a model this many times slower (wall clock) than the direct translation fails fast
+
+
+def native_seconds(binary: Path, count: int, seed: int, timeout: float = 3600) -> float:
+    start = time.monotonic()
+    check(run([str(binary), "play", str(count), str(seed)], timeout=timeout), "native playouts")
+    return time.monotonic() - start
+
+
 def run_play(binary: Path, count: int, seed: int, *, valgrind: bool) -> tuple[dict[str, Any] | None, int | None]:
     cmd = [str(binary), "play", str(count), str(seed)]
     if valgrind:
@@ -320,6 +329,7 @@ class Evaluator:
         self.truth: dict[tuple[str, str], dict[str, Any]] = {}
         self.cost: dict[str, dict[str, float]] = {DIRECT: {}, RBG: {}, RBG_DIRECT: {}}
         self.floor: dict[tuple[str, str], int] = {}
+        self.native: dict[tuple[str, str], float] = {}
 
     def build_reference_rg2cpp(self) -> Path:
         if os.environ.get("RG_EVAL_PREBUILT_RG2CPP"):
@@ -345,6 +355,7 @@ class Evaluator:
         _, floor = run_play(direct, 0, self.seed, valgrind=True)
         rbg_stats, rbg_instr = run_play(rbg, cfg["playouts"], self.seed, valgrind=True)
         self.truth[("hrg", game)] = {"perft": perft, "rg_perft": rg_perft, "play": stats}
+        self.native[("hrg", game)] = native_seconds(direct, cfg["playouts"], self.seed)
         self.floor[("hrg", game)] = floor
         self.cost[DIRECT][game] = (instr - floor) / cfg["playouts"]
         self.cost[RBG][game] = (rbg_instr - floor) / cfg["playouts"]
@@ -361,6 +372,7 @@ class Evaluator:
         stats, instr = run_play(direct, cfg["playouts"], self.seed, valgrind=True)
         _, floor = run_play(direct, 0, self.seed, valgrind=True)
         self.truth[("rbg", game)] = {"perft": perft, "rg_perft": rg_perft, "play": stats}
+        self.native[("rbg", game)] = native_seconds(direct, cfg["playouts"], self.seed)
         self.floor[("rbg", game)] = floor
         self.cost[RBG_DIRECT][game] = (instr - floor) / cfg["playouts"]
         if self.cost[RBG_DIRECT][game] <= 0:
@@ -381,6 +393,14 @@ class Evaluator:
         scan_submission(out, gwork)
         binary = build_binary(out, gwork / "fm")
         self.check_reasoner(binary, track, game)
+        # Fail fast (before the slow instruction count) on models that are far
+        # slower than even the untransformed translation; wall clock is only a
+        # pass/fail guard here, never a score.
+        cap = max(60.0, SLOWDOWN_CAP * self.native[(track, game)])
+        try:
+            native_seconds(binary, cfg["playouts"], self.seed, timeout=cap)
+        except RunFailure as exc:
+            raise RunFailure(f"{game}: playout workload exceeds {SLOWDOWN_CAP:.0f}x the direct translation's time ({exc})") from exc
         stats, instr = run_play(binary, cfg["playouts"], self.seed, valgrind=True)
         problem = same_distribution(stats, self.truth[(track, game)]["play"], CONFIG["stat_tolerance_z"])
         if problem:

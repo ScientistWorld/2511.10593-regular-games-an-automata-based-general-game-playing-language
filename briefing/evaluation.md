@@ -23,7 +23,9 @@ descriptions of the same kind of games) the evaluator:
    (leaves, states, terminals) to a fixed depth, and the statistics of a fixed
    number of uniformly random playouts (mean playout length, mean branching
    factor, every player's mean score) within six standard errors;
-4. **measures** the work of that fixed playout workload (fixed count, fixed
+4. fails the run if that workload takes more than 30 times as long (wall
+   clock, pass/fail only) as the frozen direct translation, then **measures**
+   the work of that fixed playout workload (fixed count, fixed
    seed) as executed machine instructions under valgrind, and divides it by
    the playout count;
 5. recompiles the submitted `game.json` with the official RG compiler

@@ -1,0 +1,448 @@
+{
+  "experiments": {
+    "automaton_optimization": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_inline_unique_states": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "better_path_compression": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "better_two_pass_optimizer": {
+          "automaton_edge_reduction_pct": 50.09139010337635,
+          "automaton_node_reduction_pct": 55.45238660517678,
+          "verified_automaton_fraction": 1.0
+        },
+        "direct_translation_baseline": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        },
+        "probe_flatten_all_inputs": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "probe_hybrid_two_pass_automaton": {
+          "automaton_edge_reduction_pct": 50.09139010337635,
+          "automaton_node_reduction_pct": 55.45238660517678,
+          "verified_automaton_fraction": 1.0
+        },
+        "reference_hrg_rg_optimized": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "shortcut_backend_override": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_cached_train_output": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_empty_submission": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_fabricated_results": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_failing_method": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_fake_automaton": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_minified_source": {
+          "automaton_edge_reduction_pct": 46.685220882860925,
+          "automaton_node_reduction_pct": 51.69405388324778,
+          "verified_automaton_fraction": 1.0
+        },
+        "shortcut_private_autotune": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_process_hijack": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "shortcut_tamper_evaluator": {
+          "automaton_edge_reduction_pct": -100.0,
+          "automaton_node_reduction_pct": -100.0,
+          "verified_automaton_fraction": 0.0
+        },
+        "weaker_no_optimizations": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        }
+      }
+    },
+    "forward_model_efficiency": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.040611048009444,
+          "speedup_vs_rbg_translation": 3.4806136464606423,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.090633960662264
+        },
+        "better_inline_unique_states": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.955056106923909,
+          "speedup_vs_rbg_translation": 3.38267816876796,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.090633966905763
+        },
+        "better_path_compression": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "better_two_pass_optimizer": {
+          "games_faster_than_rbg_fraction": 0.8,
+          "speedup_vs_direct_translation": 1.132837355348868,
+          "speedup_vs_rbg_translation": 1.296768674450796,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.20736163533426488
+        },
+        "direct_translation_baseline": {
+          "games_faster_than_rbg_fraction": 0.6,
+          "speedup_vs_direct_translation": 1.0,
+          "speedup_vs_rbg_translation": 1.1447086100470656,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.5061268363488226
+        },
+        "probe_flatten_all_inputs": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.0826602365254145,
+          "speedup_vs_rbg_translation": 3.5287477146003656,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.1012909248266176
+        },
+        "probe_hybrid_two_pass_automaton": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.9550561035405765,
+          "speedup_vs_rbg_translation": 3.38267816489503,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.090633960662264
+        },
+        "rbg_translation_baseline": {
+          "speedup_vs_direct_translation": 0.8735847631642119,
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
+        },
+        "reference_hrg_rg_optimized": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.040611052510919,
+          "speedup_vs_rbg_translation": 3.480613651613519,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.090633966905763
+        },
+        "shortcut_backend_override": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_cached_train_output": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_empty_submission": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_fabricated_results": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_failing_method": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_fake_automaton": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_minified_source": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 3.0406110467014016,
+          "speedup_vs_rbg_translation": 3.4806136449633143,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.090633966905763
+        },
+        "shortcut_private_autotune": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_process_hijack": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "shortcut_tamper_evaluator": {
+          "games_faster_than_rbg_fraction": 0.0,
+          "speedup_vs_direct_translation": 0.0,
+          "speedup_vs_rbg_translation": 0.0,
+          "verified_game_fraction": 0.0,
+          "worst_game_speedup_vs_rbg_translation": 0.0
+        },
+        "weaker_no_optimizations": {
+          "games_faster_than_rbg_fraction": 0.6,
+          "speedup_vs_direct_translation": 0.9999999868284694,
+          "speedup_vs_rbg_translation": 1.144708594969501,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.5061268360460742
+        }
+      }
+    },
+    "translated_rules_optimization": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 4.2045345060086365,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "better_inline_unique_states": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 3.9015900047174514,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "better_path_compression": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "better_two_pass_optimizer": {
+          "rbg_automaton_edge_reduction_pct": 71.0962679944434,
+          "rbg_automaton_node_reduction_pct": 75.71577149888462,
+          "speedup_vs_direct_rbg_translation": 4.035328704094782,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "direct_rbg_translation_baseline": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 1.0,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "probe_flatten_all_inputs": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 4.204534457354405,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "probe_hybrid_two_pass_automaton": {
+          "rbg_automaton_edge_reduction_pct": 71.0962679944434,
+          "rbg_automaton_node_reduction_pct": 75.71577149888462,
+          "speedup_vs_direct_rbg_translation": 3.9015900047174514,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "reference_hrg_rg_optimized": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 4.035328630822073,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "shortcut_backend_override": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_cached_train_output": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_empty_submission": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_fabricated_results": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_failing_method": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_fake_automaton": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_minified_source": {
+          "rbg_automaton_edge_reduction_pct": 70.76192058921632,
+          "rbg_automaton_node_reduction_pct": 75.36849027543516,
+          "speedup_vs_direct_rbg_translation": 4.03532863730861,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "shortcut_private_autotune": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_process_hijack": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "shortcut_tamper_evaluator": {
+          "rbg_automaton_edge_reduction_pct": -100.0,
+          "rbg_automaton_node_reduction_pct": -100.0,
+          "speedup_vs_direct_rbg_translation": 0.0,
+          "verified_rbg_game_fraction": 0.0
+        },
+        "weaker_no_optimizations": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 0.9999999933715109,
+          "verified_rbg_game_fraction": 1.0
+        }
+      }
+    }
+  },
+  "metadata": {
+    "complete": false,
+    "elapsed_seconds": 1999.8,
+    "games": [
+      "breakthrough_7x7",
+      "hex_9x9",
+      "reversi_6x6",
+      "gomoku_standard_13x13",
+      "foxAndHounds_10x10"
+    ],
+    "methods": {
+      "better_flatten_translated_rules": {
+        "status": "ok"
+      },
+      "better_inline_unique_states": {
+        "status": "ok"
+      },
+      "better_path_compression": {
+        "reason": "hex_9x9: game-tree counts (4095360, 4121443, 0) differ from ground truth (511920, 518482, 0)",
+        "status": "failed"
+      },
+      "better_two_pass_optimizer": {
+        "status": "ok"
+      },
+      "probe_flatten_all_inputs": {
+        "status": "ok"
+      },
+      "probe_hybrid_two_pass_automaton": {
+        "status": "ok"
+      },
+      "reference_hrg_rg_optimized": {
+        "status": "ok"
+      },
+      "shortcut_backend_override": {
+        "reason": "submitted reasoner uses forbidden construct: backend override pragma",
+        "status": "failed"
+      },
+      "shortcut_cached_train_output": {
+        "reason": "breakthrough_7x7: game-tree counts (6182818, 6450493, 0) differ from ground truth (3042166, 3194018, 0)",
+        "status": "failed"
+      },
+      "shortcut_empty_submission": {
+        "reason": "shortcut_empty_submission produced no reasoner.hpp for breakthrough_7x7.hrg",
+        "status": "failed"
+      },
+      "shortcut_fabricated_results": {
+        "reason": "scan compile rg_eval_probe.cpp failed (exit 1): _results/hrg_breakthrough_7x7/rg_eval_probe.cpp:19:5: error: \u2018reasoner\u2019 is not a class, namespace, or enumeration\n   19 |     reasoner::GameState copy = state;\n      |     ^~~~~~~~\n/home/user/tmp/eval_work/rg_eval_test_tppvpg_2/methods/shortcut_fabricated_results/hrg_breakthrough_7x7/rg_eval_probe.cpp:20:5: error: \u2018copy\u2019 was not declared in this scope; did you mean \u2018std::copy\u2019?\n   20 |     copy.applyMove(moves[i % moves.size()], cache);\n      |     ^~~~\n      |     std::copy\nIn file included from /usr/include/c++/12/vector:60,\n                 from /home/user/tmp/eval_work/rg_eval_test_tppvpg_2/methods/shortcut_fabricated_results/hrg_breakthrough_7x7/rg_eval_probe.cpp:3:\n/usr/include/c++/12/bits/stl_algobase.h:611:5: note: \u2018std::copy\u2019 declared here\n  611 |     copy(_II __first, _II __last, _OI __result)\n      |     ^~~~\n/home/user/tmp/eval_work/rg_eval_test_tppvpg_2/methods/shortcut_fabricated_results/hrg_breakthrough_7x7/rg_eval_probe.cpp:20:36: error: request for member \u2018size\u2019 in \u2018moves\u2019, which is of non-class type \u2018int\u2019\n   20 |     copy.applyMove(moves[i % moves.size()], cache);\n      |                                    ^~~~\n/home/user/tmp/eval_work/rg_eval_test_tppvpg_2/methods/shortcut_fabricated_results/hrg_breakthrough_7x7/rg_eval_probe.cpp:22:57: error: \u2018reasoner\u2019 is not a class, namespace, or enumeration\n   22 |     volatile auto score = state.getPlayerScore(2 + (i % reasoner::PLAYERS_COUNT));\n      |                                                         ^~~~~~~~\n",
+        "status": "failed"
+      },
+      "shortcut_failing_method": {
+        "reason": "shortcut_failing_method compile.sh on breakthrough_7x7 failed (exit 3): not implemented\n",
+        "status": "failed"
+      },
+      "shortcut_fake_automaton": {
+        "reason": "breakthrough_7x7: game-tree counts (3024, 3610, 0) differ from ground truth (144251, 151852, 0)",
+        "status": "failed"
+      },
+      "shortcut_minified_source": {
+        "status": "ok"
+      },
+      "shortcut_private_autotune": {
+        "reason": "timeout after 15s: bash /home/user/redteam/hardening/methods/shortcut_private_autotune/compile.sh /home/user/tmp/eval_work/rg_eval_test_tppvpg_2/methods/shortcut_private_autotune/rules_op_pvg2c/rules.hrg",
+        "status": "failed"
+      },
+      "shortcut_process_hijack": {
+        "reason": "submitted reasoner references forbidden symbol: exit",
+        "status": "failed"
+      },
+      "shortcut_tamper_evaluator": {
+        "reason": "evaluator's reference rg2cpp was modified during this method's evaluation",
+        "status": "failed"
+      },
+      "weaker_no_optimizations": {
+        "status": "ok"
+      }
+    },
+    "rbg_games": [
+      "breakthrough_7x7",
+      "hex_9x9",
+      "gomoku_standard_13x13",
+      "foxAndHounds_10x10"
+    ],
+    "seed_id": "7b6da2326d64",
+    "slice": "test"
+  }
+}
