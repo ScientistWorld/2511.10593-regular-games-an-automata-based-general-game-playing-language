@@ -1,0 +1,11 @@
+{
+  "initial_commit": "122d15c9cd228d0a5e458e919519b88a29352a6d",
+  "fresh_cases_verified": 17,
+  "original_method_results_restored": true,
+  "original_hidden_scores_restored": true,
+  "original_run_script_restored": true,
+  "non_audit_source_trees_match_initial_commit": true,
+  "preexisting_infrastructure_status_preserved": true,
+  "permitted_protocol_exception": "action.yaml completion marker",
+  "method_results_sha256": "c1921d15d67d592f62916a7a6dda14451e792f6b1bec888fd7a11b6aa52180d1"
+}

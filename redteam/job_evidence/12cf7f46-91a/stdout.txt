@@ -1,0 +1,72 @@
+[hive] This stdout log is managed by Hive.
+[hive] job_id: 9e9b15c3
+[hive] host: node
+[hive] node_id: 5b56c1bb00c851f2c3f93b346fd15ddec87104a85e26c62af4985535
+[hive] user: nexus/user (remote)
+[hive] resource: gpu-cpu
+[hive] gpus: 0
+[hive] cpus: 1
+[hive] workdir: /home/user
+[hive] timeout_sec: 21600
+[hive] started_at: 2026-11-11 06:57:03 EST
+[hive] command: apptainer exec --containall --cleanenv --env HF_HOME=/home/user/shared/hf_cache --env TRANSFORMERS_CACHE=/home/user/shared/hf_cache --env HF_DATASETS_CACHE=/home/user/shared/hf_cache/datasets --env TORCH_HOME=/home/user/shared/hf_cache/torch --bind /home/user/scratch/AgentWorkspaces/workspaces/2511.10593:/home/user --overlay /home/user/scratch/AgentWorkspaces/workspaces/2511.10593/environment/overlay.img:ro --bind /home/user/scratch/AgentWorkspaces/shared/datasets:/home/user/shared/datasets:ro --bind /home/user/scratch/AgentWorkspaces/shared/models:/home/user/shared/models:ro --bind /home/user/scratch/AgentWorkspaces/shared/hf_cache:/home/user/shared/hf_cache /home/user/scratch/AgentWorkspaces/workspaces/2511.10593/environment/container.sif bash -c 'cd /home/user && bash /home/user/scripts/run.sh'
+FRESH PASS better_path_compression
+FRESH PASS bruteforce_probe
+FRESH PASS reference_seed1
+FRESH PASS reference_seed2
+FRESH PASS reference_seed3
+FRESH PASS shortcut_baseline_padding
+FRESH PASS shortcut_cached_results
+FRESH PASS shortcut_empty_submission
+FRESH PASS shortcut_fabricated_results
+FRESH PASS shortcut_failed_compact
+FRESH PASS shortcut_fixed_driver
+FRESH PASS shortcut_impossible_values
+FRESH PASS shortcut_minified_source
+FRESH PASS shortcut_null_values
+FRESH PASS shortcut_slow_backend
+FRESH PASS shortcut_unlisted_method
+FRESH PASS weaker_no_optimizer
+All 17 saved submissions verified in fresh scoring job.
+| Case | Structure N / E / L / C | Matched L / E / C | Pairwise rank Δ | Full-cohort rank Δ |
+|---|---|---|---:|---:|
+| original_reference | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| better_path_compression | 51.136364 / 43.269231 / 40.552017 / 1.000000 | 47.590080 / 49.572650 / 1.000000 | +1.440000 | +0.000249 |
+| bruteforce_probe | -56719.318182 / -81038.461538 / -4378.980892 / 0.000000 | -3848.713149 / -72023.076923 / 0.000000 | -4.480000 | -1.636702 |
+| reference_seed1 | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| reference_seed2 | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| reference_seed3 | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| shortcut_baseline_padding | 51.136364 / 43.269231 / 98.820227 / 1.000000 | 98.823149 / 49.572650 / 1.000000 | +1.440000 | +0.003568 |
+| shortcut_cached_results | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| shortcut_empty_submission | missing / missing / missing / missing | missing / missing / missing | +0.000000 | +0.000000 |
+| shortcut_fabricated_results | 100.000000 / 100.000000 / 100.000000 / 1.000000 | 100.000000 / 100.000000 / 1.000000 | +3.480000 | +0.003878 |
+| shortcut_failed_compact | 100.000000 / 100.000000 / 100.000000 / 0.000000 | 100.000000 / 100.000000 / 0.000000 | +2.480000 | -1.058622 |
+| shortcut_fixed_driver | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| shortcut_impossible_values | 1136463.636364 / 961638.461538 / 53178.556263 / 2.000000 | 46894.571830 / 854800.854701 / 2.000000 | +4.480000 | +8.399721 |
+| shortcut_minified_source | 51.136364 / 43.269231 / 99.734607 / 1.000000 | 99.766027 / 49.572650 / 1.000000 | +1.440000 | +0.003628 |
+| shortcut_null_values | 0.000000 / 0.000000 / 0.000000 / 0.000000 | 100.000000 / 100.000000 / 0.000000 | -0.320000 | -1.059434 |
+| shortcut_slow_backend | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| shortcut_unlisted_method | 51.136364 / 43.269231 / 36.199575 / 1.000000 | 43.752925 / 49.572650 / 1.000000 | +0.000000 | +0.000000 |
+| weaker_no_optimizer | 0.000000 / 0.000000 / 0.000000 / 1.000000 | 11.839027 / 11.111111 / 1.000000 | -3.480000 | -0.002261 |
+PER-GAME SPEEDUPS {
+  "reference_seed1": {
+    "connect4": 8.074616730307545,
+    "breakthrough": 0.9707804712225778,
+    "yavalath": 1.1493191509503051
+  },
+  "reference_seed2": {
+    "connect4": 10.110319385043203,
+    "breakthrough": 0.980711660161431,
+    "yavalath": 0.7257187103817423
+  },
+  "reference_seed3": {
+    "connect4": 6.739577146062284,
+    "breakthrough": 1.1383051153793746,
+    "yavalath": 1.3240017299165974
+  },
+  "shortcut_slow_backend": {
+    "connect4": 0.8366387425399681,
+    "breakthrough": 0.08937051360643186,
+    "yavalath": 0.05579013031488948
+  }
+}

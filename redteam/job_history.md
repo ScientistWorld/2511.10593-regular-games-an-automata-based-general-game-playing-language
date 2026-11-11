@@ -16,3 +16,8 @@
 - Final verification uses a separate fresh CPU job to replay saved artifacts
   through the hidden test with no arguments. No build or candidate process from
   the construction job survives into this verification.
+
+- `12cf7f46-91a`: fresh-container scoring job exited 0. All 17 persisted
+  submissions matched their construction-job hidden-test scores exactly; no
+  candidate code executed. Rank calculations were regenerated successfully.
+  Job stdout/stderr are preserved under `job_evidence/12cf7f46-91a/`.

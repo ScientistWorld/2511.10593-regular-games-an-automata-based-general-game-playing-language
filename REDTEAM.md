@@ -243,15 +243,18 @@ evaluator process. Builds and execution were bundled into CPU job
 `174f8808-ade`; the first job's harness include-path failure is documented in
 [job history](redteam/job_history.md) and is not counted as a method result.
 
-A separate fresh-container job is prepared to recheck every persisted
-submission without running a candidate. Its per-case `fresh_scores_test.json`
-and `fresh_status.json` will certify equality with the construction-job scores;
-this verification is pending at this report draft.
+Fresh-container CPU job `12cf7f46-91a` completed successfully: all 17 persisted
+submissions produced exactly the same hidden-test scores without executing
+candidate code in that job. No candidate process survived from the construction
+job. Each case saves `fresh_scores_test.json`, `fresh_test_stdout.txt`, and
+`fresh_status.json`; the [job output](redteam/job_evidence/12cf7f46-91a/stdout.txt)
+records every successful comparison.
 
 All audit code, submitted artifacts, raw score outputs and evidence are under
 `redteam/`. Original method output and scoring files are restored after runs.
-The final cleanup restores the original job script; only `redteam/`, this
-report and the required `action.yaml` completion marker are intended changes.
+The final cleanup restores the original job script and removes newly tracked
+scheduler logs from outside the audit directory. Only `redteam/`, this report
+and the required `action.yaml` completion marker are intentional changes.
 Pre-existing infrastructure-owned README/manifest/trajectory status is
 recorded in `redteam/initial/start.json` and is preserved.
 

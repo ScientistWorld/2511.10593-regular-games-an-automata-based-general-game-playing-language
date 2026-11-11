@@ -7,5 +7,8 @@
 - Eleven named shortcut cases tested, including one null-valued failure and
   a cohort-dependent task-failure win. Bounded brute force did not finish.
 - REDTEAM.md and normalized rank calculations written.
-- Fresh-job replay verification pending; then restore the original run script
-  and complete the audit. Reproduction milestone remains `core_claim_plus`.
+- Fresh CPU job `12cf7f46-91a` verified all 17 saved submissions against the
+  unchanged hidden test, with exact equality to construction-job scores.
+- Audit complete. Original job script and non-audit tracked files restored;
+  all evidence and calculations retained under redteam/ and REDTEAM.md.
+  Reproduction milestone remains `core_claim_plus`.
