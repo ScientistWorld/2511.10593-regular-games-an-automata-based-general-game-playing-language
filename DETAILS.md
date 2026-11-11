@@ -4,52 +4,184 @@
 **Title:** Regular Games - an Automata-Based General Game Playing Language
 **Domain:** General game playing / formal game languages / compiler optimization
 
-Regular Games proposes an automata-based rule language and compiler for general game playing. The core claim is that game rules can be translated, optimized, and compiled into compact generated forward models that run legal game simulations efficiently.
+Regular Games proposes an automata-based rule language and compiler for general
+game playing. Its central claim is that game rules translated into optimized
+rule automata compile into forward models that are faster than those of the
+previous fastest system (Regular Boardgames), with much smaller automata than
+a direct translation.
 
-This workspace packages the official RG interpreter and RGcompiler sources, vendors Rust dependencies for offline compute nodes, and provides a reproducible harness for HRG game optimization plus generated C++ playout checks.
+This gym asks for a compiler from game-rule files to C++ forward models. It
+verifies every produced model against ground truth and scores the executed
+instructions per random playout (relative to frozen comparison models) and the
+size of the produced rules automaton. The official RG toolchain is packaged in
+`method/` as the reference compiler.
 
 ---
 
 # Problem Definition
 
-The task is to represent finite turn-based games, including games with chance and imperfect information, in a machine-readable rule language and produce a reusable forward model. A forward model must expose the current player, legal moves, state transitions, terminal detection, and scores without relying on game-specific handwritten code.
+General game playing needs **forward models**: programs that, given only a
+formal description of a finite turn-based game, expose its current player,
+legal moves, move application, terminal detection and final scores, without
+any hand-written game-specific code. Search and learning agents spend most of
+their time inside the forward model, so its efficiency matters.
 
-Success is measured by whether the generated model stays compact enough to analyze and compile while still executing legal playouts from the original game rules. The problem definition is method-agnostic: any future solution may use a different implementation, but it must consume the same game-rule inputs and produce artifacts that `scripts/evaluate.sh` can score.
+In this gym the rules are written in the High-level Regular Games (HRG)
+language (`data/games/hrg/*.hrg`) and, for the same games, in the Regular
+Boardgames (RBG) language (`data/games/rbg/*.rbg`); both languages are defined
+in `method/rg/` and the paper in `paper/`. A method is a **compiler**: given
+one rule file (HRG or RBG) it must produce
+
+1. a C++ forward model (`reasoner.hpp`, `reasoner.cpp`) implementing the
+   `reasoner::` API described below, and
+2. the low-level Regular Games (RG) rules automaton it derived for the game
+   (`game.json`, the RG abstract-syntax JSON accepted by the official RG
+   compiler `rg2cpp`, i.e. after the upstream `adjust_AST.py` normalisation).
+
+The forward model must play exactly the game in the rule file. The goal is a
+forward model that executes uniformly random playouts with as little work as
+possible, and an automaton for the game that is as small as possible.
+
+## Interface
+
+A method lives in `method/compilers/<name>/` and provides
+
+- `compile.sh <rules> <outdir>` — must write `reasoner.hpp`,
+  `reasoner.cpp` and `game.json` into `<outdir>`. It is called once per rule
+  file with a copy named `rules.hrg` or `rules.rbg`, with the workspace as working directory, and
+  must finish within 15 seconds per game (the reference needs about 1-2 s).
+- optionally `prepare.sh` — one-time, input-independent setup (for example
+  building tools), run once before the per-game calls (time cap 1 hour).
+
+Every directory under `method/compilers/` that contains a `compile.sh` is a
+method and is scored; one that fails gets the worst score.
+
+The forward model API (namespace `reasoner`), as used by the evaluator's
+driver:
+
+- `reasoner::GameState` — default-constructible initial state, copyable;
+  `getCurrentPlayer()`, `isTerminal()`, `getPlayerScore(p)` for players
+  `2 .. 1 + PLAYERS_COUNT`, `getAllMoves(std::vector<reasoner::Move>&, reasoner::RgCache&)`,
+  `applyMove(const reasoner::Move&, reasoner::RgCache&)`, `applyAnyMove(reasoner::RgCache&)`
+  (applies the single move of the deterministic `keeper` system player);
+- `reasoner::RgCache` (default-constructible), `reasoner::Move`,
+  `reasoner::PLAYERS_COUNT`, `reasoner::keeper`, `reasoner::random`.
+
+The reference compiler in `method/compilers/hrg_rg_optimized/` produces
+exactly this interface.
+
+## Rules of the game for submissions
+
+The submitted C++ is compiled and run by the evaluator together with its own
+driver. It may only implement the forward model: it may not perform I/O, read
+the environment, spawn processes or threads, terminate the process, use inline
+assembly, define symbols outside its own `reasoner` namespace that could
+replace library or driver functions, or override the evaluator's compiler
+settings (`#pragma GCC optimize/target`, `optimize`/`target`/`constructor`
+attributes). Such submissions fail.
 
 ---
 
 # Paper's Method
 
-The paper introduces Regular Games (RG), a low-level automata language for finite games, and High-Level Regular Games (HRG), a more convenient source language. HRG and existing rule languages are translated into RG automata. The automata are then validated, optimized through static transformation passes, and compiled into C++ forward models.
+The paper introduces Regular Games (RG), a low-level language whose rules are a
+nondeterministic finite automaton over game states, and High-level Regular
+Games (HRG), a structured source language translated to RG. An RG description
+is improved by a fixed-point loop of static transformations (dataflow-based
+analysis, constant propagation, inlining of assignments and reachability
+checks, compaction of skip edges, joining exclusive edges, pruning redundant
+tags, ...) and annotated with inferred pragmas (`@disjoint`, `@unique`,
+`@repeat`, `@simpleApply`, `@tagIndex`, ...). The `rg2cpp` compiler then
+generates a C++ forward model that enumerates legal moves by walking the
+automaton.
 
-The reproduced method uses the authors' official pipeline:
+The reference method `method/compilers/hrg_rg_optimized/` runs the authors'
+official pipeline unchanged:
 
-1. Parse HRG game descriptions.
-2. Translate them into RG automata.
-3. Run the paper's optimizer passes, including skip-edge compaction, assignment and comparison simplifications, reachability/tag simplifications, and exclusive-edge joins.
-4. Compile the optimized automaton with `rg2cpp` into a C++ reasoner exposing legal-move generation, move application, terminal checks, current player, and scores.
-5. Run deterministic random playouts through the generated reasoner as a correctness check.
+1. `method/rg/interpreter_rust` CLI: HRG -> RG translation with
+   `--enable-all-optimizations --enable-all-pragmas` (all transformations and
+   pragma inference);
+2. `method/rgcompiler/scripts/adjust_AST.py` normalisation -> `game.json`;
+3. `method/rgcompiler` `rg2cpp` with the upstream default code-generation
+   options (`--simple-path-compression 0 --disjoint 1 --arithmetic 1 --gccinline 0 ...`)
+   -> `reasoner.hpp`, `reasoner.cpp`.
 
-The reproduction keeps the paper's computation intact but scores structural metrics instead of wall-clock throughput.
+`method/toolchain/build.sh` builds both tools offline; `method/toolchain/compile_game.py`
+runs steps 1-3 for any HRG/RBG/RG input with configurable flags.
+
+The paper measures efficiency as flat Monte Carlo playouts per second (Table 1)
+and reports mean automaton reductions of 47% nodes / 41% edges for HRG games
+(Section 3.3).
 
 ---
 
 # Evaluation
 
-The benchmark evaluates generated game reasoners on two properties:
-
-1. Structural compactness of the generated forward model, compared with a direct translation of the same rule input.
-2. Compactness on a matched-source subset where the same games are available in two rule-description families.
-
-Raw playout throughput and state throughput are retained as diagnostic context, but they have zero scoring coefficient because wall-clock rates are hardware dependent. The scored benefit metrics are generated source size and automaton size reductions. Completion of fixed playout workloads is a correctness constraint: a smaller generated model is not valid if it cannot execute legal playouts.
-
-Evaluation reads submitted artifacts from a JSON file; it does not regenerate games or import from a submitted implementation. The reusable command is:
+Two scripts score **every method on disk** (`method/compilers/<name>/compile.sh`):
 
 ```bash
-bash scripts/evaluate.sh path/to/results.json
+bash scripts/evaluate_train.sh   # visible games in data/games/{hrg,rbg} -> scoring/scores_train.json
+bash scripts/evaluate_test.sh    # held-out games (not visible)    -> scoring/scores_test.json
 ```
 
-The evaluator writes `scoring/scores.json`. A compatible method output must list per-game runs with method identifiers, source game names, generated artifact sizes, automaton node/edge counts, playout completion, and optional diagnostic throughput fields.
+`evaluate_test.sh` takes no arguments. `evaluate_train.sh` accepts
+`--details <file>` for per-game diagnostics and `--methods-dir <dir>`.
+Both need `valgrind`, `g++`, `cmake` and `nm` (all in the container).
+
+For each method and each rule file of the slice (the HRG files, and the RBG
+descriptions of the same kind of games) the evaluator:
+
+1. runs `compile.sh` on a copy of the rule file (15 s cap per game, the method's own process group is killed afterwards);
+2. checks the generated C++ (no I/O, process control, inline assembly,
+   symbol interposition or compiler-setting overrides), then compiles it with
+   its own driver and fixed flags (`g++ -std=c++23 -O3 -flto -march=x86-64-v2 -DNDEBUG`);
+3. **verifies** the forward model against ground truth computed from a frozen
+   reference translation of the same rule file: exact game-tree counts
+   (leaves, states, terminals) to a fixed depth, and the statistics of a fixed
+   number of uniformly random playouts (mean playout length, mean branching
+   factor, every player's mean score) within six standard errors;
+4. fails the run if that workload takes more than 30 times as long (wall
+   clock, pass/fail only) as the frozen direct translation, then **measures**
+   the work of that fixed playout workload (fixed count, fixed
+   seed) as executed machine instructions under valgrind, and divides it by
+   the playout count;
+5. recompiles the submitted `game.json` with the official RG compiler
+   (pragmas removed), verifies it the same way, and counts its nodes and edges.
+
+Comparison points are frozen by the evaluator and measured in the same run:
+the matched RBG description of each game translated RBG->RG, the direct HRG->RG
+translation without automaton transformations, and the direct RBG->RG
+translation without automaton transformations. Ground truth for an HRG file
+comes from its direct translation; for an RBG file from its direct RBG->RG
+translation.
+
+If any step fails for any game, the method's run fails and it receives the
+worst value of every scored metric (speedups 0, reductions -100, fractions 0) in all three experiments.
+
+Metrics written under `experiments.<name>.results.<method>`:
+
+| Experiment | Metric | Scored | Meaning |
+|---|---|---|---|
+| `forward_model_efficiency` | `speedup_vs_rbg_translation` | yes (primary) | geometric mean over games of RBG->RG instructions per playout / method instructions per playout |
+| | `worst_game_speedup_vs_rbg_translation` | yes | minimum of the same ratio over games |
+| | `verified_game_fraction` | yes (constraint) | 1 if every game verified, else the run failed |
+| | `speedup_vs_direct_translation` | no | geometric-mean speedup over the direct translation |
+| | `games_faster_than_rbg_fraction` | no | fraction of games beating RBG->RG |
+| `automaton_optimization` | `automaton_edge_reduction_pct` | yes (primary) | mean % fewer edges than the direct translation |
+| | `automaton_node_reduction_pct` | yes | mean % fewer nodes |
+| | `verified_automaton_fraction` | yes (constraint) | 1 if every submitted automaton verified |
+| `translated_rules_optimization` | `speedup_vs_direct_rbg_translation` | yes | geometric mean over RBG files of direct RBG->RG instructions per playout / method instructions per playout |
+| | `rbg_automaton_edge_reduction_pct` | yes (primary) | mean % fewer edges than the direct RBG->RG translation |
+| | `rbg_automaton_node_reduction_pct` | yes | mean % fewer nodes |
+| | `verified_rbg_game_fraction` | yes (constraint) | 1 if every RBG file's model and automaton verified |
+
+Experiment weights: 0.60, 0.15 and 0.25.
+
+Instruction counts are deterministic for a given binary and seed, so scores do
+not depend on wall-clock time or machine load. The train slice uses eight
+standard-size games; the held-out slice uses different, unseen games of the
+same kind at comparable difficulty (the translated-rules experiment uses
+seven train games and four held-out games).
 
 ---
 
@@ -387,6 +519,53 @@ The evaluator writes `scoring/scores.json`. A compatible method output must list
 - Final verification rechecked validation, method/evaluation separation, download URL reachability, train/test artifacts, and method-agnostic documentation.
 - Added explicit notes for machine-independent substitute metrics in `scoring/reference.json`.
 - No reproduction downgrade was needed; the validated gym baseline remains the committed three-game matched Table 1 subset plus the structural compactness experiment.
+
+</details>
+
+### Iteration 11: claude-opus-5-5 (hardener)
+- **Milestone**: `core_claim_plus` | **Status**: done
+- **Working time**: 1.8h | **GPU**: 0.0h
+- **Jobs**: 6 total (1 completed, 0 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-05-31 18:46] - method_runs
+- Validated the official HRG -> optimized RG -> rg2cpp -> generated C++ reasoner pipeline on the expanded 14-game subset.
+- Reproduced the paper's structural optimization claim with 48.942% fewer automaton nodes and 44.325% fewer automaton edges, while all generated reasoners completed fixed playout checks.
+- Follow-up audit found the existing scored experiment covered the paper's optimizer-size claim but not the Section 4 Table 1 playout-throughput core claim.
+- Added a benchmark-mode Table 1 subset harness for paired HRG->RG and RBG->RG generated reasoners; a compute job is needed before claiming `core_claim`.
+
+### [2026-05-31 19:08] - core_claim_plus
+- Job `2049a1f1-1ef` completed the paired Table 1 subset benchmark for Connect Four, Breakthrough, and Yavalath.
+- HRG->RG generated reasoners averaged 560407.0 playouts/s versus 171690.333 playouts/s for matched RBG->RG generated reasoners, a 4.051x within-job speedup.
+- The benchmark completed all three matched games and `python3 validate.py --compare` passed.
+- Together with the previously validated 14-game structural optimization run, the environment supports the core Section 4 throughput claim plus an additional optimizer-size claim.
+
+### [2026-05-31 19:29] - core_claim_plus
+- Fixed the top-level evaluator to report the Table 1 generated-code and automaton-size advantage metrics declared in `reference.json`.
+- Updated `scripts/run.sh` so submitted jobs regenerate method artifacts before scoring, avoiding stale gitignored outputs.
+- Prepared a CPU rerun that expands the matched Table 1 subset from three to six paired HRG/RBG games.
+
+### [2026-05-31 19:34] - core_claim_plus
+- Final verification copied benchmark rule sources into tracked `data/games/` for from-scratch agents.
+- Cleaned method-agnostic problem/evaluation/scoring docs so they describe the task and metrics without exposing implementation details.
+- Re-ran standalone evaluators and `python3 validate.py --compare`; all checks passed.
+
+### [2026-05-31 19:47] - core_claim_plus
+- Local validation still passes for the committed three-game matched benchmark artifact and train/test slices.
+- Prepared a CPU rerun with the existing entrypoint's broader six-game Table 1 matched benchmark configuration.
+- Current milestone remains `core_claim_plus` until that expansion job returns with measured results.
+
+### [2026-05-31 19:55] - core_claim_plus
+- Final verification rechecked validation, method/evaluation separation, download URL reachability, train/test artifacts, and method-agnostic documentation.
+- Added explicit notes for machine-independent substitute metrics in `scoring/reference.json`.
+- No reproduction downgrade was needed; the validated gym baseline remains the committed three-game matched Table 1 subset plus the structural compactness experiment.
+
+### [2026-11-11 22:50] - core_claim_plus (hardening, iteration 11)
+- Rebuilt the gym so a method is a compiler that the evaluator executes on hidden rule files. The evaluator verifies each generated forward model against frozen ground truth, measures executed instructions per random playout against frozen RBG->RG / direct-translation models, and verifies submitted automata through its own rg2cpp. Nothing self-reported is scored.
+- Held-out reference: 3.48x faster than RBG->RG (geomean; every game faster, worst 1.09x); 46.7% / 51.7% fewer automaton edges / nodes (paper 41 / 47); new translated-rules experiment 4.04x vs the direct RBG translation, with 70.8% / 75.4% reductions (paper 66 / 72). Train: 3.38x, 45.8 / 51.1, 4.05x.
+- A genuine code-generation improvement scores higher (+1.4% main, +4.2% translated). Every red-team shortcut now fails or ties exactly. Details in HARDENING.md.
 
 </details>
 
