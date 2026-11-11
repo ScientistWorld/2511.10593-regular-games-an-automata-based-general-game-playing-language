@@ -19,27 +19,43 @@
         "direct_translation_baseline": {
           "games_faster_than_rbg_fraction": 0.625,
           "speedup_vs_direct_translation": 1.0,
-          "speedup_vs_rbg_translation": 1.2810841031717726,
+          "speedup_vs_rbg_translation": 1.2810841223243197,
           "verified_game_fraction": 1.0,
-          "worst_game_speedup_vs_rbg_translation": 0.3967969456647377
+          "worst_game_speedup_vs_rbg_translation": 0.3967969469990848
         },
         "hrg_rg_optimized": {
           "games_faster_than_rbg_fraction": 1.0,
-          "speedup_vs_direct_translation": 2.6411141837559002,
-          "speedup_vs_rbg_translation": 3.383489395471175,
+          "speedup_vs_direct_translation": 2.6411139284800274,
+          "speedup_vs_rbg_translation": 3.3834891190253726,
           "verified_game_fraction": 1.0,
-          "worst_game_speedup_vs_rbg_translation": 1.0501912784298009
+          "worst_game_speedup_vs_rbg_translation": 1.0501912652561236
         },
         "rbg_translation_baseline": {
-          "speedup_vs_direct_translation": 0.7805888758779768,
+          "speedup_vs_direct_translation": 0.7805888642079662,
           "speedup_vs_rbg_translation": 1.0,
           "worst_game_speedup_vs_rbg_translation": 1.0
+        }
+      }
+    },
+    "translated_rules_optimization": {
+      "results": {
+        "direct_rbg_translation_baseline": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 1.0,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "rbg_automaton_edge_reduction_pct": 70.25243787025552,
+          "rbg_automaton_node_reduction_pct": 74.72577488878024,
+          "speedup_vs_direct_rbg_translation": 4.0462465494377104,
+          "verified_rbg_game_fraction": 1.0
         }
       }
     }
   },
   "metadata": {
-    "elapsed_seconds": 834.6,
+    "elapsed_seconds": 443.0,
     "games": [
       "connect4",
       "breakthrough",
@@ -55,6 +71,15 @@
         "status": "ok"
       }
     },
+    "rbg_games": [
+      "connect4",
+      "breakthrough",
+      "yavalath",
+      "hex",
+      "knightthrough",
+      "gomoku_standard",
+      "foxAndHounds"
+    ],
     "slice": "train"
   }
 }

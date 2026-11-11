@@ -19,19 +19,19 @@
         "direct_translation_baseline": {
           "games_faster_than_rbg_fraction": 0.6,
           "speedup_vs_direct_translation": 1.0,
-          "speedup_vs_rbg_translation": 1.1447086119839767,
+          "speedup_vs_rbg_translation": 1.1447086100470656,
           "verified_game_fraction": 1.0,
-          "worst_game_speedup_vs_rbg_translation": 0.5061268364379399
+          "worst_game_speedup_vs_rbg_translation": 0.5061268363488226
         },
         "hrg_rg_optimized": {
           "games_faster_than_rbg_fraction": 1.0,
-          "speedup_vs_direct_translation": 3.0406111246042866,
-          "speedup_vs_rbg_translation": 3.480613740028811,
+          "speedup_vs_direct_translation": 3.0406110679631433,
+          "speedup_vs_rbg_translation": 3.4806136693018135,
           "verified_game_fraction": 1.0,
-          "worst_game_speedup_vs_rbg_translation": 1.0906339548727568
+          "worst_game_speedup_vs_rbg_translation": 1.090633966905763
         },
         "rbg_translation_baseline": {
-          "speedup_vs_direct_translation": 0.8735847616860575,
+          "speedup_vs_direct_translation": 0.8735847631642119,
           "speedup_vs_rbg_translation": 1.0,
           "worst_game_speedup_vs_rbg_translation": 1.0
         }
@@ -48,14 +48,14 @@
         "hrg_rg_optimized": {
           "rbg_automaton_edge_reduction_pct": 70.76192058921632,
           "rbg_automaton_node_reduction_pct": 75.36849027543516,
-          "speedup_vs_direct_rbg_translation": 4.035328613270901,
+          "speedup_vs_direct_rbg_translation": 4.035328623652743,
           "verified_rbg_game_fraction": 1.0
         }
       }
     }
   },
   "metadata": {
-    "elapsed_seconds": 744.9,
+    "elapsed_seconds": 200.8,
     "games": [
       "breakthrough_7x7",
       "hex_9x9",
