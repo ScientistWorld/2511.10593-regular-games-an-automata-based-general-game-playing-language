@@ -1,0 +1,4 @@
+{
+  "head": "122d15c9cd228d0a5e458e919519b88a29352a6d",
+  "status": " M README.md\n M manifest.json\n D trajectory/session.json\n D trajectory/turn_0001_raw.jsonl\n D trajectory/turn_0002_raw.jsonl\n D trajectory/turn_0003_raw.jsonl\n D trajectory/turn_0004_raw.jsonl\n D trajectory/turn_0005_raw.jsonl\n D trajectory/turn_0006_raw.jsonl\n D trajectory/turn_0007_raw.jsonl\n D trajectory/turn_0008_raw.jsonl\n D trajectory/turn_0009_raw.jsonl\n D trajectory/turn_0010_raw.jsonl\n D trajectory/turn_0011_raw.jsonl\n D trajectory/turn_0012_raw.jsonl\n?? redteam/\n"
+}
