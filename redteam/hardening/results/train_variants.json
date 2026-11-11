@@ -1,0 +1,129 @@
+{
+  "experiments": {
+    "automaton_optimization": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "automaton_edge_reduction_pct": 45.81348646530547,
+          "automaton_node_reduction_pct": 51.11857694531826,
+          "verified_automaton_fraction": 1.0
+        },
+        "direct_translation_baseline": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "automaton_edge_reduction_pct": 45.81348646530547,
+          "automaton_node_reduction_pct": 51.11857694531826,
+          "verified_automaton_fraction": 1.0
+        },
+        "weaker_no_optimizations": {
+          "automaton_edge_reduction_pct": 0.0,
+          "automaton_node_reduction_pct": 0.0,
+          "verified_automaton_fraction": 1.0
+        }
+      }
+    },
+    "forward_model_efficiency": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.641113824707363,
+          "speedup_vs_rbg_translation": 3.3834889860838597,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.050191260630198
+        },
+        "direct_translation_baseline": {
+          "games_faster_than_rbg_fraction": 0.625,
+          "speedup_vs_direct_translation": 1.0,
+          "speedup_vs_rbg_translation": 1.2810841223243197,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.3967969469990848
+        },
+        "hrg_rg_optimized": {
+          "games_faster_than_rbg_fraction": 1.0,
+          "speedup_vs_direct_translation": 2.6411139284800274,
+          "speedup_vs_rbg_translation": 3.3834891190253726,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0501912652561236
+        },
+        "rbg_translation_baseline": {
+          "speedup_vs_direct_translation": 0.7805888642079662,
+          "speedup_vs_rbg_translation": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 1.0
+        },
+        "weaker_no_optimizations": {
+          "games_faster_than_rbg_fraction": 0.625,
+          "speedup_vs_direct_translation": 0.9999999700985084,
+          "speedup_vs_rbg_translation": 1.2810840840179936,
+          "verified_game_fraction": 1.0,
+          "worst_game_speedup_vs_rbg_translation": 0.3967969467583549
+        }
+      }
+    },
+    "translated_rules_optimization": {
+      "results": {
+        "better_flatten_translated_rules": {
+          "rbg_automaton_edge_reduction_pct": 70.25243787025552,
+          "rbg_automaton_node_reduction_pct": 74.72577488878024,
+          "speedup_vs_direct_rbg_translation": 4.307448691140319,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "direct_rbg_translation_baseline": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 1.0,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "hrg_rg_optimized": {
+          "rbg_automaton_edge_reduction_pct": 70.25243787025552,
+          "rbg_automaton_node_reduction_pct": 74.72577488878024,
+          "speedup_vs_direct_rbg_translation": 4.0462465494377104,
+          "verified_rbg_game_fraction": 1.0
+        },
+        "weaker_no_optimizations": {
+          "rbg_automaton_edge_reduction_pct": 0.0,
+          "rbg_automaton_node_reduction_pct": 0.0,
+          "speedup_vs_direct_rbg_translation": 1.0044589677066829,
+          "verified_rbg_game_fraction": 1.0
+        }
+      }
+    }
+  },
+  "metadata": {
+    "complete": true,
+    "elapsed_seconds": 1287.7,
+    "games": [
+      "connect4",
+      "breakthrough",
+      "yavalath",
+      "hex",
+      "reversi",
+      "knightthrough",
+      "gomoku_standard",
+      "foxAndHounds"
+    ],
+    "methods": {
+      "better_flatten_translated_rules": {
+        "status": "ok"
+      },
+      "hrg_rg_optimized": {
+        "status": "ok"
+      },
+      "weaker_no_optimizations": {
+        "status": "ok"
+      }
+    },
+    "rbg_games": [
+      "connect4",
+      "breakthrough",
+      "yavalath",
+      "hex",
+      "knightthrough",
+      "gomoku_standard",
+      "foxAndHounds"
+    ],
+    "seed_id": "3c1a8f7b82a8",
+    "slice": "train"
+  }
+}

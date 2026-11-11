@@ -1,0 +1,343 @@
+{
+  "baselines": {
+    "hrg:breakthrough_7x7": {
+      "direct_automaton": {
+        "edges": 77,
+        "nodes": 70
+      },
+      "direct_instructions_per_playout": 59510.8979,
+      "ground_truth_mean_playout_length": 44.2293,
+      "ground_truth_perft": [
+        3042166,
+        3194018,
+        0
+      ],
+      "rbg_instructions_per_playout": 79020.754
+    },
+    "hrg:foxAndHounds_10x10": {
+      "direct_automaton": {
+        "edges": 87,
+        "nodes": 79
+      },
+      "direct_instructions_per_playout": 39410.296533333334,
+      "ground_truth_mean_playout_length": 80.46583333333334,
+      "ground_truth_perft": [
+        1642974,
+        1917592,
+        0
+      ],
+      "rbg_instructions_per_playout": 58829.3771
+    },
+    "hrg:gomoku_standard_13x13": {
+      "direct_automaton": {
+        "edges": 369,
+        "nodes": 332
+      },
+      "direct_instructions_per_playout": 454334.819,
+      "ground_truth_mean_playout_length": 92.18266666666666,
+      "ground_truth_perft": [
+        4741464,
+        4770026,
+        0
+      ],
+      "rbg_instructions_per_playout": 254114.726
+    },
+    "hrg:hex_9x9": {
+      "direct_automaton": {
+        "edges": 103,
+        "nodes": 94
+      },
+      "direct_instructions_per_playout": 3928863.3085,
+      "ground_truth_mean_playout_length": 71.093,
+      "ground_truth_perft": [
+        511920,
+        518482,
+        0
+      ],
+      "rbg_instructions_per_playout": 1973415.3821666667
+    },
+    "hrg:reversi_6x6": {
+      "direct_automaton": {
+        "edges": 1409,
+        "nodes": 1257
+      },
+      "direct_instructions_per_playout": 258449.459,
+      "ground_truth_mean_playout_length": 32.517,
+      "ground_truth_perft": [
+        7604,
+        9285,
+        0
+      ],
+      "rbg_instructions_per_playout": 904799.2668
+    },
+    "rbg:breakthrough_7x7": {
+      "direct_rbg_instructions_per_playout": 179829.9855,
+      "ground_truth_perft": [
+        3042166,
+        3194018,
+        0
+      ],
+      "rbg_direct_automaton": {
+        "edges": 223,
+        "nodes": 214
+      }
+    },
+    "rbg:foxAndHounds_10x10": {
+      "direct_rbg_instructions_per_playout": 115529.65693333333,
+      "ground_truth_perft": [
+        1642974,
+        1917592,
+        0
+      ],
+      "rbg_direct_automaton": {
+        "edges": 227,
+        "nodes": 220
+      }
+    },
+    "rbg:gomoku_standard_13x13": {
+      "direct_rbg_instructions_per_playout": 6555209.517,
+      "ground_truth_perft": [
+        4741464,
+        4770026,
+        0
+      ],
+      "rbg_direct_automaton": {
+        "edges": 409,
+        "nodes": 406
+      }
+    },
+    "rbg:hex_9x9": {
+      "direct_rbg_instructions_per_playout": 4593126.9366666665,
+      "ground_truth_perft": [
+        511920,
+        518482,
+        0
+      ],
+      "rbg_direct_automaton": {
+        "edges": 251,
+        "nodes": 228
+      }
+    }
+  },
+  "methods": {
+    "better_flatten_translated_rules": {
+      "per_game": {
+        "hrg:breakthrough_7x7": {
+          "cost": 43397.28625,
+          "edges": 50,
+          "mean_playout_length": 44.2293,
+          "nodes": 43,
+          "speedup_vs_direct": 1.3713045916551985,
+          "speedup_vs_rbg": 1.820868557190025
+        },
+        "hrg:foxAndHounds_10x10": {
+          "cost": 38443.75226666667,
+          "edges": 57,
+          "mean_playout_length": 80.46583333333334,
+          "nodes": 49,
+          "speedup_vs_direct": 1.0251417775237492,
+          "speedup_vs_rbg": 1.5302714649685494
+        },
+        "hrg:gomoku_standard_13x13": {
+          "cost": 233345.003,
+          "edges": 222,
+          "mean_playout_length": 92.18266666666666,
+          "nodes": 185,
+          "speedup_vs_direct": 1.9470518466598576,
+          "speedup_vs_rbg": 1.089008646994682
+        },
+        "hrg:hex_9x9": {
+          "cost": 196024.15483333333,
+          "edges": 46,
+          "mean_playout_length": 71.093,
+          "nodes": 37,
+          "speedup_vs_direct": 20.042750914245534,
+          "speedup_vs_rbg": 10.067205155632653
+        },
+        "hrg:reversi_6x6": {
+          "cost": 54339.7107,
+          "edges": 441,
+          "mean_playout_length": 32.517,
+          "nodes": 289,
+          "speedup_vs_direct": 4.756180253274701,
+          "speedup_vs_rbg": 16.650792857459948
+        },
+        "rbg:breakthrough_7x7": {
+          "cost": 71624.2344,
+          "edges": 65,
+          "mean_playout_length": 44.3858,
+          "nodes": 56,
+          "speedup_vs_direct_rbg": 2.510742167179102
+        },
+        "rbg:foxAndHounds_10x10": {
+          "cost": 58950.65926666667,
+          "edges": 58,
+          "mean_playout_length": 80.4148,
+          "nodes": 50,
+          "speedup_vs_direct_rbg": 1.9597687009865037
+        },
+        "rbg:gomoku_standard_13x13": {
+          "cost": 247389.886,
+          "edges": 121,
+          "mean_playout_length": 91.883,
+          "nodes": 100,
+          "speedup_vs_direct_rbg": 26.497483882586856
+        },
+        "rbg:hex_9x9": {
+          "cost": 1910466.482,
+          "edges": 82,
+          "mean_playout_length": 71.52266666666667,
+          "nodes": 57,
+          "speedup_vs_direct_rbg": 2.4041913218274753
+        }
+      },
+      "status": "ok"
+    },
+    "hrg_rg_optimized": {
+      "per_game": {
+        "hrg:breakthrough_7x7": {
+          "cost": 43397.2853,
+          "edges": 50,
+          "mean_playout_length": 44.2293,
+          "nodes": 43,
+          "speedup_vs_direct": 1.3713046216741118,
+          "speedup_vs_rbg": 1.8208685970502398
+        },
+        "hrg:foxAndHounds_10x10": {
+          "cost": 38443.752733333335,
+          "edges": 57,
+          "mean_playout_length": 80.46583333333334,
+          "nodes": 49,
+          "speedup_vs_direct": 1.025141765079608,
+          "speedup_vs_rbg": 1.5302714463926657
+        },
+        "hrg:gomoku_standard_13x13": {
+          "cost": 233345.00166666668,
+          "edges": 222,
+          "mean_playout_length": 92.18266666666666,
+          "nodes": 185,
+          "speedup_vs_direct": 1.9470518577853118,
+          "speedup_vs_rbg": 1.0890086532172774
+        },
+        "hrg:hex_9x9": {
+          "cost": 196024.154,
+          "edges": 46,
+          "mean_playout_length": 71.093,
+          "nodes": 37,
+          "speedup_vs_direct": 20.04275099945081,
+          "speedup_vs_rbg": 10.067205198430122
+        },
+        "hrg:reversi_6x6": {
+          "cost": 54339.7088,
+          "edges": 441,
+          "mean_playout_length": 32.517,
+          "nodes": 289,
+          "speedup_vs_direct": 4.7561804195756014,
+          "speedup_vs_rbg": 16.650793439658624
+        },
+        "rbg:breakthrough_7x7": {
+          "cost": 79258.3126,
+          "edges": 65,
+          "mean_playout_length": 44.3858,
+          "nodes": 56,
+          "speedup_vs_direct_rbg": 2.2689100941066465
+        },
+        "rbg:foxAndHounds_10x10": {
+          "cost": 58774.5704,
+          "edges": 58,
+          "mean_playout_length": 80.4148,
+          "nodes": 50,
+          "speedup_vs_direct_rbg": 1.965640176475596
+        },
+        "rbg:gomoku_standard_13x13": {
+          "cost": 254159.503,
+          "edges": 121,
+          "mean_playout_length": 91.883,
+          "nodes": 100,
+          "speedup_vs_direct_rbg": 25.791715200985422
+        },
+        "rbg:hex_9x9": {
+          "cost": 1986108.7793333333,
+          "edges": 82,
+          "mean_playout_length": 71.52266666666667,
+          "nodes": 57,
+          "speedup_vs_direct_rbg": 2.31262606784731
+        }
+      },
+      "status": "ok"
+    },
+    "weaker_no_optimizations": {
+      "per_game": {
+        "hrg:breakthrough_7x7": {
+          "cost": 59510.89955,
+          "edges": 77,
+          "mean_playout_length": 44.2293,
+          "nodes": 70,
+          "speedup_vs_direct": 0.9999999722739866,
+          "speedup_vs_rbg": 1.3278366584529304
+        },
+        "hrg:foxAndHounds_10x10": {
+          "cost": 39410.2967,
+          "edges": 87,
+          "mean_playout_length": 80.46583333333334,
+          "nodes": 79,
+          "speedup_vs_direct": 0.9999999957709867,
+          "speedup_vs_rbg": 1.4927412891057985
+        },
+        "hrg:gomoku_standard_13x13": {
+          "cost": 454334.8258333333,
+          "edges": 369,
+          "mean_playout_length": 92.18266666666666,
+          "nodes": 332,
+          "speedup_vs_direct": 0.9999999849596973,
+          "speedup_vs_rbg": 0.5593115727677425
+        },
+        "hrg:hex_9x9": {
+          "cost": 3928863.3108333335,
+          "edges": 103,
+          "mean_playout_length": 71.093,
+          "nodes": 94,
+          "speedup_vs_direct": 0.9999999994061046,
+          "speedup_vs_rbg": 0.5022865969211066
+        },
+        "hrg:reversi_6x6": {
+          "cost": 258449.4637,
+          "edges": 1409,
+          "mean_playout_length": 32.517,
+          "nodes": 1257,
+          "speedup_vs_direct": 0.9999999818146267,
+          "speedup_vs_rbg": 3.5008750022026067
+        },
+        "rbg:breakthrough_7x7": {
+          "cost": 179829.9888,
+          "edges": 223,
+          "mean_playout_length": 44.3858,
+          "nodes": 214,
+          "speedup_vs_direct_rbg": 0.9999999816493345
+        },
+        "rbg:foxAndHounds_10x10": {
+          "cost": 115529.65726666666,
+          "edges": 227,
+          "mean_playout_length": 80.4148,
+          "nodes": 220,
+          "speedup_vs_direct_rbg": 0.999999997114738
+        },
+        "rbg:gomoku_standard_13x13": {
+          "cost": 6555209.55,
+          "edges": 409,
+          "mean_playout_length": 91.883,
+          "nodes": 406,
+          "speedup_vs_direct_rbg": 0.999999994965836
+        },
+        "rbg:hex_9x9": {
+          "cost": 4593126.956,
+          "edges": 251,
+          "mean_playout_length": 71.52266666666667,
+          "nodes": 228,
+          "speedup_vs_direct_rbg": 0.9999999957908122
+        }
+      },
+      "status": "ok"
+    }
+  }
+}

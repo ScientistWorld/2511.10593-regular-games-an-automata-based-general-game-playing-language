@@ -361,8 +361,8 @@
     }
   },
   "metadata": {
-    "complete": false,
-    "elapsed_seconds": 1999.8,
+    "complete": true,
+    "elapsed_seconds": 118.1,
     "games": [
       "breakthrough_7x7",
       "hex_9x9",
